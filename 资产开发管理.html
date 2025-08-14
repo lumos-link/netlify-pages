@@ -1,0 +1,3116 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>资产开发管理 - 数据资产管理平台</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { 
+      background: #ffffff;
+      min-height: 100vh;
+      position: relative;
+    }
+    .content-card { 
+      background: rgba(255, 255, 255, 0.95); 
+      backdrop-filter: blur(10px);
+      border-radius: 1rem; 
+      box-shadow: 0 4px 20px rgba(37, 99, 235, 0.15);
+    }
+    
+    /* 响应式布局优化 */
+    @media (max-width: 1024px) {
+      .main-content {
+        flex-direction: column;
+      }
+      .sidebar-left {
+        width: 100%;
+        margin-bottom: 1rem;
+      }
+      .content-right {
+        width: 100%;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .grid-cols-5 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .sticky {
+        position: static;
+      }
+      .w-80 {
+        width: 100%;
+      }
+    }
+    
+    /* 确保表格内容不会溢出 */
+    .table-auto {
+      table-layout: auto;
+    }
+    
+    /* 优化滚动条样式 */
+    .overflow-x-auto::-webkit-scrollbar {
+      height: 8px;
+    }
+    
+    .overflow-x-auto::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+    
+    .overflow-x-auto::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 4px;
+    }
+    
+    .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+    .btn-secondary {
+      background: white;
+      color: #2563eb;
+      border: 1px solid #2563eb;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover {
+      background: #2563eb;
+      color: white;
+    }
+    .tab-item {
+      cursor: pointer;
+      transition: all 0.2s;
+      border-bottom: 2px solid transparent;
+    }
+    .tab-item.active {
+      border-bottom-color: #2563eb;
+      color: #2563eb;
+      font-weight: 600;
+    }
+    .tree-item {
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tree-item:hover {
+      background: rgba(59, 130, 246, 0.1);
+    }
+    .tree-item.active {
+      background: rgba(59, 130, 246, 0.2);
+      color: #2563eb;
+      font-weight: 600;
+    }
+    
+    .status-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .status-research { background-color: #FEF3C7; color: #92400E; }
+    .status-proposal { background-color: #DBEAFE; color: #1E40AF; }
+    .status-decision { background-color: #FCE7F3; color: #BE185D; }
+    .status-requirement { background-color: #D1FAE5; color: #065F46; }
+    .status-development { background-color: #FED7AA; color: #C2410C; }
+    .status-testing { background-color: #E0E7FF; color: #3730A3; }
+    .status-acceptance { background-color: #FEF3C7; color: #92400E; }
+    .status-online { background-color: #D1FAE5; color: #065F46; }
+    .status-completed { background-color: #D1FAE5; color: #065F46; }
+    .status-paused { background-color: #FEE2E2; color: #991B1B; }
+    
+    .timeline-item {
+      position: relative;
+      padding-left: 2rem;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 0.5rem;
+      top: 0.5rem;
+      width: 0.75rem;
+      height: 0.75rem;
+      border-radius: 50%;
+      background-color: #3B82F6;
+    }
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      left: 0.875rem;
+      top: 1.25rem;
+      width: 2px;
+      height: calc(100% - 0.75rem);
+      background-color: #E5E7EB;
+    }
+    .timeline-item:last-child::after {
+      display: none;
+    }
+    
+    .progress-bar {
+      background-color: #E5E7EB;
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3B82F6, #1D4ED8);
+      transition: width 0.3s ease;
+    }
+
+    /* 步骤指示器样式 */
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .step-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #e5e7eb;
+      color: #6b7280;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .step-item.active .step-circle {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .step-item.completed .step-circle {
+      background: #10b981;
+      color: white;
+    }
+
+    .step-label {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    .step-item.active .step-label {
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    .step-item.completed .step-label {
+      color: #10b981;
+      font-weight: 600;
+    }
+
+    .step-line {
+      width: 60px;
+      height: 2px;
+      background: #e5e7eb;
+      margin: 0 16px;
+      transition: all 0.3s ease;
+    }
+
+    .step-line.completed {
+      background: #10b981;
+    }
+
+    /* 步骤面板样式 */
+    .step-panel {
+      display: none;
+    }
+
+    .step-panel.active {
+      display: block;
+    }
+
+    /* 文件上传区域样式 */
+    .upload-area {
+      position: relative;
+    }
+
+    .upload-area .border-dashed {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .upload-area .border-dashed:hover {
+      border-color: #667eea;
+      background: rgba(102, 126, 234, 0.05);
+    }
+
+    .upload-area.dragover .border-dashed {
+      border-color: #667eea;
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    .uploaded-file {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+
+    .uploaded-file .file-info {
+      display: flex;
+      align-items: center;
+    }
+
+    .uploaded-file .file-icon {
+      margin-right: 8px;
+      color: #6b7280;
+    }
+
+    .uploaded-file .file-name {
+      font-size: 14px;
+      color: #374151;
+      margin-right: 8px;
+    }
+
+    .uploaded-file .file-size {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .uploaded-file .remove-file {
+      color: #ef4444;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .uploaded-file .remove-file:hover {
+      background: #fee2e2;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- 顶部主导航栏 -->
+  <header class="bg-gradient-to-r from-red-900 via-red-800 to-red-900 shadow flex items-center justify-between px-10 h-16 sticky top-0 z-20">
+    <div class="flex items-center space-x-4">
+      <img src="https://img1.imgtp.com/2023/07/21/0Qw6Qk4n.png" alt="LOGO" class="h-10 w-10 rounded-full border-2 border-red-400 shadow bg-white object-contain">
+      <span class="text-xl font-bold text-white tracking-wide whitespace-nowrap">数据资产管理平台</span>
+    </div>
+    <nav class="flex-1 flex items-center justify-center space-x-8">
+      <a href="首页.html" class="text-red-100 hover:text-red-400 font-medium">首页</a>
+      <a href="数据资产.html" class="text-red-100 hover:text-red-400 font-medium">资产运营管理</a>
+      <a href="数据来源管理.html" class="text-red-100 hover:text-red-400 font-medium">资源盘点登记</a>
+      <a href="权属信息管理.html" class="text-red-100 hover:text-red-400 font-medium">资产确权与管理</a>
+      <a href="资产开发管理.html" class="text-red-100 hover:text-red-400 font-medium bg-red-700 px-3 py-1 rounded">资产开发管理</a>
+      <a href="#" class="text-red-100 hover:text-red-400 font-medium">资产会计核算</a>
+      <a href="API目录管理.html" class="text-red-100 hover:text-red-400 font-medium">API管理</a>
+    </nav>
+    <div class="flex items-center space-x-4">
+      <div class="relative" id="user-dropdown">
+        <div class="flex items-center space-x-2 cursor-pointer hover:bg-red-700 px-2 py-1 rounded-lg transition" onclick="toggleUserDropdown()">
+          <img src="https://i.pravatar.cc/32?img=3" class="rounded-full w-8 h-8 border-2 border-red-200" alt="用户头像">
+          <span class="text-red-100 text-sm">张三</span>
+          <i class="fas fa-chevron-down text-xs text-red-300 transition-transform" id="dropdown-arrow"></i>
+        </div>
+        <div id="user-dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 hidden z-50">
+          <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+            <i class="fas fa-user-circle mr-3 text-red-500"></i>
+            个人中心
+          </a>
+          <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+            <i class="fas fa-cog mr-3 text-red-500"></i>
+            系统管理
+          </a>
+          <div class="border-t border-gray-200 my-1"></div>
+          <a href="#" class="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 transition">
+            <i class="fas fa-sign-out-alt mr-3"></i>
+            退出
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <!-- 可收起平台导航栏 -->
+  <aside id="sidebar" class="fixed top-16 left-0 min-h-[calc(100vh-4rem)] w-60 bg-gradient-to-b from-red-900 to-red-800 border-r border-red-700 shadow-xl z-30 transition-transform duration-300">
+    <div class="flex items-center justify-between px-4 py-3 border-b border-white border-opacity-20">
+      <span class="text-lg font-bold text-red-100">平台导航</span>
+    </div>
+    <ul class="mt-4 space-y-2 px-4">
+      <!-- 首页 -->
+      <li><a href="首页.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100"><i class="fas fa-home"></i> 首页</a></li>
+      
+      <!-- 资产运营管理 -->
+      <li>
+        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('operation')">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-chart-line"></i>
+            <span>资产运营管理</span>
+          </div>
+          <i class="fas fa-chevron-down text-xs transition-transform" id="operation-arrow"></i>
+        </div>
+        <ul id="operation-submenu" class="ml-6 mt-2 space-y-1 hidden">
+          <li><a href="数据资产.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据资产</a></li>
+          <li><a href="数据看板.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据看板</a></li>
+        </ul>
+      </li>
+      
+      <!-- 资源盘点登记 -->
+      <li>
+        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('inventory')">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-clipboard-list"></i>
+            <span>资源盘点登记</span>
+          </div>
+          <i class="fas fa-chevron-down text-xs transition-transform" id="inventory-arrow"></i>
+        </div>
+        <ul id="inventory-submenu" class="ml-6 mt-2 space-y-1 hidden">
+          <li><a href="数据来源管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据来源管理</a></li>
+          <li><a href="数据资源扫描.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据资源扫描</a></li>
+          <li><a href="数据资源.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据资源盘点</a></li>
+          <li><a href="资产属性管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 资产属性管理</a></li>
+          <li><a href="资产标签管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-tag"></i> 资产标签管理</a></li>
+          <li><a href="资产目录管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-sitemap"></i> 资产目录管理</a></li>
+          <li><a href="数据分类管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据分类管理</a></li>
+        </ul>
+      </li>
+      
+      <!-- 资产确权与管理 -->
+      <li>
+        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('rights')">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-gavel"></i>
+            <span>资产确权与管理</span>
+          </div>
+          <i class="fas fa-chevron-down text-xs transition-transform" id="rights-arrow"></i>
+        </div>
+        <ul id="rights-submenu" class="ml-6 mt-2 space-y-1 hidden">
+          <li><a href="权属信息管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-user-shield"></i> 权属信息管理</a></li>
+          <li><a href="授权链路管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-link"></i> 授权链路管理</a></li>
+          <li><a href="协议管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 协议管理</a></li>
+        </ul>
+      </li>
+      
+      <!-- 资产开发管理 -->
+      <li>
+        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer bg-red-700" onclick="toggleSubMenu('development')">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-code"></i>
+            <span>资产开发管理</span>
+          </div>
+          <i class="fas fa-chevron-down text-xs transition-transform" id="development-arrow" style="transform: rotate(180deg);"></i>
+        </div>
+        <ul id="development-submenu" class="ml-6 mt-2 space-y-1">
+          <li><a href="资产开发管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm bg-red-700"><i class="fas fa-cogs"></i> 资产开发管理</a></li>
+          <li><a href="流程监控管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 流程监控管理</a></li>
+          <li><a href="资产内容管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 资产内容管理</a></li>
+        </ul>
+      </li>
+      
+      <!-- 资产会计核算 -->
+      <li>
+        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('accounting')">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-calculator"></i>
+            <span>资产会计核算</span>
+          </div>
+          <i class="fas fa-chevron-down text-xs transition-transform" id="accounting-arrow"></i>
+        </div>
+        <ul id="accounting-submenu" class="ml-6 mt-2 space-y-1 hidden">
+          <li><a href="资产会计计量.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-calculator"></i> 资产会计计量</a></li>
+          <li><a href="资产披露.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-file-alt"></i> 资产披露</a></li>
+          <li><a href="资产应用.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-chart-bar"></i> 资产应用</a></li>
+        </ul>
+      </li>
+      
+      <!-- API管理 -->
+      <li>
+        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('api')">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-plug"></i>
+            <span>API管理</span>
+          </div>
+          <i class="fas fa-chevron-down text-xs transition-transform" id="api-arrow"></i>
+        </div>
+        <ul id="api-submenu" class="ml-6 mt-2 space-y-1 hidden">
+          <li><a href="API目录管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-sitemap"></i> API目录管理</a></li>
+          <li><a href="API管理页面.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> API管理</a></li>
+        </ul>
+      </li>
+    </ul>
+  </aside>
+  
+  <!-- 展开按钮 -->
+  <button id="sidebar-toggle" onclick="toggleSidebar()" class="fixed top-20 left-64 z-40 bg-black bg-opacity-50 backdrop-blur-sm text-white rounded-full p-2 shadow-lg hover:bg-black hover:bg-opacity-70 focus:outline-none transition"><i class="fas fa-chevron-left"></i></button>
+  
+  <!-- 主体内容区 -->
+  <main class="flex-1 w-full max-w-7xl mx-auto py-8 px-4 ml-60">
+
+
+    <!-- 统计卡片 -->
+    <div class="content-card p-6 mb-6">
+      <h3 class="text-lg font-bold text-gray-800 mb-4">开发项目统计</h3>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="text-center p-4 bg-blue-50 rounded-lg">
+          <div class="text-3xl font-bold text-blue-600">156</div>
+          <div class="text-sm text-gray-600">总开发项目</div>
+        </div>
+        <div class="text-center p-4 bg-green-50 rounded-lg">
+          <div class="text-3xl font-bold text-green-600">89</div>
+          <div class="text-sm text-gray-600">已完成</div>
+        </div>
+        <div class="text-center p-4 bg-yellow-50 rounded-lg">
+          <div class="text-3xl font-bold text-yellow-600">42</div>
+          <div class="text-sm text-gray-600">进行中</div>
+        </div>
+        <div class="text-center p-4 bg-red-50 rounded-lg">
+          <div class="text-3xl font-bold text-red-600">25</div>
+          <div class="text-sm text-gray-600">待审核</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 筛选和搜索 -->
+    <div class="content-card p-6 mb-6">
+      <h3 class="text-lg font-bold text-gray-800 mb-4">筛选和搜索</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">项目状态</label>
+          <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">全部状态</option>
+            <option value="research">调研阶段</option>
+            <option value="proposal">立项阶段</option>
+            <option value="decision">决策阶段</option>
+            <option value="requirement">需求确认</option>
+            <option value="development">开发阶段</option>
+            <option value="testing">测试阶段</option>
+            <option value="acceptance">验收阶段</option>
+            <option value="online">上线阶段</option>
+            <option value="completed">已完成</option>
+            <option value="paused">已暂停</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">项目类型</label>
+          <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">全部类型</option>
+            <option value="data-api">数据API</option>
+            <option value="data-product">数据产品</option>
+            <option value="data-service">数据服务</option>
+            <option value="data-platform">数据平台</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">负责人</label>
+          <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">全部负责人</option>
+            <option value="zhang-san">张三</option>
+            <option value="li-si">李四</option>
+            <option value="wang-wu">王五</option>
+            <option value="zhao-liu">赵六</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">搜索</label>
+          <div class="relative">
+            <input type="text" placeholder="搜索项目名称或编号" class="w-full border border-gray-300 rounded-lg pl-10 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 项目列表 -->
+    <div class="content-card">
+      <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+        <h3 class="text-lg font-medium text-gray-900">开发项目列表</h3>
+        <button onclick="openNewProjectModal()" class="btn-primary">
+          <i class="fas fa-plus mr-2"></i>新建开发项目
+        </button>
+      </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">项目信息</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">当前阶段</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">进度</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">负责人</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">时间</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900">用户行为分析数据API</div>
+                                    <div class="text-sm text-gray-500">PRJ-2024-001</div>
+                                    <div class="text-xs text-gray-400">数据API · 高优先级</div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="status-badge status-development">开发阶段</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 65%"></div>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-1">65%</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center">
+                                    <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                        <span class="text-sm font-medium text-blue-600">张</span>
+                                    </div>
+                                    <div class="ml-3">
+                                        <div class="text-sm font-medium text-gray-900">张三</div>
+                                        <div class="text-sm text-gray-500">数据开发工程师</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-gray-900">2024-01-15</div>
+                                <div class="text-sm text-gray-500">预计 2024-03-20</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex space-x-2">
+                                    <button onclick="openProjectDetail()" class="text-blue-600 hover:text-blue-900 text-sm">查看详情</button>
+                                    <button onclick="openProjectReview()" class="text-green-600 hover:text-green-900 text-sm">审核</button>
+                                    <button onclick="openProjectEdit()" class="text-gray-600 hover:text-gray-900 text-sm">编辑</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900">企业风险评估模型</div>
+                                    <div class="text-sm text-gray-500">PRJ-2024-002</div>
+                                    <div class="text-xs text-gray-400">数据产品 · 中优先级</div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="status-badge status-testing">测试阶段</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 85%"></div>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-1">85%</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center">
+                                    <div class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                                        <span class="text-sm font-medium text-green-600">李</span>
+                                    </div>
+                                    <div class="ml-3">
+                                        <div class="text-sm font-medium text-gray-900">李四</div>
+                                        <div class="text-sm text-gray-500">算法工程师</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-gray-900">2024-01-10</div>
+                                <div class="text-sm text-gray-500">预计 2024-02-28</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex space-x-2">
+                                    <button onclick="openProjectDetail()" class="text-blue-600 hover:text-blue-900 text-sm">查看详情</button>
+                                    <button onclick="openProjectReview()" class="text-green-600 hover:text-green-900 text-sm">审核</button>
+                                    <button onclick="openProjectEdit()" class="text-gray-600 hover:text-gray-900 text-sm">编辑</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900">市场趋势分析平台</div>
+                                    <div class="text-sm text-gray-500">PRJ-2024-003</div>
+                                    <div class="text-xs text-gray-400">数据平台 · 高优先级</div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="status-badge status-requirement">需求确认</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 25%"></div>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-1">25%</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center">
+                                    <div class="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
+                                        <span class="text-sm font-medium text-purple-600">王</span>
+                                    </div>
+                                    <div class="ml-3">
+                                        <div class="text-sm font-medium text-gray-900">王五</div>
+                                        <div class="text-sm text-gray-500">产品经理</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-gray-900">2024-01-20</div>
+                                <div class="text-sm text-gray-500">预计 2024-05-15</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex space-x-2">
+                                    <button onclick="openProjectDetail()" class="text-blue-600 hover:text-blue-900 text-sm">查看详情</button>
+                                    <button onclick="openProjectReview()" class="text-green-600 hover:text-green-900 text-sm">审核</button>
+                                    <button onclick="openProjectEdit()" class="text-gray-600 hover:text-gray-900 text-sm">编辑</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900">客户画像数据服务</div>
+                                    <div class="text-sm text-gray-500">PRJ-2024-004</div>
+                                    <div class="text-xs text-gray-400">数据服务 · 中优先级</div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="status-badge status-acceptance">验收阶段</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 95%"></div>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-1">95%</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center">
+                                    <div class="h-8 w-8 rounded-full bg-orange-100 flex items-center justify-center">
+                                        <span class="text-sm font-medium text-orange-600">赵</span>
+                                    </div>
+                                    <div class="ml-3">
+                                        <div class="text-sm font-medium text-gray-900">赵六</div>
+                                        <div class="text-sm text-gray-500">数据科学家</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-gray-900">2023-12-01</div>
+                                <div class="text-sm text-gray-500">预计 2024-02-15</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex space-x-2">
+                                    <button onclick="openProjectDetail()" class="text-blue-600 hover:text-blue-900 text-sm">查看详情</button>
+                                    <button onclick="openProjectReview()" class="text-green-600 hover:text-green-900 text-sm">审核</button>
+                                    <button onclick="openProjectEdit()" class="text-gray-600 hover:text-gray-900 text-sm">编辑</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900">供应链优化数据API</div>
+                                    <div class="text-sm text-gray-500">PRJ-2024-005</div>
+                                    <div class="text-xs text-gray-400">数据API · 低优先级</div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="status-badge status-research">调研阶段</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 15%"></div>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-1">15%</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center">
+                                    <div class="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center">
+                                        <span class="text-sm font-medium text-red-600">孙</span>
+                                    </div>
+                                    <div class="ml-3">
+                                        <div class="text-sm font-medium text-gray-900">孙七</div>
+                                        <div class="text-sm text-gray-500">业务分析师</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-gray-900">2024-01-25</div>
+                                <div class="text-sm text-gray-500">预计 2024-04-30</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex space-x-2">
+                                    <button onclick="openProjectDetail()" class="text-blue-600 hover:text-blue-900 text-sm">查看详情</button>
+                                    <button onclick="openProjectReview()" class="text-green-600 hover:text-green-900 text-sm">审核</button>
+                                    <button onclick="openProjectEdit()" class="text-gray-600 hover:text-gray-900 text-sm">编辑</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+      <!-- 分页 -->
+      <div class="px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+        <div class="flex-1 flex justify-between sm:hidden">
+          <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+            上一页
+          </button>
+          <button class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+            下一页
+          </button>
+        </div>
+        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+          <div>
+            <p class="text-sm text-gray-700">
+              显示第 <span class="font-medium">1</span> 到 <span class="font-medium">10</span> 条，共 <span class="font-medium">156</span> 条记录
+            </p>
+          </div>
+          <div>
+            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+              <button class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <button class="bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                1
+              </button>
+              <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                2
+              </button>
+              <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                3
+              </button>
+              <button class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+    </div>
+
+    <!-- 项目审核模态框 -->
+    <div id="projectReviewModal" class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+      <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-medium text-gray-900">项目审核 - 用户行为分析数据API</h3>
+            <button onclick="closeProjectReviewModal()" class="text-gray-400 hover:text-gray-600">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+
+
+
+          <!-- 项目基本信息 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <h4 class="text-sm font-medium text-gray-900 mb-3">基本信息</h4>
+              <div class="space-y-2">
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">项目编号：</span>
+                  <span class="text-sm text-gray-900">PRJ-2024-001</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">项目名称：</span>
+                  <span class="text-sm text-gray-900">用户行为分析数据API</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">项目类型：</span>
+                  <span class="text-sm text-gray-900">数据资产</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">负责人：</span>
+                  <span class="text-sm text-gray-900">张三</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h4 class="text-sm font-medium text-gray-900 mb-3">资产信息</h4>
+              <div class="space-y-2">
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">资产名称：</span>
+                  <span class="text-sm text-gray-900">用户行为分析数据API</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">分级：</span>
+                  <span class="text-sm text-gray-900">P2级</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">分类：</span>
+                  <span class="text-sm text-gray-900">行为数据</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">数据来源：</span>
+                  <span class="text-sm text-gray-900">用户行为日志系统</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-500">更新频率：</span>
+                  <span class="text-sm text-gray-900">每日</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 审核内容 -->
+          <div class="mb-6">
+            <h4 class="text-sm font-medium text-gray-900 mb-3">审核内容</h4>
+            <div class="space-y-4">
+              <!-- 技术评审阶段 -->
+              <div id="techReviewContent" class="border border-gray-200 rounded-lg p-4">
+                <h5 class="text-sm font-medium text-gray-900 mb-2">技术方案评审</h5>
+                <p class="text-sm text-gray-600 mb-3">请审核项目的技术方案、架构设计、数据流程等技术内容</p>
+                <div class="space-y-3">
+                  <div class="flex items-center">
+                    <input type="checkbox" id="techFeasible" class="mr-2">
+                    <label for="techFeasible" class="text-sm text-gray-700">技术方案可行</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="archDesign" class="mr-2">
+                    <label for="archDesign" class="text-sm text-gray-700">架构设计合理</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="dataFlow" class="mr-2">
+                    <label for="dataFlow" class="text-sm text-gray-700">数据流程清晰</label>
+                  </div>
+                </div>
+                <div class="flex space-x-2 mt-4">
+                  <button onclick="openProjectEdit()" class="btn-secondary text-sm">
+                    <i class="fas fa-edit mr-2"></i>修改技术方案
+                  </button>
+                  <button onclick="openAttachmentModal()" class="btn-secondary text-sm">
+                    <i class="fas fa-paperclip mr-2"></i>上传补充文档
+                  </button>
+                </div>
+              </div>
+
+              <!-- 业务评审阶段 -->
+              <div id="businessReviewContent" class="border border-gray-200 rounded-lg p-4 hidden">
+                <h5 class="text-sm font-medium text-gray-900 mb-2">业务价值评审</h5>
+                <p class="text-sm text-gray-600 mb-3">请审核项目的业务价值、市场需求、投资回报等业务内容</p>
+                <div class="space-y-3">
+                  <div class="flex items-center">
+                    <input type="checkbox" id="businessValue" class="mr-2">
+                    <label for="businessValue" class="text-sm text-gray-700">业务价值明确</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="marketDemand" class="mr-2">
+                    <label for="marketDemand" class="text-sm text-gray-700">市场需求存在</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="roi" class="mr-2">
+                    <label for="roi" class="text-sm text-gray-700">投资回报合理</label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 安全评审阶段 -->
+              <div id="securityReviewContent" class="border border-gray-200 rounded-lg p-4 hidden">
+                <h5 class="text-sm font-medium text-gray-900 mb-2">安全合规评审</h5>
+                <p class="text-sm text-gray-600 mb-3">请审核项目的数据安全、隐私保护、合规要求等安全内容</p>
+                <div class="space-y-3">
+                  <div class="flex items-center">
+                    <input type="checkbox" id="dataSecurity" class="mr-2">
+                    <label for="dataSecurity" class="text-sm text-gray-700">数据安全措施完善</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="privacyProtection" class="mr-2">
+                    <label for="privacyProtection" class="text-sm text-gray-700">隐私保护合规</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input type="checkbox" id="regulatoryCompliance" class="mr-2">
+                    <label for="regulatoryCompliance" class="text-sm text-gray-700">监管要求满足</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 审核意见 -->
+          <div class="mb-6">
+            <h4 class="text-sm font-medium text-gray-900 mb-3">审核意见</h4>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">审核结果</label>
+                <select name="reviewResult" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="">请选择审核结果</option>
+                  <option value="approved">通过</option>
+                  <option value="rejected">拒绝</option>
+                  <option value="pending">需要修改</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">审核意见</label>
+                <textarea name="reviewComment" rows="4" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请详细描述您的审核意见..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- 操作按钮 -->
+          <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+            <button onclick="closeProjectReviewModal()" class="btn-secondary">
+              取消
+            </button>
+            <button onclick="submitReview()" class="btn-primary">
+              <i class="fas fa-check mr-2"></i>提交审核
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 项目编辑模态框 -->
+    <div id="projectEditModal" class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+      <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-medium text-gray-900">编辑项目 - 用户行为分析数据API</h3>
+            <button onclick="closeProjectEditModal()" class="text-gray-400 hover:text-gray-600">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+
+          <!-- 编辑表单 -->
+          <div class="space-y-6">
+            <!-- 项目基本信息 -->
+            <div>
+              <h4 class="text-sm font-medium text-gray-900 mb-4">项目基本信息</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">项目名称</label>
+                  <input type="text" name="editProjectName" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" value="用户行为分析数据API">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">项目类型</label>
+                  <input type="text" value="数据资产" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50" readonly>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">负责人</label>
+                  <select name="editOwner" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="zhang-san" selected>张三</option>
+                    <option value="li-si">李四</option>
+                    <option value="wang-wu">王五</option>
+                    <option value="zhao-liu">赵六</option>
+                  </select>
+                </div>
+                <div class="md:col-span-2">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">项目描述</label>
+                  <textarea name="editProjectDescription" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">开发用户行为分析数据API，提供用户在产品中的行为数据，用于用户画像分析和个性化推荐。</textarea>
+                </div>
+              </div>
+            </div>
+
+
+
+            <!-- 资产信息 -->
+            <div>
+              <h4 class="text-sm font-medium text-gray-900 mb-4">资产信息</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">资产名称</label>
+                  <input type="text" name="editAssetName" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" value="用户行为分析数据API">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">分级</label>
+                  <select name="editAssetLevel" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="p1">P1级</option>
+                    <option value="p2" selected>P2级</option>
+                    <option value="p3">P3级</option>
+                    <option value="p4">P4级</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">分类</label>
+                  <select name="editAssetCategory" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="behavior-data" selected>行为数据</option>
+                    <option value="user-data">用户数据</option>
+                    <option value="business-data">业务数据</option>
+                    <option value="operational-data">运营数据</option>
+                    <option value="financial-data">财务数据</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">数据来源</label>
+                  <input type="text" name="editDataSource" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" value="用户行为日志系统">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">更新频率</label>
+                  <select name="editUpdateFrequency" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="real-time">实时</option>
+                    <option value="hourly">每小时</option>
+                    <option value="daily" selected>每日</option>
+                    <option value="weekly">每周</option>
+                    <option value="monthly">每月</option>
+                  </select>
+                </div>
+                <div class="md:col-span-2">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">描述</label>
+                  <textarea name="editAssetDescription" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">用户行为分析数据API提供用户在产品中的行为数据，包括点击、浏览、搜索等行为信息，用于用户画像分析和个性化推荐。</textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 操作按钮 -->
+          <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200 mt-6">
+            <button onclick="closeProjectEditModal()" class="btn-secondary">
+              取消
+            </button>
+            <button onclick="saveProjectEdit()" class="btn-primary">
+              <i class="fas fa-save mr-2"></i>保存修改
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 项目详情模态框 -->
+    <div id="projectModal" class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+      <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-medium text-gray-900">项目详情 - 用户行为分析数据API</h3>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <!-- 项目基本信息 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-900 mb-3">基本信息</h4>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">项目编号：</span>
+                                <span class="text-sm text-gray-900">PRJ-2024-001</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">项目名称：</span>
+                                <span class="text-sm text-gray-900">用户行为分析数据API</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">项目类型：</span>
+                                <span class="text-sm text-gray-900">数据API</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">优先级：</span>
+                                <span class="text-sm text-gray-900">高</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-900 mb-3">时间信息</h4>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">开始时间：</span>
+                                <span class="text-sm text-gray-900">2024-01-15</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">预计完成：</span>
+                                <span class="text-sm text-gray-900">2024-03-20</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">当前阶段：</span>
+                                <span class="status-badge status-development">开发阶段</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-500">整体进度：</span>
+                                <span class="text-sm text-gray-900">65%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 开发阶段时间线 -->
+                <div class="mb-6">
+                    <h4 class="text-sm font-medium text-gray-900 mb-3">开发阶段时间线</h4>
+                    <div class="space-y-4">
+                        <div class="timeline-item">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h5 class="text-sm font-medium text-gray-900">调研阶段</h5>
+                                        <p class="text-sm text-gray-600 mt-1">市场调研、需求分析、技术可行性评估</p>
+                                    </div>
+                                    <span class="status-badge status-completed">已完成</span>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-2">2024-01-15 - 2024-01-25</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h5 class="text-sm font-medium text-gray-900">立项阶段</h5>
+                                        <p class="text-sm text-gray-600 mt-1">项目立项、资源分配、团队组建</p>
+                                    </div>
+                                    <span class="status-badge status-completed">已完成</span>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-2">2024-01-26 - 2024-02-05</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h5 class="text-sm font-medium text-gray-900">决策阶段</h5>
+                                        <p class="text-sm text-gray-600 mt-1">技术方案评审、架构设计决策</p>
+                                    </div>
+                                    <span class="status-badge status-completed">已完成</span>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-2">2024-02-06 - 2024-02-15</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h5 class="text-sm font-medium text-gray-900">需求确认</h5>
+                                        <p class="text-sm text-gray-600 mt-1">详细需求文档、接口设计规范</p>
+                                    </div>
+                                    <span class="status-badge status-completed">已完成</span>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-2">2024-02-16 - 2024-02-25</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h5 class="text-sm font-medium text-gray-900">开发阶段</h5>
+                                        <p class="text-sm text-gray-600 mt-1">核心功能开发、接口实现、单元测试</p>
+                                    </div>
+                                    <span class="status-badge status-development">进行中</span>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-2">2024-02-26 - 2024-03-10</div>
+                                <div class="mt-2">
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-blue-600 h-2 rounded-full" style="width: 65%"></div>
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-1">65% 完成</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="bg-gray-50 p-4 rounded-lg opacity-50">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h5 class="text-sm font-medium text-gray-900">测试阶段</h5>
+                                        <p class="text-sm text-gray-600 mt-1">集成测试、性能测试、安全测试</p>
+                                    </div>
+                                    <span class="status-badge status-paused">待开始</span>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-2">预计：2024-03-11 - 2024-03-15</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="bg-gray-50 p-4 rounded-lg opacity-50">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h5 class="text-sm font-medium text-gray-900">验收阶段</h5>
+                                        <p class="text-sm text-gray-600 mt-1">用户验收测试、文档完善、部署准备</p>
+                                    </div>
+                                    <span class="status-badge status-paused">待开始</span>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-2">预计：2024-03-16 - 2024-03-18</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="bg-gray-50 p-4 rounded-lg opacity-50">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h5 class="text-sm font-medium text-gray-900">上线阶段</h5>
+                                        <p class="text-sm text-gray-600 mt-1">生产环境部署、监控配置、用户培训</p>
+                                    </div>
+                                    <span class="status-badge status-paused">待开始</span>
+                                </div>
+                                <div class="text-xs text-gray-500 mt-2">预计：2024-03-19 - 2024-03-20</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 审核记录 -->
+                <div class="mb-6">
+                    <h4 class="text-sm font-medium text-gray-900 mb-3">审核记录</h4>
+                    <div class="space-y-3">
+                        <div class="bg-green-50 p-3 rounded-lg border-l-4 border-green-500">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h5 class="text-sm font-medium text-gray-900">需求确认审核</h5>
+                                    <p class="text-sm text-gray-600 mt-1">需求文档完整，技术方案可行，同意进入开发阶段</p>
+                                </div>
+                                <span class="text-xs text-gray-500">2024-02-25 14:30</span>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-2">审核人：李四（技术总监）</div>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-500">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h5 class="text-sm font-medium text-gray-900">架构设计审核</h5>
+                                    <p class="text-sm text-gray-600 mt-1">架构设计合理，符合技术规范，建议优化数据缓存策略</p>
+                                </div>
+                                <span class="text-xs text-gray-500">2024-02-15 10:15</span>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-2">审核人：王五（架构师）</div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- 操作按钮 -->
+                <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                    <button onclick="closeModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                        关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新建开发项目模态框 -->
+    <div id="newProjectModal" class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+      <div class="relative top-10 mx-auto p-5 border w-11/12 max-w-6xl shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-medium text-gray-900">新建开发项目</h3>
+            <button onclick="closeNewProjectModal()" class="text-gray-400 hover:text-gray-600">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+
+          <!-- 步骤指示器 -->
+          <div class="mb-8">
+            <div class="flex items-center justify-center">
+              <div class="flex items-center">
+                <div class="step-item active" data-step="1">
+                  <div class="step-circle">1</div>
+                  <div class="step-label">基本信息</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-step="2">
+                  <div class="step-circle">2</div>
+                  <div class="step-label">资产信息</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-step="3">
+                  <div class="step-circle">3</div>
+                  <div class="step-label">附件上传</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-step="4">
+                  <div class="step-circle">4</div>
+                  <div class="step-label">审批流程</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 步骤内容 -->
+          <div class="step-content">
+            <!-- 步骤1：基本信息 -->
+            <div id="step1" class="step-panel active">
+              <h4 class="text-lg font-medium text-gray-900 mb-4">项目基本信息</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">项目名称 *</label>
+                  <input type="text" name="projectName" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入项目名称">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">项目类型 *</label>
+                  <select name="projectType" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">请选择项目类型</option>
+                    <option value="data-asset" selected>数据资产</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">负责人 *</label>
+                  <select name="manager" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">请选择负责人</option>
+                    <option value="zhang-san">张三</option>
+                    <option value="li-si">李四</option>
+                    <option value="wang-wu">王五</option>
+                    <option value="zhao-liu">赵六</option>
+                  </select>
+                </div>
+                <div class="md:col-span-2">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">项目描述</label>
+                  <textarea name="description" rows="4" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请描述项目的主要目标和功能"></textarea>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- 步骤2：资产信息 -->
+            <div id="step2" class="step-panel hidden">
+              <h4 class="text-lg font-medium text-gray-900 mb-4">资产项目信息</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- 左列 -->
+                <div class="space-y-6">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">资产名称 *</label>
+                    <input type="text" name="assetName" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入资产名称" value="用户行为日志">
+                  </div>
+                  
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">属性</label>
+                    <div class="flex flex-wrap gap-2">
+                      <span class="px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded-full border border-purple-200">
+                        结构化数据
+                        <button type="button" class="ml-1 text-purple-600 hover:text-purple-800" onclick="this.parentElement.remove()">×</button>
+                      </span>
+                      <button type="button" onclick="addAttribute()" class="px-2 py-1 text-gray-500 hover:text-gray-700 text-sm">
+                        <i class="fas fa-plus"></i>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">分级</label>
+                    <select name="assetLevel" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      <option value="">请选择分级</option>
+                      <option value="P1">P1级</option>
+                      <option value="P2" selected>P2级</option>
+                      <option value="P3">P3级</option>
+                      <option value="P4">P4级</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">分类</label>
+                    <select name="assetCategory" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      <option value="">请选择分类</option>
+                      <option value="behavior-data" selected>行为数据</option>
+                      <option value="user-data">用户数据</option>
+                      <option value="business-data">业务数据</option>
+                      <option value="operational-data">运营数据</option>
+                      <option value="financial-data">财务数据</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">描述</label>
+                    <textarea name="assetDescription" rows="4" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请描述资产的内容、用途和价值">记录用户在平台上的各种行为数据，包括页面访问、点击事件、停留时间、搜索行为等，用于用户行为分析和产品优化。</textarea>
+                  </div>
+                </div>
+                
+                <!-- 右列 -->
+                <div class="space-y-6">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">标签</label>
+                    <div class="flex flex-wrap gap-2">
+                      <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full border border-blue-200">
+                        用户分析
+                        <button type="button" class="ml-1 text-blue-600 hover:text-blue-800" onclick="this.parentElement.remove()">×</button>
+                      </span>
+                      <span class="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full border border-green-200">
+                        产品优化
+                        <button type="button" class="ml-1 text-green-600 hover:text-green-800" onclick="this.parentElement.remove()">×</button>
+                      </span>
+                      <button type="button" onclick="addTag()" class="px-2 py-1 text-gray-500 hover:text-gray-700 text-sm">
+                        <i class="fas fa-plus"></i>
+                      </button>
+                    </div>
+                  </div>
+                  
+
+                  
+
+                  
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">数据来源</label>
+                    <input type="text" name="dataSource" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入数据来源">
+                  </div>
+                  
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">更新频率</label>
+                    <select name="updateFrequency" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      <option value="">请选择更新频率</option>
+                      <option value="real-time">实时</option>
+                      <option value="hourly">每小时</option>
+                      <option value="daily" selected>每日</option>
+                      <option value="weekly">每周</option>
+                      <option value="monthly">每月</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <!-- 数据资源挂载 -->
+                <div class="md:col-span-2">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">数据资源挂载</label>
+                  <div class="border border-gray-300 rounded-lg p-4 bg-gray-50">
+                    <div class="flex items-center justify-between mb-3">
+                      <span class="text-sm font-medium text-gray-700">已挂载资源</span>
+                      <button type="button" onclick="openResourceMountModal()" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                        <i class="fas fa-plus mr-1"></i>添加资源
+                      </button>
+                    </div>
+                    <div id="mountedResources" class="space-y-2">
+                      <!-- 已挂载的资源将在这里显示 -->
+                      <div class="text-sm text-gray-500">暂无挂载的数据资源</div>
+                    </div>
+                  </div>
+                </div>
+                
+
+              </div>
+            </div>
+
+            <!-- 步骤3：附件上传 -->
+            <div id="step3" class="step-panel hidden">
+              <h4 class="text-lg font-medium text-gray-900 mb-4">附件上传</h4>
+              <div class="space-y-6">
+                <!-- 需求文档 -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                  <h5 class="text-sm font-medium text-gray-900 mb-3">需求文档</h5>
+                  <div class="upload-area" data-type="requirement">
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                      <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                      <p class="text-sm text-gray-600">拖拽文件到此处或点击上传</p>
+                      <p class="text-xs text-gray-500 mt-1">支持 PDF、Word、Excel 格式，最大 10MB</p>
+                      <input type="file" class="hidden" accept=".pdf,.doc,.docx,.xls,.xlsx" multiple>
+                    </div>
+                    <div class="uploaded-files mt-3 space-y-2"></div>
+                  </div>
+                </div>
+
+                <!-- 技术文档 -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                  <h5 class="text-sm font-medium text-gray-900 mb-3">技术文档</h5>
+                  <div class="upload-area" data-type="technical">
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                      <i class="fas fa-file-code text-3xl text-gray-400 mb-2"></i>
+                      <p class="text-sm text-gray-600">拖拽文件到此处或点击上传</p>
+                      <p class="text-xs text-gray-500 mt-1">支持 PDF、Markdown、Visio 格式，最大 10MB</p>
+                      <input type="file" class="hidden" accept=".pdf,.md,.vsd,.vsdx" multiple>
+                    </div>
+                    <div class="uploaded-files mt-3 space-y-2"></div>
+                  </div>
+                </div>
+
+                <!-- 数据样本 -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                  <h5 class="text-sm font-medium text-gray-900 mb-3">数据样本</h5>
+                  <div class="upload-area" data-type="sample">
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                      <i class="fas fa-database text-3xl text-gray-400 mb-2"></i>
+                      <p class="text-sm text-gray-600">拖拽文件到此处或点击上传</p>
+                      <p class="text-xs text-gray-500 mt-1">支持 CSV、JSON、Excel 格式，最大 50MB</p>
+                      <input type="file" class="hidden" accept=".csv,.json,.xls,.xlsx" multiple>
+                    </div>
+                    <div class="uploaded-files mt-3 space-y-2"></div>
+                  </div>
+                </div>
+
+                <!-- 其他附件 -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                  <h5 class="text-sm font-medium text-gray-900 mb-3">其他附件</h5>
+                  <div class="upload-area" data-type="other">
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                      <i class="fas fa-paperclip text-3xl text-gray-400 mb-2"></i>
+                      <p class="text-sm text-gray-600">拖拽文件到此处或点击上传</p>
+                      <p class="text-xs text-gray-500 mt-1">支持所有常见格式，最大 20MB</p>
+                      <input type="file" class="hidden" multiple>
+                    </div>
+                    <div class="uploaded-files mt-3 space-y-2"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 步骤4：审批流程 -->
+            <div id="step4" class="step-panel hidden">
+              <h4 class="text-lg font-medium text-gray-900 mb-4">审批流程配置</h4>
+              <div class="space-y-6">
+                <!-- 审批流程设置 -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                  <h5 class="text-sm font-medium text-gray-900 mb-3">审批流程</h5>
+                  <div class="space-y-4">
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div class="flex items-center">
+                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                          <span class="text-sm font-medium text-blue-600">1</span>
+                        </div>
+                        <div>
+                          <div class="text-sm font-medium text-gray-900">技术评审</div>
+                          <div class="text-xs text-gray-500">技术总监审核技术方案</div>
+                        </div>
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <select class="text-sm border border-gray-300 rounded px-2 py-1">
+                          <option value="li-si">李四（技术总监）</option>
+                          <option value="wang-wu">王五（架构师）</option>
+                        </select>
+                        <button class="text-red-500 hover:text-red-700">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div class="flex items-center">
+                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                          <span class="text-sm font-medium text-green-600">2</span>
+                        </div>
+                        <div>
+                          <div class="text-sm font-medium text-gray-900">业务评审</div>
+                          <div class="text-xs text-gray-500">业务负责人审核业务价值</div>
+                        </div>
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <select class="text-sm border border-gray-300 rounded px-2 py-1">
+                          <option value="zhao-liu">赵六（业务总监）</option>
+                          <option value="zhang-san">张三（产品经理）</option>
+                        </select>
+                        <button class="text-red-500 hover:text-red-700">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div class="flex items-center">
+                        <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                          <span class="text-sm font-medium text-purple-600">3</span>
+                        </div>
+                        <div>
+                          <div class="text-sm font-medium text-gray-900">最终审批</div>
+                          <div class="text-xs text-gray-500">部门负责人最终审批</div>
+                        </div>
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <select class="text-sm border border-gray-300 rounded px-2 py-1">
+                          <option value="manager">部门经理</option>
+                          <option value="director">总监</option>
+                        </select>
+                        <button class="text-red-500 hover:text-red-700">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <button class="mt-3 text-blue-600 hover:text-blue-800 text-sm">
+                    <i class="fas fa-plus mr-1"></i>添加审批步骤
+                  </button>
+                </div>
+
+                <!-- 审批权限设置 -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                  <h5 class="text-sm font-medium text-gray-900 mb-3">审批权限设置</h5>
+                  <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm text-gray-700">允许审批人修改资产信息</span>
+                      <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer" checked>
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm text-gray-700">允许审批人上传附件</span>
+                      <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer" checked>
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm text-gray-700">允许审批人添加审批意见</span>
+                      <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer" checked>
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 步骤导航按钮 -->
+          <div class="flex justify-between pt-6 border-t border-gray-200 mt-8">
+            <button id="prevBtn" onclick="prevStep()" class="btn-secondary hidden">
+              <i class="fas fa-arrow-left mr-2"></i>上一步
+            </button>
+            <div class="flex space-x-3">
+              <button onclick="closeNewProjectModal()" class="btn-secondary">
+                取消
+              </button>
+              <button id="nextBtn" onclick="nextStep()" class="btn-primary">
+                下一步<i class="fas fa-arrow-right ml-2"></i>
+              </button>
+              <button id="submitBtn" onclick="submitProject()" class="btn-primary hidden">
+                <i class="fas fa-check mr-2"></i>提交项目
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 资产信息修改模态框 -->
+    <div id="assetEditModal" class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+      <div class="relative top-10 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-medium text-gray-900">修改资产信息</h3>
+            <button onclick="closeAssetEditModal()" class="text-gray-400 hover:text-gray-600">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">资产名称</label>
+              <input type="text" name="editAssetName" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" value="用户行为分析数据API">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">资产分类</label>
+              <select name="editAssetCategory" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="user-data" selected>用户数据</option>
+                <option value="business-data">业务数据</option>
+                <option value="operational-data">运营数据</option>
+                <option value="financial-data">财务数据</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">数据来源</label>
+              <input type="text" name="editDataSource" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" value="用户行为日志系统">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">更新频率</label>
+              <select name="editUpdateFrequency" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="real-time" selected>实时</option>
+                <option value="hourly">每小时</option>
+                <option value="daily">每日</option>
+                <option value="weekly">每周</option>
+                <option value="monthly">每月</option>
+              </select>
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-2">数据资源挂载</label>
+              <div class="border border-gray-300 rounded-lg p-4 bg-gray-50">
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-sm font-medium text-gray-700">已挂载资源</span>
+                  <button type="button" onclick="openResourceMountModal()" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                    <i class="fas fa-plus mr-1"></i>添加资源
+                  </button>
+                </div>
+                <div id="editMountedResources" class="space-y-2">
+                  <!-- 已挂载的资源将在这里显示 -->
+                  <div class="flex items-center justify-between p-2 bg-white rounded border">
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">用户行为日志表</div>
+                      <div class="text-xs text-gray-500">数据源：用户行为日志系统</div>
+                    </div>
+                    <button type="button" onclick="removeMountedResource(this)" class="text-red-600 hover:text-red-800">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-2">资产描述</label>
+              <textarea name="editAssetDescription" rows="4" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">用户行为分析数据API提供用户在产品中的行为数据，包括点击、浏览、搜索等行为信息，用于用户画像分析和个性化推荐。</textarea>
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-2">技术规格</label>
+              <textarea name="editTechnicalSpecs" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">RESTful API，支持JSON格式，提供用户行为数据的实时查询和分析功能。包含用户ID、行为类型、时间戳、页面URL等字段。</textarea>
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-2">修改说明</label>
+              <textarea name="editReason" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请说明本次修改的原因和内容"></textarea>
+            </div>
+          </div>
+
+          <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200 mt-6">
+            <button onclick="closeAssetEditModal()" class="btn-secondary">
+              取消
+            </button>
+            <button onclick="saveAssetEdit()" class="btn-primary">
+              <i class="fas fa-save mr-2"></i>保存修改
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 补充附件上传模态框 -->
+    <div id="attachmentModal" class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+      <div class="relative top-10 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-medium text-gray-900">上传补充附件</h3>
+            <button onclick="closeAttachmentModal()" class="text-gray-400 hover:text-gray-600">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+
+          <div class="space-y-6">
+            <!-- 技术评审补充文档 -->
+            <div class="border border-gray-200 rounded-lg p-4">
+              <h5 class="text-sm font-medium text-gray-900 mb-3">技术评审补充文档</h5>
+              <div class="upload-area" data-type="review">
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                  <i class="fas fa-file-alt text-3xl text-gray-400 mb-2"></i>
+                  <p class="text-sm text-gray-600">拖拽文件到此处或点击上传</p>
+                  <p class="text-xs text-gray-500 mt-1">支持 PDF、Word、Excel 格式，最大 10MB</p>
+                  <input type="file" class="hidden" accept=".pdf,.doc,.docx,.xls,.xlsx" multiple>
+                </div>
+                <div class="uploaded-files mt-3 space-y-2"></div>
+              </div>
+            </div>
+
+            <!-- 测试报告 -->
+            <div class="border border-gray-200 rounded-lg p-4">
+              <h5 class="text-sm font-medium text-gray-900 mb-3">测试报告</h5>
+              <div class="upload-area" data-type="test">
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                  <i class="fas fa-clipboard-check text-3xl text-gray-400 mb-2"></i>
+                  <p class="text-sm text-gray-600">拖拽文件到此处或点击上传</p>
+                  <p class="text-xs text-gray-500 mt-1">支持 PDF、Excel 格式，最大 10MB</p>
+                  <input type="file" class="hidden" accept=".pdf,.xls,.xlsx" multiple>
+                </div>
+                <div class="uploaded-files mt-3 space-y-2"></div>
+              </div>
+            </div>
+
+            <!-- 其他补充材料 -->
+            <div class="border border-gray-200 rounded-lg p-4">
+              <h5 class="text-sm font-medium text-gray-900 mb-3">其他补充材料</h5>
+              <div class="upload-area" data-type="other">
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                  <i class="fas fa-paperclip text-3xl text-gray-400 mb-2"></i>
+                  <p class="text-sm text-gray-600">拖拽文件到此处或点击上传</p>
+                  <p class="text-xs text-gray-500 mt-1">支持所有常见格式，最大 20MB</p>
+                  <input type="file" class="hidden" multiple>
+                </div>
+                <div class="uploaded-files mt-3 space-y-2"></div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">上传说明</label>
+              <textarea name="uploadReason" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请说明上传这些附件的原因和用途"></textarea>
+            </div>
+          </div>
+
+          <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200 mt-6">
+            <button onclick="closeAttachmentModal()" class="btn-secondary">
+              取消
+            </button>
+            <button onclick="saveAttachments()" class="btn-primary">
+              <i class="fas fa-upload mr-2"></i>上传附件
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 审批意见模态框 -->
+    <div id="commentModal" class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+      <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-medium text-gray-900">添加审批意见</h3>
+            <button onclick="closeCommentModal()" class="text-gray-400 hover:text-gray-600">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">审批意见类型</label>
+              <select name="commentType" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="suggestion">建议</option>
+                <option value="requirement">要求</option>
+                <option value="question">疑问</option>
+                <option value="approval">同意</option>
+                <option value="rejection">拒绝</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">审批意见内容</label>
+              <textarea name="commentContent" rows="6" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请详细描述您的审批意见..."></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">是否需要修改</label>
+              <div class="space-y-2">
+                <label class="flex items-center">
+                  <input type="radio" name="needModification" value="yes" class="mr-2">
+                  <span class="text-sm text-gray-700">需要修改后重新提交</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="radio" name="needModification" value="no" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">无需修改，可以继续</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200 mt-6">
+            <button onclick="closeCommentModal()" class="btn-secondary">
+              取消
+            </button>
+            <button onclick="saveComment()" class="btn-primary">
+              <i class="fas fa-comment mr-2"></i>提交意见
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // 侧边栏切换功能
+      function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.querySelector('main');
+        const toggleBtn = document.getElementById('sidebar-toggle');
+        const toggleIcon = toggleBtn.querySelector('i');
+        
+        sidebar.classList.toggle('hidden');
+        mainContent.classList.toggle('ml-60');
+        
+        if (sidebar.classList.contains('hidden')) {
+          // 侧边栏收起状态
+          toggleBtn.style.left = '0.5rem';
+          toggleIcon.className = 'fas fa-bars';
+          mainContent.style.marginLeft = '0';
+          mainContent.style.maxWidth = '100%';
+        } else {
+          // 侧边栏展开状态
+          toggleBtn.style.left = '16rem';
+          toggleIcon.className = 'fas fa-chevron-left';
+          mainContent.style.marginLeft = '240px';
+          mainContent.style.maxWidth = 'calc(100% - 240px)';
+        }
+      }
+
+      // 子菜单切换功能
+      function toggleSubMenu(menuId) {
+        const submenu = document.getElementById(menuId + '-submenu');
+        const arrow = document.getElementById(menuId + '-arrow');
+        const isOpen = !submenu.classList.contains('hidden');
+        
+        if (isOpen) {
+          submenu.classList.add('hidden');
+          arrow.style.transform = 'rotate(0deg)';
+        } else {
+          submenu.classList.remove('hidden');
+          arrow.style.transform = 'rotate(180deg)';
+        }
+      }
+
+      // 切换状态标签页
+      function switchTab(element, status) {
+        // 移除所有活动状态
+        document.querySelectorAll('.status-tab').forEach(tab => {
+          tab.classList.remove('active');
+        });
+        // 添加活动状态到当前标签
+        element.classList.add('active');
+        
+        // 这里可以添加筛选逻辑
+        console.log('切换到状态:', status);
+      }
+
+      // 打开项目详情模态框
+      function openProjectDetail() {
+        document.getElementById('projectModal').classList.remove('hidden');
+      }
+
+      // 关闭项目详情模态框
+      function closeModal() {
+        document.getElementById('projectModal').classList.add('hidden');
+      }
+
+      // 打开项目审核模态框
+      function openProjectReview() {
+        document.getElementById('projectReviewModal').classList.remove('hidden');
+        // 默认显示技术评审内容
+        showReviewContentByStage('tech');
+      }
+
+      // 根据审核阶段显示对应的审核内容
+      function showReviewContentByStage(stage) {
+        // 隐藏所有审核内容
+        document.getElementById('techReviewContent').classList.add('hidden');
+        document.getElementById('businessReviewContent').classList.add('hidden');
+        document.getElementById('securityReviewContent').classList.add('hidden');
+        
+        // 重置所有按钮样式
+        const buttons = document.querySelectorAll('[onclick*="showReviewContentByStage"]');
+        buttons.forEach(btn => {
+          btn.className = 'px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded hover:bg-gray-200';
+        });
+        
+        // 显示对应阶段的审核内容
+        switch(stage) {
+          case 'tech':
+            document.getElementById('techReviewContent').classList.remove('hidden');
+            buttons[0].className = 'px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200';
+            break;
+          case 'business':
+            document.getElementById('businessReviewContent').classList.remove('hidden');
+            buttons[1].className = 'px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200';
+            break;
+          case 'security':
+            document.getElementById('securityReviewContent').classList.remove('hidden');
+            buttons[2].className = 'px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200';
+            break;
+        }
+      }
+
+      // 关闭项目审核模态框
+      function closeProjectReviewModal() {
+        document.getElementById('projectReviewModal').classList.add('hidden');
+      }
+
+      // 打开项目编辑模态框
+      function openProjectEdit() {
+        document.getElementById('projectEditModal').classList.remove('hidden');
+      }
+
+      // 关闭项目编辑模态框
+      function closeProjectEditModal() {
+        document.getElementById('projectEditModal').classList.add('hidden');
+      }
+
+      // 提交审核
+      function submitReview() {
+        const reviewResult = document.querySelector('select[name="reviewResult"]').value;
+        const reviewComment = document.querySelector('textarea[name="reviewComment"]').value;
+
+        if (!reviewResult) {
+          alert('请选择审核结果');
+          return;
+        }
+
+        if (!reviewComment.trim()) {
+          alert('请填写审核意见');
+          return;
+        }
+
+        // 收集审核数据
+        const reviewData = {
+          reviewResult: reviewResult,
+          reviewComment: reviewComment,
+          reviewTime: new Date().toISOString(),
+          reviewer: '李四（技术总监）'
+        };
+
+        console.log('提交审核:', reviewData);
+        alert('审核提交成功！');
+        closeProjectReviewModal();
+      }
+
+      // 保存项目编辑
+      function saveProjectEdit() {
+        // 收集编辑后的项目信息
+        const projectData = {
+          projectName: document.querySelector('input[name="editProjectName"]').value,
+          projectType: 'data-api', // 固定为数据API
+          priority: document.querySelector('select[name="editPriority"]').value,
+          owner: document.querySelector('select[name="editOwner"]').value,
+          projectDescription: document.querySelector('textarea[name="editProjectDescription"]').value,
+          startDate: document.querySelector('input[name="editStartDate"]').value,
+          endDate: document.querySelector('input[name="editEndDate"]').value,
+          assetName: document.querySelector('input[name="editAssetName"]').value,
+          assetCategory: document.querySelector('select[name="editAssetCategory"]').value,
+          dataSource: document.querySelector('input[name="editDataSource"]').value,
+          dataFormat: document.querySelector('select[name="editDataFormat"]').value,
+          assetDescription: document.querySelector('textarea[name="editAssetDescription"]').value,
+          editTime: new Date().toISOString(),
+          editor: '张三（数据开发工程师）'
+        };
+
+        console.log('保存项目编辑:', projectData);
+        alert('项目信息修改已保存！');
+        closeProjectEditModal();
+      }
+
+      // 新建项目模态框相关变量
+      let currentStep = 1;
+      const totalSteps = 4;
+
+      // 打开新建项目模态框
+      function openNewProjectModal() {
+        document.getElementById('newProjectModal').classList.remove('hidden');
+        resetSteps();
+        initializeFileUpload();
+      }
+
+      // 关闭新建项目模态框
+      function closeNewProjectModal() {
+        document.getElementById('newProjectModal').classList.add('hidden');
+        resetSteps();
+      }
+
+      // 重置步骤
+      function resetSteps() {
+        currentStep = 1;
+        updateStepIndicator();
+        updateNavigationButtons();
+      }
+
+      // 更新步骤指示器
+      function updateStepIndicator() {
+        const stepItems = document.querySelectorAll('.step-item');
+        const stepLines = document.querySelectorAll('.step-line');
+        
+        stepItems.forEach((item, index) => {
+          const stepNumber = index + 1;
+          item.classList.remove('active', 'completed');
+          
+          if (stepNumber < currentStep) {
+            item.classList.add('completed');
+          } else if (stepNumber === currentStep) {
+            item.classList.add('active');
+          }
+        });
+
+        stepLines.forEach((line, index) => {
+          const stepNumber = index + 1;
+          line.classList.remove('completed');
+          
+          if (stepNumber < currentStep) {
+            line.classList.add('completed');
+          }
+        });
+      }
+
+      // 更新导航按钮
+      function updateNavigationButtons() {
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // 显示/隐藏上一步按钮
+        if (currentStep > 1) {
+          prevBtn.classList.remove('hidden');
+        } else {
+          prevBtn.classList.add('hidden');
+        }
+
+        // 显示/隐藏下一步和提交按钮
+        if (currentStep < totalSteps) {
+          nextBtn.classList.remove('hidden');
+          submitBtn.classList.add('hidden');
+        } else {
+          nextBtn.classList.add('hidden');
+          submitBtn.classList.remove('hidden');
+        }
+      }
+
+      // 下一步
+      function nextStep() {
+        if (validateCurrentStep()) {
+          if (currentStep < totalSteps) {
+            currentStep++;
+            showStep(currentStep);
+            updateStepIndicator();
+            updateNavigationButtons();
+          }
+        }
+      }
+
+      // 上一步
+      function prevStep() {
+        if (currentStep > 1) {
+          currentStep--;
+          showStep(currentStep);
+          updateStepIndicator();
+          updateNavigationButtons();
+        }
+      }
+
+      // 显示指定步骤
+      function showStep(stepNumber) {
+        // 隐藏所有步骤面板
+        document.querySelectorAll('.step-panel').forEach(panel => {
+          panel.classList.remove('active');
+        });
+
+        // 显示当前步骤面板
+        const currentPanel = document.getElementById(`step${stepNumber}`);
+        if (currentPanel) {
+          currentPanel.classList.add('active');
+        }
+      }
+
+      // 验证当前步骤
+      function validateCurrentStep() {
+        const currentPanel = document.getElementById(`step${currentStep}`);
+        const requiredFields = currentPanel.querySelectorAll('input[required], select[required]');
+        
+        let isValid = true;
+        requiredFields.forEach(field => {
+          if (!field.value.trim()) {
+            field.classList.add('border-red-500');
+            isValid = false;
+          } else {
+            field.classList.remove('border-red-500');
+          }
+        });
+
+        if (!isValid) {
+          alert('请填写所有必填字段');
+        }
+
+        return isValid;
+      }
+
+      // 提交项目
+      function submitProject() {
+        if (validateCurrentStep()) {
+          // 收集所有表单数据
+          const formData = collectFormData();
+          
+          // 这里可以发送数据到服务器
+          console.log('提交项目数据:', formData);
+          
+          // 显示成功消息
+          alert('项目创建成功！');
+          closeNewProjectModal();
+        }
+      }
+
+      // 收集表单数据
+      function collectFormData() {
+        const data = {
+          basicInfo: {},
+          assetInfo: {},
+          attachments: {},
+          approvalProcess: {}
+        };
+
+        // 收集基本信息
+        const basicFields = document.querySelectorAll('#step1 input, #step1 select, #step1 textarea');
+        basicFields.forEach(field => {
+          if (field.name || field.id) {
+            const key = field.name || field.id;
+            data.basicInfo[key] = field.value;
+          }
+        });
+
+        // 收集资产信息
+        const assetFields = document.querySelectorAll('#step2 input, #step2 select, #step2 textarea');
+        assetFields.forEach(field => {
+          if (field.name || field.id) {
+            const key = field.name || field.id;
+            data.assetInfo[key] = field.value;
+          }
+        });
+
+        // 收集附件信息
+        const uploadAreas = document.querySelectorAll('.upload-area');
+        uploadAreas.forEach(area => {
+          const type = area.dataset.type;
+          const files = area.querySelectorAll('.uploaded-file');
+          data.attachments[type] = Array.from(files).map(file => ({
+            name: file.dataset.name,
+            size: file.dataset.size,
+            type: file.dataset.type
+          }));
+        });
+
+        return data;
+      }
+
+      // 初始化文件上传功能
+      function initializeFileUpload() {
+        const uploadAreas = document.querySelectorAll('.upload-area');
+        
+        uploadAreas.forEach(area => {
+          const dropZone = area.querySelector('.border-dashed');
+          const fileInput = area.querySelector('input[type="file"]');
+          const uploadedFiles = area.querySelector('.uploaded-files');
+
+          // 点击上传
+          dropZone.addEventListener('click', () => {
+            fileInput.click();
+          });
+
+          // 文件选择
+          fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files, uploadedFiles, area.dataset.type);
+          });
+
+          // 拖拽上传
+          dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            area.classList.add('dragover');
+          });
+
+          dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            area.classList.remove('dragover');
+          });
+
+          dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            area.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files, uploadedFiles, area.dataset.type);
+          });
+        });
+      }
+
+      // 处理文件上传
+      function handleFiles(files, container, type) {
+        Array.from(files).forEach(file => {
+          // 检查文件大小
+          const maxSize = getMaxFileSize(type);
+          if (file.size > maxSize) {
+            alert(`文件 ${file.name} 超过最大大小限制`);
+            return;
+          }
+
+          // 创建文件项
+          const fileItem = createFileItem(file, type);
+          container.appendChild(fileItem);
+        });
+      }
+
+      // 获取最大文件大小
+      function getMaxFileSize(type) {
+        const sizes = {
+          requirement: 10 * 1024 * 1024, // 10MB
+          technical: 10 * 1024 * 1024,    // 10MB
+          sample: 50 * 1024 * 1024,       // 50MB
+          other: 20 * 1024 * 1024         // 20MB
+        };
+        return sizes[type] || 20 * 1024 * 1024;
+      }
+
+      // 创建文件项
+      function createFileItem(file, type) {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'uploaded-file';
+        fileItem.dataset.name = file.name;
+        fileItem.dataset.size = file.size;
+        fileItem.dataset.type = file.type;
+
+        const fileIcon = getFileIcon(file.name);
+        const fileSize = formatFileSize(file.size);
+
+        fileItem.innerHTML = `
+          <div class="file-info">
+            <i class="fas ${fileIcon} file-icon"></i>
+            <span class="file-name">${file.name}</span>
+            <span class="file-size">${fileSize}</span>
+          </div>
+          <div class="remove-file" onclick="removeFile(this)">
+            <i class="fas fa-times"></i>
+          </div>
+        `;
+
+        return fileItem;
+      }
+
+      // 获取文件图标
+      function getFileIcon(fileName) {
+        const ext = fileName.split('.').pop().toLowerCase();
+        const iconMap = {
+          pdf: 'fa-file-pdf',
+          doc: 'fa-file-word',
+          docx: 'fa-file-word',
+          xls: 'fa-file-excel',
+          xlsx: 'fa-file-excel',
+          csv: 'fa-file-csv',
+          json: 'fa-file-code',
+          md: 'fa-file-alt',
+          vsd: 'fa-project-diagram',
+          vsdx: 'fa-project-diagram'
+        };
+        return iconMap[ext] || 'fa-file';
+      }
+
+      // 格式化文件大小
+      function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+      }
+
+      // 移除文件
+      function removeFile(element) {
+        element.parentElement.remove();
+      }
+
+      // 审批流程中的模态框功能
+      function openAssetEditModal() {
+        document.getElementById('assetEditModal').classList.remove('hidden');
+        initializeFileUpload(); // 重新初始化文件上传功能
+      }
+
+      function closeAssetEditModal() {
+        document.getElementById('assetEditModal').classList.add('hidden');
+      }
+
+      function openAttachmentModal() {
+        document.getElementById('attachmentModal').classList.remove('hidden');
+        initializeFileUpload(); // 重新初始化文件上传功能
+      }
+
+      function closeAttachmentModal() {
+        document.getElementById('attachmentModal').classList.add('hidden');
+      }
+
+      function openCommentModal() {
+        document.getElementById('commentModal').classList.remove('hidden');
+      }
+
+      function closeCommentModal() {
+        document.getElementById('commentModal').classList.add('hidden');
+      }
+
+      // 保存资产信息修改
+      function saveAssetEdit() {
+        const editReason = document.querySelector('textarea[name="editReason"]').value;
+        if (!editReason.trim()) {
+          alert('请填写修改说明');
+          return;
+        }
+
+        // 收集修改后的资产信息
+        const assetData = {
+          assetName: document.querySelector('input[name="editAssetName"]').value,
+          assetCategory: document.querySelector('select[name="editAssetCategory"]').value,
+          dataSource: document.querySelector('input[name="editDataSource"]').value,
+          dataFormat: document.querySelector('select[name="editDataFormat"]').value,
+          updateFrequency: document.querySelector('select[name="editUpdateFrequency"]').value,
+          dataVolume: document.querySelector('select[name="editDataVolume"]').value,
+          assetDescription: document.querySelector('textarea[name="editAssetDescription"]').value,
+          technicalSpecs: document.querySelector('textarea[name="editTechnicalSpecs"]').value,
+          editReason: editReason,
+          editTime: new Date().toISOString(),
+          editor: '李四（技术总监）'
+        };
+
+        console.log('保存资产信息修改:', assetData);
+        alert('资产信息修改已保存！');
+        closeAssetEditModal();
+      }
+
+      // 保存补充附件
+      function saveAttachments() {
+        const uploadReason = document.querySelector('textarea[name="uploadReason"]').value;
+        if (!uploadReason.trim()) {
+          alert('请填写上传说明');
+          return;
+        }
+
+        // 收集上传的附件信息
+        const attachmentData = {
+          reviewFiles: Array.from(document.querySelectorAll('[data-type="review"] .uploaded-file')).map(file => ({
+            name: file.dataset.name,
+            size: file.dataset.size,
+            type: file.dataset.type
+          })),
+          testFiles: Array.from(document.querySelectorAll('[data-type="test"] .uploaded-file')).map(file => ({
+            name: file.dataset.name,
+            size: file.dataset.size,
+            type: file.dataset.type
+          })),
+          otherFiles: Array.from(document.querySelectorAll('[data-type="other"] .uploaded-file')).map(file => ({
+            name: file.dataset.name,
+            size: file.dataset.size,
+            type: file.dataset.type
+          })),
+          uploadReason: uploadReason,
+          uploadTime: new Date().toISOString(),
+          uploader: '李四（技术总监）'
+        };
+
+        console.log('保存补充附件:', attachmentData);
+        alert('补充附件上传成功！');
+        closeAttachmentModal();
+      }
+
+      // 保存审批意见
+      function saveComment() {
+        const commentType = document.querySelector('select[name="commentType"]').value;
+        const commentContent = document.querySelector('textarea[name="commentContent"]').value;
+        const needModification = document.querySelector('input[name="needModification"]:checked').value;
+
+        if (!commentContent.trim()) {
+          alert('请填写审批意见内容');
+          return;
+        }
+
+        // 收集审批意见信息
+        const commentData = {
+          commentType: commentType,
+          commentContent: commentContent,
+          needModification: needModification,
+          commentTime: new Date().toISOString(),
+          commenter: '李四（技术总监）'
+        };
+
+        console.log('保存审批意见:', commentData);
+        alert('审批意见提交成功！');
+        closeCommentModal();
+      }
+
+      // 页面加载完成后初始化
+      document.addEventListener('DOMContentLoaded', function() {
+        // 为表格行添加点击事件
+        const tableRows = document.querySelectorAll('tbody tr');
+        tableRows.forEach(row => {
+          row.addEventListener('click', function() {
+            openProjectModal();
+          });
+        });
+
+        // 点击模态框外部关闭
+        const modal = document.getElementById('projectModal');
+        if (modal) {
+          modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+              closeModal();
+            }
+          });
+        }
+
+        // 点击新建项目模态框外部关闭
+        const newProjectModal = document.getElementById('newProjectModal');
+        if (newProjectModal) {
+          newProjectModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+              closeNewProjectModal();
+            }
+          });
+        }
+
+        // 点击项目审核模态框外部关闭
+        const projectReviewModal = document.getElementById('projectReviewModal');
+        if (projectReviewModal) {
+          projectReviewModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+              closeProjectReviewModal();
+            }
+          });
+        }
+
+        // 点击项目编辑模态框外部关闭
+        const projectEditModal = document.getElementById('projectEditModal');
+        if (projectEditModal) {
+          projectEditModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+              closeProjectEditModal();
+            }
+          });
+        }
+
+        // 点击资产编辑模态框外部关闭
+        const assetEditModal = document.getElementById('assetEditModal');
+        if (assetEditModal) {
+          assetEditModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+              closeAssetEditModal();
+            }
+          });
+        }
+
+        // 点击附件上传模态框外部关闭
+        const attachmentModal = document.getElementById('attachmentModal');
+        if (attachmentModal) {
+          attachmentModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+              closeAttachmentModal();
+            }
+          });
+        }
+
+        // 点击审批意见模态框外部关闭
+        const commentModal = document.getElementById('commentModal');
+        if (commentModal) {
+          commentModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+              closeCommentModal();
+            }
+          });
+        }
+      });
+      
+      // 用户下拉菜单切换
+      function toggleUserDropdown() {
+        const dropdownMenu = document.getElementById('user-dropdown-menu');
+        const arrow = document.getElementById('dropdown-arrow');
+        
+        if (dropdownMenu.classList.contains('hidden')) {
+          dropdownMenu.classList.remove('hidden');
+          arrow.style.transform = 'rotate(180deg)';
+        } else {
+          dropdownMenu.classList.add('hidden');
+          arrow.style.transform = 'rotate(0deg)';
+        }
+      }
+      
+      // 点击外部关闭下拉菜单
+      document.addEventListener('click', function(event) {
+        const dropdown = document.getElementById('user-dropdown');
+        const dropdownMenu = document.getElementById('user-dropdown-menu');
+        const arrow = document.getElementById('dropdown-arrow');
+        
+        if (!dropdown.contains(event.target)) {
+          dropdownMenu.classList.add('hidden');
+          arrow.style.transform = 'rotate(0deg)';
+        }
+      });
+    </script>
+
+    <!-- 数据资源挂载模态框 -->
+    <div id="resourceMountModal" class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+      <div class="relative top-10 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-lg font-medium text-gray-900">数据资源挂载</h3>
+            <button onclick="closeResourceMountModal()" class="text-gray-400 hover:text-gray-600">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+
+          <div class="space-y-6">
+            <!-- 资源搜索 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">搜索数据资源</label>
+              <div class="flex space-x-2">
+                <input type="text" id="resourceSearch" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="输入资源名称、标签或描述进行搜索">
+                <button onclick="searchResources()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                  <i class="fas fa-search mr-1"></i>搜索
+                </button>
+              </div>
+            </div>
+
+            <!-- 资源分类筛选 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">资源分类</label>
+              <div class="flex flex-wrap gap-2">
+                <button class="resource-filter px-3 py-1 rounded-full text-sm border border-gray-300 hover:bg-blue-50 hover:border-blue-300 active" data-category="all">全部</button>
+                <button class="resource-filter px-3 py-1 rounded-full text-sm border border-gray-300 hover:bg-blue-50 hover:border-blue-300" data-category="database">数据库表</button>
+                <button class="resource-filter px-3 py-1 rounded-full text-sm border border-gray-300 hover:bg-blue-50 hover:border-blue-300" data-category="file">数据文件</button>
+                <button class="resource-filter px-3 py-1 rounded-full text-sm border border-gray-300 hover:bg-blue-50 hover:border-blue-300" data-category="api">API接口</button>
+                <button class="resource-filter px-3 py-1 rounded-full text-sm border border-gray-300 hover:bg-blue-50 hover:border-blue-300" data-category="stream">数据流</button>
+              </div>
+            </div>
+
+            <!-- 资源目录树 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">可用资源</label>
+              <div class="border border-gray-300 rounded-lg max-h-96 overflow-y-auto">
+                <div id="resourceTree" class="p-2">
+                  <!-- 自采自研 -->
+                  <div class="tree-node">
+                    <div class="tree-item flex items-center py-1 hover:bg-gray-50 cursor-pointer" onclick="toggleTreeNode(this)">
+                      <i class="fas fa-chevron-down text-gray-400 mr-2 text-xs"></i>
+                      <i class="fas fa-folder text-yellow-500 mr-2"></i>
+                      <span class="text-sm font-medium text-gray-900">自采自研</span>
+                    </div>
+                    <div class="tree-children ml-6">
+                      <!-- 内部系统 -->
+                      <div class="tree-node">
+                        <div class="tree-item flex items-center py-1 hover:bg-gray-50 cursor-pointer" onclick="toggleTreeNode(this)">
+                          <i class="fas fa-chevron-down text-gray-400 mr-2 text-xs"></i>
+                          <i class="fas fa-folder text-blue-500 mr-2"></i>
+                          <span class="text-sm font-medium text-gray-900">内部系统</span>
+                        </div>
+                        <div class="tree-children ml-6">
+                          <!-- 用户基础管理系统 -->
+                          <div class="tree-node">
+                            <div class="tree-item flex items-center py-1 hover:bg-gray-50 cursor-pointer" onclick="toggleTreeNode(this)">
+                              <i class="fas fa-chevron-down text-gray-400 mr-2 text-xs"></i>
+                              <i class="fas fa-folder text-green-500 mr-2"></i>
+                              <span class="text-sm font-medium text-gray-900">用户基础管理系统</span>
+                            </div>
+                            <div class="tree-children ml-6">
+                              <!-- 数据库表 -->
+                              <div class="tree-node">
+                                <div class="tree-item flex items-center py-1 hover:bg-gray-50 cursor-pointer" onclick="toggleTreeNode(this)">
+                                  <i class="fas fa-chevron-down text-gray-400 mr-2 text-xs"></i>
+                                  <i class="fas fa-database text-blue-600 mr-2"></i>
+                                  <span class="text-sm font-medium text-gray-900">数据库表</span>
+                                </div>
+                                <div class="tree-children ml-6">
+                                  <div class="tree-item flex items-center py-1 hover:bg-gray-50">
+                                    <input type="checkbox" class="mr-2" onchange="toggleResourceSelection('db_001', '企业用户表', '数据库表', this.checked)">
+                                    <i class="fas fa-table text-gray-600 mr-2"></i>
+                                    <span class="text-sm text-gray-900">企业用户表</span>
+                                  </div>
+                                  <div class="tree-item flex items-center py-1 hover:bg-gray-50">
+                                    <input type="checkbox" class="mr-2" onchange="toggleResourceSelection('db_002', '用友合同产品信息表', '数据库表', this.checked)">
+                                    <i class="fas fa-table text-gray-600 mr-2"></i>
+                                    <span class="text-sm text-gray-900">用友合同产品信息表</span>
+                                  </div>
+                                  <div class="tree-item flex items-center py-1 hover:bg-gray-50">
+                                    <input type="checkbox" class="mr-2" onchange="toggleResourceSelection('db_003', '合约用户产品权限表', '数据库表', this.checked)">
+                                    <i class="fas fa-table text-gray-600 mr-2"></i>
+                                    <span class="text-sm text-gray-900">合约用户产品权限表</span>
+                                  </div>
+                                  <div class="tree-item flex items-center py-1 hover:bg-gray-50">
+                                    <input type="checkbox" class="mr-2" onchange="toggleResourceSelection('db_004', '用户活跃统计', '数据库表', this.checked)">
+                                    <i class="fas fa-table text-gray-600 mr-2"></i>
+                                    <span class="text-sm text-gray-900">用户活跃统计</span>
+                                  </div>
+                                  <div class="tree-item flex items-center py-1 hover:bg-gray-50">
+                                    <input type="checkbox" class="mr-2" onchange="toggleResourceSelection('db_005', '产品用户列表', '数据库表', this.checked)">
+                                    <i class="fas fa-table text-gray-600 mr-2"></i>
+                                    <span class="text-sm text-gray-900">产品用户列表</span>
+                                  </div>
+                                  <div class="tree-item flex items-center py-1 hover:bg-gray-50">
+                                    <input type="checkbox" class="mr-2" onchange="toggleResourceSelection('db_006', '地域客户用户统计', '数据库表', this.checked)">
+                                    <i class="fas fa-table text-gray-600 mr-2"></i>
+                                    <span class="text-sm text-gray-900">地域客户用户统计</span>
+                                  </div>
+                                  <div class="tree-item flex items-center py-1 hover:bg-gray-50">
+                                    <input type="checkbox" class="mr-2" onchange="toggleResourceSelection('db_007', '事业部产品用户数据', '数据库表', this.checked)">
+                                    <i class="fas fa-table text-gray-600 mr-2"></i>
+                                    <span class="text-sm text-gray-900">事业部产品用户数据</span>
+                                  </div>
+                                  <div class="tree-item flex items-center py-1 hover:bg-gray-50">
+                                    <input type="checkbox" class="mr-2" onchange="toggleResourceSelection('db_008', '中经社用户综合报表', '数据库表', this.checked)">
+                                    <i class="fas fa-table text-gray-600 mr-2"></i>
+                                    <span class="text-sm text-gray-900">中经社用户综合报表</span>
+                                  </div>
+                                  <div class="tree-item flex items-center py-1 hover:bg-gray-50">
+                                    <input type="checkbox" class="mr-2" onchange="toggleResourceSelection('db_009', '企业客户表', '数据库表', this.checked)">
+                                    <i class="fas fa-table text-gray-600 mr-2"></i>
+                                    <span class="text-sm text-gray-900">企业客户表</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <!-- 数据文件 -->
+                              <div class="tree-node">
+                                <div class="tree-item flex items-center py-1 hover:bg-gray-50 cursor-pointer" onclick="toggleTreeNode(this)">
+                                  <i class="fas fa-chevron-down text-gray-400 mr-2 text-xs"></i>
+                                  <i class="fas fa-file-alt text-green-600 mr-2"></i>
+                                  <span class="text-sm font-medium text-gray-900">数据文件</span>
+                                </div>
+                                <div class="tree-children ml-6">
+                                  <div class="tree-item flex items-center py-1 hover:bg-gray-50">
+                                    <input type="checkbox" class="mr-2" onchange="toggleResourceSelection('file_001', 'acc_info_2024.csv', '数据文件', this.checked)">
+                                    <i class="fas fa-file-csv text-green-600 mr-2"></i>
+                                    <span class="text-sm text-gray-900">acc_info_2024.csv</span>
+                                  </div>
+                                  <div class="tree-item flex items-center py-1 hover:bg-gray-50">
+                                    <input type="checkbox" class="mr-2" onchange="toggleResourceSelection('file_002', '用友合同表.xlsx', '数据文件', this.checked)">
+                                    <i class="fas fa-file-excel text-green-600 mr-2"></i>
+                                    <span class="text-sm text-gray-900">用友合同表.xlsx</span>
+                                  </div>
+                                  <div class="tree-item flex items-center py-1 hover:bg-gray-50">
+                                    <input type="checkbox" class="mr-2" onchange="toggleResourceSelection('file_003', 'uc_members_2024.json', '数据文件', this.checked)">
+                                    <i class="fas fa-file-code text-green-600 mr-2"></i>
+                                    <span class="text-sm text-gray-900">uc_members_2024.json</span>
+                                  </div>
+                                  <div class="tree-item flex items-center py-1 hover:bg-gray-50">
+                                    <input type="checkbox" class="mr-2" onchange="toggleResourceSelection('file_004', 'dep_to_product.csv', '数据文件', this.checked)">
+                                    <i class="fas fa-file-csv text-green-600 mr-2"></i>
+                                    <span class="text-sm text-gray-900">dep_to_product.csv</span>
+                                  </div>
+                                  <div class="tree-item flex items-center py-1 hover:bg-gray-50">
+                                    <input type="checkbox" class="mr-2" onchange="toggleResourceSelection('file_005', 'product_info.json', '数据文件', this.checked)">
+                                    <i class="fas fa-file-code text-green-600 mr-2"></i>
+                                    <span class="text-sm text-gray-900">product_info.json</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- 订单管理系统 -->
+                          <div class="tree-node">
+                            <div class="tree-item flex items-center py-1 hover:bg-gray-50 cursor-pointer" onclick="toggleTreeNode(this)">
+                              <i class="fas fa-chevron-right text-gray-400 mr-2 text-xs"></i>
+                              <i class="fas fa-folder text-green-500 mr-2"></i>
+                              <span class="text-sm font-medium text-gray-900">订单管理系统</span>
+                            </div>
+                            <div class="tree-children ml-6 hidden">
+                              <!-- 订单相关资源 -->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- 外部系统 -->
+                      <div class="tree-node">
+                        <div class="tree-item flex items-center py-1 hover:bg-gray-50 cursor-pointer" onclick="toggleTreeNode(this)">
+                          <i class="fas fa-chevron-right text-gray-400 mr-2 text-xs"></i>
+                          <i class="fas fa-folder text-purple-500 mr-2"></i>
+                          <span class="text-sm font-medium text-gray-900">外部系统</span>
+                        </div>
+                        <div class="tree-children ml-6 hidden">
+                          <!-- 外部系统资源 -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- 第三方数据 -->
+                  <div class="tree-node">
+                    <div class="tree-item flex items-center py-1 hover:bg-gray-50 cursor-pointer" onclick="toggleTreeNode(this)">
+                      <i class="fas fa-chevron-right text-gray-400 mr-2 text-xs"></i>
+                      <i class="fas fa-folder text-orange-500 mr-2"></i>
+                      <span class="text-sm font-medium text-gray-900">第三方数据</span>
+                    </div>
+                    <div class="tree-children ml-6 hidden">
+                      <!-- 第三方数据资源 -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 已选择资源 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">已选择资源</label>
+              <div id="selectedResources" class="space-y-2">
+                <!-- 已选择的资源将在这里显示 -->
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200 mt-6">
+            <button onclick="closeResourceMountModal()" class="btn-secondary">
+              取消
+            </button>
+            <button onclick="confirmResourceMount()" class="btn-primary">
+              <i class="fas fa-check mr-2"></i>确认挂载
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      /* 树形结构样式 */
+      .tree-node {
+        position: relative;
+      }
+      
+      .tree-children {
+        transition: all 0.3s ease;
+      }
+      
+      .tree-item {
+        transition: background-color 0.2s ease;
+      }
+      
+      .tree-item:hover {
+        background-color: #f9fafb;
+      }
+      
+      .tree-item input[type="checkbox"] {
+        cursor: pointer;
+      }
+      
+      .tree-item input[type="checkbox"]:checked {
+        accent-color: #3b82f6;
+      }
+      
+      /* 展开/收起动画 */
+      .tree-children.hidden {
+        display: none;
+      }
+      
+      /* 搜索高亮 */
+      .tree-item.highlight {
+        background-color: #dbeafe;
+      }
+    </style>
+
+    <script>
+      // 数据资源挂载相关功能
+      let selectedResources = [];
+
+      // 打开资源挂载模态框
+      function openResourceMountModal() {
+        document.getElementById('resourceMountModal').classList.remove('hidden');
+        selectedResources = [];
+        updateSelectedResourcesDisplay();
+      }
+
+      // 关闭资源挂载模态框
+      function closeResourceMountModal() {
+        document.getElementById('resourceMountModal').classList.add('hidden');
+      }
+
+      // 搜索资源
+      function searchResources() {
+        const searchTerm = document.getElementById('resourceSearch').value.toLowerCase();
+        const treeItems = document.querySelectorAll('.tree-item');
+        
+        // 清除之前的高亮
+        treeItems.forEach(item => {
+          item.classList.remove('highlight');
+        });
+        
+        if (searchTerm === '') {
+          // 如果搜索词为空，显示所有项目
+          treeItems.forEach(item => {
+            item.style.display = 'flex';
+          });
+          return;
+        }
+        
+        treeItems.forEach(item => {
+          const itemText = item.textContent.toLowerCase();
+          if (itemText.includes(searchTerm)) {
+            item.style.display = 'flex';
+            // 高亮搜索结果
+            if (item.querySelector('input[type="checkbox"]')) {
+              item.classList.add('highlight');
+            }
+            // 展开父节点以显示搜索结果
+            let parent = item.closest('.tree-children');
+            while (parent) {
+              parent.classList.remove('hidden');
+              const parentItem = parent.previousElementSibling;
+              if (parentItem && parentItem.classList.contains('tree-item')) {
+                const icon = parentItem.querySelector('.fas.fa-chevron-right');
+                if (icon) {
+                  icon.classList.remove('fa-chevron-right');
+                  icon.classList.add('fa-chevron-down');
+                }
+              }
+              parent = parent.parentElement.closest('.tree-children');
+            }
+          } else {
+            // 如果不是叶子节点（没有checkbox），则隐藏
+            if (!item.querySelector('input[type="checkbox"]')) {
+              item.style.display = 'none';
+            }
+          }
+        });
+      }
+
+      // 资源分类筛选
+      document.addEventListener('DOMContentLoaded', function() {
+        const filterButtons = document.querySelectorAll('.resource-filter');
+        filterButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            // 移除所有活动状态
+            filterButtons.forEach(btn => btn.classList.remove('active', 'bg-blue-100', 'border-blue-300'));
+            // 添加当前活动状态
+            this.classList.add('active', 'bg-blue-100', 'border-blue-300');
+            
+            const category = this.getAttribute('data-category');
+            const treeItems = document.querySelectorAll('.tree-item');
+            
+            treeItems.forEach(item => {
+              if (category === 'all') {
+                item.style.display = 'flex';
+              } else {
+                // 根据分类筛选显示相应的资源
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                  const resourceType = getResourceTypeFromName(checkbox.getAttribute('onchange'));
+                  if (resourceType === category) {
+                    item.style.display = 'flex';
+                    // 展开父节点
+                    let parent = item.closest('.tree-children');
+                    while (parent) {
+                      parent.classList.remove('hidden');
+                      const parentItem = parent.previousElementSibling;
+                      if (parentItem && parentItem.classList.contains('tree-item')) {
+                        const icon = parentItem.querySelector('.fas.fa-chevron-right');
+                        if (icon) {
+                          icon.classList.remove('fa-chevron-right');
+                          icon.classList.add('fa-chevron-down');
+                        }
+                      }
+                      parent = parent.parentElement.closest('.tree-children');
+                    }
+                  } else {
+                    item.style.display = 'none';
+                  }
+                }
+              }
+            });
+          });
+        });
+      });
+
+      // 切换树节点展开/收起
+      function toggleTreeNode(element) {
+        const children = element.nextElementSibling;
+        const icon = element.querySelector('.fas.fa-chevron-down, .fas.fa-chevron-right');
+        
+        if (children.classList.contains('hidden')) {
+          children.classList.remove('hidden');
+          icon.classList.remove('fa-chevron-right');
+          icon.classList.add('fa-chevron-down');
+        } else {
+          children.classList.add('hidden');
+          icon.classList.remove('fa-chevron-down');
+          icon.classList.add('fa-chevron-right');
+        }
+      }
+
+      // 切换资源选择
+      function toggleResourceSelection(id, name, type, checked) {
+        if (checked) {
+          const resource = { id, name, type };
+          if (!selectedResources.find(r => r.id === id)) {
+            selectedResources.push(resource);
+            updateSelectedResourcesDisplay();
+          }
+        } else {
+          selectedResources = selectedResources.filter(r => r.id !== id);
+          updateSelectedResourcesDisplay();
+        }
+      }
+
+      // 从onchange属性中获取资源类型
+      function getResourceTypeFromName(onchangeStr) {
+        if (onchangeStr.includes('数据库表')) return 'database';
+        if (onchangeStr.includes('数据文件')) return 'file';
+        if (onchangeStr.includes('API接口')) return 'api';
+        if (onchangeStr.includes('数据流')) return 'stream';
+        return 'all';
+      }
+
+      // 添加属性
+      function addAttribute() {
+        const attributeName = prompt('请输入属性名称：');
+        if (attributeName && attributeName.trim()) {
+          const attributeContainer = document.querySelector('input[name="assetName"]').closest('.space-y-6').querySelector('.flex.flex-wrap.gap-2');
+          const newAttribute = document.createElement('span');
+          newAttribute.className = 'px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded-full border border-purple-200';
+          newAttribute.textContent = attributeName.trim();
+          
+          // 添加删除按钮
+          const deleteBtn = document.createElement('button');
+          deleteBtn.type = 'button';
+          deleteBtn.className = 'ml-1 text-purple-600 hover:text-purple-800';
+          deleteBtn.innerHTML = '×';
+          deleteBtn.onclick = function() {
+            newAttribute.remove();
+          };
+          newAttribute.appendChild(deleteBtn);
+          
+          // 插入到加号按钮之前
+          const addButton = attributeContainer.querySelector('button');
+          attributeContainer.insertBefore(newAttribute, addButton);
+        }
+      }
+
+      // 添加标签
+      function addTag() {
+        const tagName = prompt('请输入标签名称：');
+        if (tagName && tagName.trim()) {
+          const tagContainer = document.querySelector('input[name="updateTime"]').closest('.space-y-6').querySelector('.flex.flex-wrap.gap-2');
+          const newTag = document.createElement('span');
+          newTag.className = 'px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full border border-blue-200';
+          newTag.textContent = tagName.trim();
+          
+          // 添加删除按钮
+          const deleteBtn = document.createElement('button');
+          deleteBtn.type = 'button';
+          deleteBtn.className = 'ml-1 text-blue-600 hover:text-blue-800';
+          deleteBtn.innerHTML = '×';
+          deleteBtn.onclick = function() {
+            newTag.remove();
+          };
+          newTag.appendChild(deleteBtn);
+          
+          // 插入到加号按钮之前
+          const addButton = tagContainer.querySelector('button');
+          tagContainer.insertBefore(newTag, addButton);
+        }
+      }
+
+      // 移除已选择的资源
+      function removeSelectedResource(id) {
+        selectedResources = selectedResources.filter(r => r.id !== id);
+        updateSelectedResourcesDisplay();
+      }
+
+      // 更新已选择资源显示
+      function updateSelectedResourcesDisplay() {
+        const container = document.getElementById('selectedResources');
+        if (selectedResources.length === 0) {
+          container.innerHTML = '<div class="text-sm text-gray-500">暂未选择任何资源</div>';
+        } else {
+          container.innerHTML = selectedResources.map(resource => `
+            <div class="flex items-center justify-between p-2 bg-blue-50 rounded border">
+              <div>
+                <div class="text-sm font-medium text-gray-900">${resource.name}</div>
+                <div class="text-xs text-gray-500">类型：${resource.type}</div>
+              </div>
+              <button onclick="removeSelectedResource('${resource.id}')" class="text-red-600 hover:text-red-800">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          `).join('');
+        }
+      }
+
+      // 确认挂载资源
+      function confirmResourceMount() {
+        const mountedResourcesContainer = document.getElementById('mountedResources');
+        const editMountedResourcesContainer = document.getElementById('editMountedResources');
+        
+        if (selectedResources.length === 0) {
+          alert('请至少选择一个数据资源进行挂载');
+          return;
+        }
+
+        // 更新挂载资源显示
+        const resourcesHtml = selectedResources.map(resource => `
+          <div class="flex items-center justify-between p-2 bg-white rounded border">
+            <div>
+              <div class="text-sm font-medium text-gray-900">${resource.name}</div>
+              <div class="text-xs text-gray-500">类型：${resource.type}</div>
+            </div>
+            <button type="button" onclick="removeMountedResource(this)" class="text-red-600 hover:text-red-800">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        `).join('');
+
+        if (mountedResourcesContainer) {
+          mountedResourcesContainer.innerHTML = resourcesHtml;
+        }
+        if (editMountedResourcesContainer) {
+          editMountedResourcesContainer.innerHTML = resourcesHtml;
+        }
+
+        closeResourceMountModal();
+      }
+
+      // 移除已挂载的资源
+      function removeMountedResource(button) {
+        button.closest('.flex').remove();
+      }
+
+      // 点击资源挂载模态框外部关闭
+      document.addEventListener('DOMContentLoaded', function() {
+        const resourceMountModal = document.getElementById('resourceMountModal');
+        if (resourceMountModal) {
+          resourceMountModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+              closeResourceMountModal();
+            }
+          });
+        }
+      });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,1374 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>权属信息管理 - 数据资产管理平台</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    body { background: #f6f8fa; }
+    .search-card { box-shadow: 0 2px 16px 0 #2563eb22; }
+    .btn-blue { background: #2563eb; color: #fff; border-radius: 0.5rem; padding: 0.25rem 1.2rem; font-weight: 600; transition: background 0.2s; white-space: nowrap; font-size: 1rem; }
+    .btn-blue:hover { background: #1d4ed8; }
+    .btn-outline { border: 1.5px solid #2563eb; color: #2563eb; background: #fff; border-radius: 0.5rem; padding: 0.25rem 1.2rem; font-weight: 600; transition: background 0.2s, color 0.2s; white-space: nowrap; font-size: 1rem; }
+    .btn-outline:hover { background: #2563eb; color: #fff; }
+    .ownership-card { transition: transform 0.2s, box-shadow 0.2s; }
+    .ownership-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15); }
+    .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+    .status-active { background: #dcfce7; color: #166534; }
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-expired { background: #fee2e2; color: #991b1b; }
+    .status-disputed { background: #fef3c7; color: #92400e; }
+    .status-suspended { background: #f3f4f6; color: #374151; }
+    .timeline-item { position: relative; padding-left: 2rem; }
+    .timeline-item::before { content: ''; position: absolute; left: 0.5rem; top: 0.5rem; width: 0.75rem; height: 0.75rem; background: #2563eb; border-radius: 50%; }
+    .timeline-item::after { content: ''; position: absolute; left: 0.875rem; top: 1.25rem; width: 2px; height: calc(100% - 0.75rem); background: #e5e7eb; }
+    .timeline-item:last-child::after { display: none; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- 顶部主导航栏 -->
+  <header class="bg-gradient-to-r from-red-900 via-red-800 to-red-900 shadow flex items-center justify-between px-10 h-16 sticky top-0 z-20">
+    <div class="flex items-center space-x-4">
+      <img src="https://img1.imgtp.com/2023/07/21/0Qw6Qk4n.png" alt="LOGO" class="h-10 w-10 rounded-full border-2 border-red-400 shadow bg-white object-contain">
+      <span class="text-xl font-bold text-white tracking-wide whitespace-nowrap">数据资产管理平台</span>
+    </div>
+    <nav class="flex-1 flex items-center justify-center space-x-8">
+      <a href="首页.html" class="text-red-100 hover:text-red-400 font-medium">首页</a>
+      <a href="数据资产.html" class="text-red-100 hover:text-red-400 font-medium">资产运营管理</a>
+      <a href="数据来源管理.html" class="text-red-100 hover:text-red-400 font-medium">资源盘点登记</a>
+      <a href="权属信息管理.html" class="text-red-100 hover:text-red-400 font-medium bg-red-700 px-3 py-1 rounded">资产确权与管理</a>
+      <a href="资产开发管理.html" class="text-red-100 hover:text-red-400 font-medium">资产开发管理</a>
+      <a href="#" class="text-red-100 hover:text-red-400 font-medium">资产会计核算</a>
+      <a href="API目录管理.html" class="text-red-100 hover:text-red-400 font-medium">API管理</a>
+    </nav>
+    <div class="flex items-center space-x-4">
+      <div class="relative" id="user-dropdown">
+        <div class="flex items-center space-x-2 cursor-pointer hover:bg-red-700 px-2 py-1 rounded-lg transition" onclick="toggleUserDropdown()">
+          <img src="https://i.pravatar.cc/32?img=3" class="rounded-full w-8 h-8 border-2 border-red-200" alt="用户头像">
+          <span class="text-red-100 text-sm">张三</span>
+          <i class="fas fa-chevron-down text-xs text-red-300 transition-transform" id="dropdown-arrow"></i>
+        </div>
+        <div id="user-dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 hidden z-50">
+          <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+            <i class="fas fa-user-circle mr-3 text-red-500"></i>
+            个人中心
+          </a>
+          <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+            <i class="fas fa-cog mr-3 text-red-500"></i>
+            系统管理
+          </a>
+          <div class="border-t border-gray-200 my-1"></div>
+          <a href="#" class="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 transition">
+            <i class="fas fa-sign-out-alt mr-3"></i>
+            退出
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <!-- 可收起平台导航栏 -->
+  <aside id="sidebar" class="fixed top-16 left-0 min-h-[calc(100vh-4rem)] w-60 bg-gradient-to-b from-red-900 to-red-800 border-r border-red-700 shadow-xl z-30 transition-transform duration-300">
+    <div class="flex items-center justify-between px-4 py-3 border-b border-white border-opacity-20">
+      <span class="text-lg font-bold text-red-100">平台导航</span>
+    </div>
+    <ul class="mt-4 space-y-2 px-4">
+      <!-- 首页 -->
+      <li><a href="首页.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100"><i class="fas fa-home"></i> 首页</a></li>
+      
+      <!-- 资产运营管理 -->
+      <li>
+        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('operation')">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-chart-line"></i>
+            <span>资产运营管理</span>
+          </div>
+          <i class="fas fa-chevron-down text-xs transition-transform" id="operation-arrow"></i>
+        </div>
+        <ul id="operation-submenu" class="ml-6 mt-2 space-y-1 hidden">
+          <li><a href="数据资产.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据资产</a></li>
+          <li><a href="数据看板.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据看板</a></li>
+        </ul>
+      </li>
+      
+      <!-- 资源盘点登记 -->
+      <li>
+        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('inventory')">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-clipboard-list"></i>
+            <span>资源盘点登记</span>
+          </div>
+          <i class="fas fa-chevron-down text-xs transition-transform" id="inventory-arrow"></i>
+        </div>
+        <ul id="inventory-submenu" class="ml-6 mt-2 space-y-1 hidden">
+          <li><a href="数据来源管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据来源管理</a></li>
+          <li><a href="数据资源扫描.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据资源扫描</a></li>
+          <li><a href="数据资源.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据资源盘点</a></li>
+          <li><a href="资产属性管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 资产属性管理</a></li>
+          <li><a href="资产标签管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-tag"></i> 资产标签管理</a></li>
+          <li><a href="资产目录管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-sitemap"></i> 资产目录管理</a></li>
+          <li><a href="数据分类管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据分类管理</a></li>
+        </ul>
+      </li>
+      
+      <!-- 资产确权与管理 -->
+      <li>
+        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer bg-red-700" onclick="toggleSubMenu('rights')">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-gavel"></i>
+            <span>资产确权与管理</span>
+          </div>
+          <i class="fas fa-chevron-down text-xs transition-transform" id="rights-arrow" style="transform: rotate(180deg);"></i>
+        </div>
+        <ul id="rights-submenu" class="ml-6 mt-2 space-y-1">
+          <li><a href="权属信息管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm bg-red-700"><i class="fas fa-user-shield"></i> 权属信息管理</a></li>
+          <li><a href="授权链路管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-link"></i> 授权链路管理</a></li>
+          <li><a href="协议管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 协议管理</a></li>
+        </ul>
+      </li>
+      
+      <!-- 资产开发管理 -->
+      <li>
+        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('development')">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-code"></i>
+            <span>资产开发管理</span>
+          </div>
+          <i class="fas fa-chevron-down text-xs transition-transform" id="development-arrow"></i>
+        </div>
+        <ul id="development-submenu" class="ml-6 mt-2 space-y-1 hidden">
+          <li><a href="资产开发管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 资产开发管理</a></li>
+          <li><a href="流程监控管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 流程监控管理</a></li>
+          <li><a href="资产内容管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 资产内容管理</a></li>
+        </ul>
+      </li>
+      
+      <!-- 资产会计核算 -->
+      <li>
+        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('accounting')">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-calculator"></i>
+            <span>资产会计核算</span>
+          </div>
+          <i class="fas fa-chevron-down text-xs transition-transform" id="accounting-arrow"></i>
+        </div>
+        <ul id="accounting-submenu" class="ml-6 mt-2 space-y-1 hidden">
+          <li><a href="资产会计计量.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-calculator"></i> 资产会计计量</a></li>
+          <li><a href="资产披露.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-file-alt"></i> 资产披露</a></li>
+          <li><a href="资产应用.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-chart-bar"></i> 资产应用</a></li>
+        </ul>
+      </li>
+      
+      <!-- API管理 -->
+      <li>
+        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('api')">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-plug"></i>
+            <span>API管理</span>
+          </div>
+          <i class="fas fa-chevron-down text-xs transition-transform" id="api-arrow"></i>
+        </div>
+        <ul id="api-submenu" class="ml-6 mt-2 space-y-1 hidden">
+          <li><a href="API目录管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-sitemap"></i> API目录管理</a></li>
+          <li><a href="API管理页面.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> API管理</a></li>
+        </ul>
+      </li>
+    </ul>
+  </aside>
+  
+  <!-- 展开按钮 -->
+      <button id="sidebar-toggle" onclick="toggleSidebar()" class="fixed top-20 left-64 z-40 bg-black bg-opacity-50 backdrop-blur-sm text-white rounded-full p-2 shadow-lg hover:bg-black hover:bg-opacity-70 focus:outline-none transition"><i class="fas fa-chevron-left"></i></button>
+  
+  <!-- 主体内容区 -->
+  <main class="flex-1 w-full max-w-7xl mx-auto py-8 px-4 ml-60">
+    <!-- 主要内容区 -->
+    <section class="w-full">
+      <!-- 搜索和筛选区域 -->
+      <div class="bg-white rounded-xl p-6 search-card mb-6">
+        <div class="flex items-center gap-4 mb-4">
+            <input type="text" placeholder="请输入资产名称、权属方或描述关键词" class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button class="btn-blue"><i class="fas fa-search"></i> 搜索</button>
+          </div>
+        <div class="flex items-center gap-4">
+          <select class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="filterByOwnershipType(this.value)">
+            <option value="">全部权属类型</option>
+            <option value="owned">自有权</option>
+            <option value="licensed">使用权</option>
+            <option value="multiple">多权属类型</option>
+          </select>
+          <select class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="filterByStatus(this.value)">
+            <option value="">全部状态</option>
+            <option value="active">有效</option>
+            <option value="expired">已过期</option>
+            <option value="pending">待审核</option>
+
+          </select>
+          <button class="btn-outline" onclick="showAdvancedFilter()"><i class="fas fa-filter"></i> 高级筛选</button>
+        </div>
+      </div>
+      
+      <!-- 面包屑导航 -->
+      <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-800 mb-2">权属信息管理</h1>
+        <p class="text-gray-600">所属目录: 资产确权与管理 > 权属信息管理</p>
+      </div>
+      
+
+      
+      <!-- 功能按钮区 -->
+      <div class="flex items-center justify-between mb-6">
+        <!-- 按钮区域已清空 -->
+      </div>
+      
+
+      
+      <!-- 资产大表单 -->
+      <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+              <tr>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">资产名称</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">资产标识符</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">权属信息</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">最后更新</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">操作</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <!-- 资产行1 - 多权属类型 -->
+              <tr class="hover:bg-blue-50 transition-colors duration-200" data-id="1">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <i class="fas fa-database text-blue-500 text-lg"></i>
+                    <span class="font-semibold text-gray-900">客户基础信息</span>
+            </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="text-sm text-gray-600 font-mono bg-gray-50 px-2 py-1 rounded">asset_customer_basic</span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex flex-wrap gap-2">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">自有权</span>
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">使用权</span>
+          </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="text-sm text-gray-600">2024-01-15 08:30:25</span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <button class="text-blue-600 hover:text-blue-800 text-sm p-2 hover:bg-blue-50 rounded-lg transition-colors" onclick="viewOwnershipDetails('1')">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="text-green-600 hover:text-green-800 text-sm p-2 hover:bg-green-50 rounded-lg transition-colors" onclick="editOwnership('1')">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="text-purple-600 hover:text-purple-800 text-sm p-2 hover:bg-purple-50 rounded-lg transition-colors" onclick="assignAuthorization('1')">
+                      <i class="fas fa-share-alt"></i>
+                    </button>
+            </div>
+                </td>
+              </tr>
+              
+              <!-- 资产行2 - 多权属类型 -->
+              <tr class="hover:bg-green-50 transition-colors duration-200" data-id="2">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <i class="fas fa-database text-green-500 text-lg"></i>
+                    <span class="font-semibold text-gray-900">交易流水数据</span>
+            </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="text-sm text-gray-600 font-mono bg-gray-50 px-2 py-1 rounded">asset_transaction_flow</span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex flex-wrap gap-2">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">使用权</span>
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">使用权</span>
+            </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="text-sm text-gray-600">2024-01-20 14:15:30</span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <button class="text-blue-600 hover:text-blue-800 text-sm p-2 hover:bg-blue-50 rounded-lg transition-colors" onclick="viewOwnershipDetails('2')">
+                      <i class="fas fa-eye"></i>
+              </button>
+                    <button class="text-green-600 hover:text-green-800 text-sm p-2 hover:bg-green-50 rounded-lg transition-colors" onclick="editOwnership('2')">
+                      <i class="fas fa-edit"></i>
+              </button>
+                    <button class="text-purple-600 hover:text-purple-800 text-sm p-2 hover:bg-purple-50 rounded-lg transition-colors" onclick="assignAuthorization('2')">
+                      <i class="fas fa-share-alt"></i>
+                    </button>
+            </div>
+                </td>
+              </tr>
+              
+              <!-- 资产行3 -->
+              <tr class="hover:bg-purple-50 transition-colors duration-200" data-id="3">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <i class="fas fa-database text-purple-500 text-lg"></i>
+                    <span class="font-semibold text-gray-900">产品目录信息</span>
+            </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="text-sm text-gray-600 font-mono bg-gray-50 px-2 py-1 rounded">asset_product_catalog</span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex flex-wrap gap-2">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">使用权</span>
+          </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="text-sm text-gray-600">2023-12-15 10:45:20</span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <button class="text-blue-600 hover:text-blue-800 text-sm p-2 hover:bg-blue-50 rounded-lg transition-colors" onclick="viewOwnershipDetails('3')">
+                      <i class="fas fa-eye"></i>
+              </button>
+                    <button class="text-green-600 hover:text-green-800 text-sm p-2 hover:bg-green-50 rounded-lg transition-colors" onclick="editOwnership('3')">
+                      <i class="fas fa-edit"></i>
+              </button>
+                    <button class="text-purple-600 hover:text-purple-800 text-sm p-2 hover:bg-purple-50 rounded-lg transition-colors" onclick="assignAuthorization('3')">
+                      <i class="fas fa-share-alt"></i>
+                    </button>
+            </div>
+                </td>
+              </tr>
+              
+              <!-- 资产行4 -->
+              <tr class="hover:bg-orange-50 transition-colors duration-200" data-id="4">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <i class="fas fa-database text-orange-500 text-lg"></i>
+                    <span class="font-semibold text-gray-900">市场调研数据</span>
+            </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="text-sm text-gray-600 font-mono bg-gray-50 px-2 py-1 rounded">asset_market_research</span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex flex-wrap gap-2">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">使用权</span>
+          </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="text-sm text-gray-600">2024-01-25 16:20:45</span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <button class="text-blue-600 hover:text-blue-800 text-sm p-2 hover:bg-blue-50 rounded-lg transition-colors" onclick="viewOwnershipDetails('4')">
+                      <i class="fas fa-eye"></i>
+              </button>
+                    <button class="text-green-600 hover:text-green-800 text-sm p-2 hover:bg-green-50 rounded-lg transition-colors" onclick="editOwnership('4')">
+                      <i class="fas fa-edit"></i>
+              </button>
+                    <button class="text-purple-600 hover:text-purple-800 text-sm p-2 hover:bg-purple-50 rounded-lg transition-colors" onclick="assignAuthorization('4')">
+                      <i class="fas fa-share-alt"></i>
+                    </button>
+            </div>
+                </td>
+              </tr>
+              
+              <!-- 资产行5 -->
+              <tr class="hover:bg-indigo-50 transition-colors duration-200" data-id="5">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <i class="fas fa-database text-indigo-500 text-lg"></i>
+                    <span class="font-semibold text-gray-900">用户行为数据</span>
+            </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="text-sm text-gray-600 font-mono bg-gray-50 px-2 py-1 rounded">asset_user_behavior</span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex flex-wrap gap-2">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">自有权</span>
+          </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="text-sm text-gray-600">2024-03-10 11:25:15</span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <button class="text-blue-600 hover:text-blue-800 text-sm p-2 hover:bg-blue-50 rounded-lg transition-colors" onclick="viewOwnershipDetails('5')">
+                      <i class="fas fa-eye"></i>
+              </button>
+                    <button class="text-green-600 hover:text-green-800 text-sm p-2 hover:bg-green-50 rounded-lg transition-colors" onclick="editOwnership('5')">
+                      <i class="fas fa-edit"></i>
+              </button>
+                    <button class="text-purple-600 hover:text-purple-800 text-sm p-2 hover:bg-purple-50 rounded-lg transition-colors" onclick="assignAuthorization('5')">
+                      <i class="fas fa-share-alt"></i>
+                    </button>
+            </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- 分页 -->
+      <div class="flex items-center justify-between mt-8 p-4 bg-white rounded-lg border border-gray-200 shadow-sm">
+        <div class="text-sm text-gray-600 font-medium">显示 1-5 条，共 156 条记录</div>
+        <div class="flex items-center gap-1">
+          <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium text-gray-700 transition-colors">上一页</button>
+          <button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium">1</button>
+          <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium text-gray-700 transition-colors">2</button>
+          <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium text-gray-700 transition-colors">3</button>
+          <span class="px-3 py-2 text-gray-500">...</span>
+          <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium text-gray-700 transition-colors">32</button>
+          <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium text-gray-700 transition-colors">下一页</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+
+  
+  <!-- 权属详情模态框 -->
+  <div id="ownershipDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+        <div class="flex items-center justify-between p-6 border-b flex-shrink-0">
+          <h3 class="text-xl font-bold text-gray-800">权属详情</h3>
+          <button onclick="closeModal('ownershipDetailsModal')" class="text-gray-400 hover:text-gray-600">
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+        
+        <div class="p-6 overflow-y-auto flex-1" style="max-height: calc(90vh - 120px);">
+          <!-- 基本信息 -->
+          <div class="mb-8">
+            <h4 class="text-lg font-semibold text-gray-800 mb-4">基本信息</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">资产名称</label>
+                <p class="text-gray-800 font-medium">客户基础信息</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">资产标识符</label>
+                <p class="text-gray-800 font-mono">asset_customer_basic</p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">创建人</label>
+                <p class="text-gray-800">张三</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">最后更新</label>
+                <p class="text-gray-800">2024-01-15 08:30:25</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 权属信息详情 -->
+          <div class="mb-8">
+            <h4 class="text-lg font-semibold text-gray-800 mb-4">权属信息详情</h4>
+            <div class="space-y-4">
+              <!-- 权属信息1 -->
+              <div class="border border-gray-200 rounded-lg overflow-hidden">
+                <div class="bg-blue-50 px-4 py-3 border-b border-blue-200">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">自有权</span>
+                      <span class="text-sm font-medium text-gray-800">客户数据部</span>
+                    </div>
+                    <span class="status-badge status-active">有效</span>
+                  </div>
+                </div>
+                <div class="p-4">
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">生效日期</label>
+                <p class="text-gray-800">2024-01-01</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">到期日期</label>
+                <p class="text-gray-800">2025-01-01</p>
+              </div>
+              <div>
+                      <label class="block text-sm font-medium text-gray-600 mb-1">权属比例</label>
+                      <p class="text-gray-800">100%</p>
+              </div>
+                  </div>
+                  <div class="mt-3 pt-3 border-t border-gray-200">
+                    <label class="block text-sm font-medium text-gray-600 mb-1">权属描述</label>
+                    <p class="text-sm text-gray-600">该资产为公司自有资产，由客户数据部负责管理和维护，拥有完全的使用权和处置权。</p>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- 权属信息2 -->
+              <div class="border border-gray-200 rounded-lg overflow-hidden">
+                <div class="bg-green-50 px-4 py-3 border-b border-green-200">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">使用权</span>
+                      <span class="text-sm font-medium text-gray-800">市场部</span>
+                    </div>
+                    <span class="status-badge status-pending">待审核</span>
+                  </div>
+                </div>
+                <div class="p-4">
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                      <label class="block text-sm font-medium text-gray-600 mb-1">生效日期</label>
+                      <p class="text-gray-800">2024-03-01</p>
+              </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-600 mb-1">到期日期</label>
+                      <p class="text-gray-800">2024-12-31</p>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-600 mb-1">使用权限</label>
+                      <p class="text-gray-800">只读访问</p>
+                    </div>
+                  </div>
+                  <div class="mt-3 pt-3 border-t border-gray-200">
+                    <label class="block text-sm font-medium text-gray-600 mb-1">授权描述</label>
+                    <p class="text-sm text-gray-600">授权市场部使用该资产进行市场分析和客户画像，仅限只读访问权限。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+
+          
+          <!-- 权属变更历史 -->
+          <div class="mb-8">
+            <h4 class="text-lg font-semibold text-gray-800 mb-4">权属变更历史</h4>
+            <div class="space-y-4">
+              <div class="timeline-item">
+                <div class="bg-gray-50 rounded-lg p-4">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-medium text-gray-800">权属记录创建</span>
+                    <span class="text-xs text-gray-500">2024-01-15 08:30:25</span>
+                  </div>
+                  <p class="text-sm text-gray-600">创建权属记录，权属类型：自有权，权属方：客户数据部</p>
+                  <p class="text-xs text-gray-500 mt-1">操作人：张三</p>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="bg-gray-50 rounded-lg p-4">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-medium text-gray-800">权属信息更新</span>
+                    <span class="text-xs text-gray-500">2024-01-10 14:20:15</span>
+                  </div>
+                  <p class="text-sm text-gray-600">更新到期日期：2025-01-01</p>
+                  <p class="text-xs text-gray-500 mt-1">操作人：李四</p>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="bg-gray-50 rounded-lg p-4">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-medium text-gray-800">初始权属登记</span>
+                    <span class="text-xs text-gray-500">2024-01-01 09:00:00</span>
+                  </div>
+                  <p class="text-sm text-gray-600">初始权属登记，生效日期：2024-01-01</p>
+                  <p class="text-xs text-gray-500 mt-1">操作人：系统</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 编辑权属模态框 -->
+  <div id="editOwnershipModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+        <div class="flex items-center justify-between p-6 border-b flex-shrink-0">
+          <h3 class="text-xl font-bold text-gray-800">编辑资产权属状态</h3>
+          <button onclick="closeModal('editOwnershipModal')" class="text-gray-400 hover:text-gray-600">
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+        
+        <div class="p-6 overflow-y-auto flex-1" style="max-height: calc(90vh - 120px);">
+          <!-- 资产基本信息 -->
+          <div class="bg-gray-50 rounded-lg p-4 mb-6">
+            <h4 class="text-lg font-semibold text-gray-800 mb-3">资产基本信息</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">资产名称</label>
+                <p class="text-gray-800 font-medium">客户基础信息</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">资产标识符</label>
+                <p class="text-gray-800 font-mono">asset_customer_basic</p>
+              </div>
+
+            </div>
+          </div>
+          
+          <!-- 权属状态列表 -->
+          <div class="space-y-4">
+            <h4 class="text-lg font-semibold text-gray-800 mb-4">权属状态管理</h4>
+            
+            <!-- 权属1 -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <div class="bg-blue-50 px-4 py-3 border-b border-blue-200">
+                <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">自有权</span>
+                    <span class="text-sm font-medium text-gray-800">客户数据部</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <select class="text-xs border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                      <option value="active" selected>有效</option>
+                      <option value="expired">已过期</option>
+                      <option value="suspended">已暂停</option>
+                      <option value="terminated">已终止</option>
+                    </select>
+                </div>
+              </div>
+              </div>
+              <div class="p-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">生效日期</label>
+                    <input type="date" value="2024-01-01" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">到期日期</label>
+                    <input type="date" value="2025-01-01" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <label class="block text-sm font-medium text-gray-600 mb-1">权属描述</label>
+                  <textarea rows="2" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">该资产为公司自有资产，由客户数据部负责管理和维护，拥有完全的使用权和处置权。</textarea>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 权属2 -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <div class="bg-green-50 px-4 py-3 border-b border-green-200">
+                <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">使用权</span>
+                    <span class="text-sm font-medium text-gray-800">市场部</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <select class="text-xs border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                      <option value="pending" selected>待审核</option>
+                      <option value="active">有效</option>
+                      <option value="expired">已过期</option>
+                      <option value="suspended">已暂停</option>
+                      <option value="terminated">已终止</option>
+                    </select>
+                </div>
+              </div>
+            </div>
+              <div class="p-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">生效日期</label>
+                    <input type="date" value="2024-03-01" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">到期日期</label>
+                    <input type="date" value="2024-12-31" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <label class="block text-sm font-medium text-gray-600 mb-1">授权描述</label>
+                  <textarea rows="2" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">授权市场部使用该资产进行市场分析和客户画像，仅限只读访问权限。</textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+          
+          <div class="flex justify-end gap-4 pt-6 border-t mt-6">
+            <button type="button" onclick="closeModal('editOwnershipModal')" class="btn-outline">取消</button>
+            <button type="submit" class="btn-blue">保存修改</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 分配授权模态框 -->
+  <div id="assignAuthModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col">
+        <div class="flex items-center justify-between p-6 border-b flex-shrink-0">
+          <h3 class="text-xl font-bold text-gray-800">分配授权</h3>
+          <button onclick="closeModal('assignAuthModal')" class="text-gray-400 hover:text-gray-600">
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+        
+        <form class="p-6 space-y-6 overflow-y-auto flex-1" onsubmit="handleAssignAuth(event)">
+          <!-- 资产信息 -->
+          <div class="bg-gray-50 rounded-lg p-4">
+            <h4 class="text-sm font-medium text-gray-700 mb-3">资产信息</h4>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-600">资产名称:</span>
+                <span class="text-gray-800 font-medium" id="auth-asset-name">-</span>
+            </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">资产标识:</span>
+                <span class="text-gray-800 font-mono" id="auth-asset-id">-</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 授权对象 -->
+            <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">授权对象 *</label>
+            <div class="space-y-2 border border-gray-300 rounded-lg p-3">
+              <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                <input type="checkbox" name="auth-targets" value="dept1" class="rounded" onchange="handleTargetChange()">
+                <span class="text-sm">客户数据部</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                <input type="checkbox" name="auth-targets" value="dept2" class="rounded" onchange="handleTargetChange()">
+                <span class="text-sm">产品研发部</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                <input type="checkbox" name="auth-targets" value="dept3" class="rounded" onchange="handleTargetChange()">
+                <span class="text-sm">市场运营部</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                <input type="checkbox" name="auth-targets" value="dept4" class="rounded" onchange="handleTargetChange()">
+                <span class="text-sm">财务部</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                <input type="checkbox" name="auth-targets" value="dept5" class="rounded" onchange="handleTargetChange()">
+                <span class="text-sm">人力资源部</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
+                <input type="checkbox" name="auth-targets" value="dept6" class="rounded" onchange="handleTargetChange()">
+                <span class="text-sm">技术部</span>
+              </label>
+            </div>
+            <div class="mt-2">
+              <button type="button" onclick="selectAllTargets()" class="text-xs text-blue-600 hover:text-blue-800 mr-3">全选</button>
+              <button type="button" onclick="clearAllTargets()" class="text-xs text-gray-600 hover:text-gray-800">清空</button>
+            </div>
+          </div>
+          
+          <!-- 授权链路选择 (仅在选择部门时显示) -->
+          <div id="auth-chain-section" class="hidden">
+            <label class="block text-sm font-medium text-gray-700 mb-2">授权链路 *</label>
+            <select id="auth-chain-select" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="handleChainChange()">
+              <option value="">请选择授权链路</option>
+              <option value="chain1">数据管理链路</option>
+              <option value="chain2">业务分析链路</option>
+              <option value="chain3">合规审计链路</option>
+              <option value="chain4">研发测试链路</option>
+              <option value="chain5">市场推广链路</option>
+              <option value="chain6">财务分析链路</option>
+              </select>
+            </div>
+          
+          <!-- 授权权限 -->
+            <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">授权权限 *</label>
+            <div class="space-y-4">
+              <div class="flex items-center gap-4">
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" name="auth-permissions" value="read" checked class="rounded" onchange="togglePermissionChain('read')">
+                  <span>读取权限</span>
+                </label>
+                <select id="read-chain-select" class="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="">选择链路</option>
+                  <option value="chain1">数据管理链路</option>
+                  <option value="chain2">业务分析链路</option>
+                  <option value="chain3">合规审计链路</option>
+                  <option value="chain4">研发测试链路</option>
+                  <option value="chain5">市场推广链路</option>
+                  <option value="chain6">财务分析链路</option>
+                </select>
+            </div>
+              
+              <div class="flex items-center gap-4">
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" name="auth-permissions" value="write" class="rounded" onchange="togglePermissionChain('write')">
+                  <span>写入权限</span>
+                </label>
+                <select id="write-chain-select" class="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="">选择链路</option>
+                  <option value="chain1">数据管理链路</option>
+                  <option value="chain2">业务分析链路</option>
+                  <option value="chain3">合规审计链路</option>
+                  <option value="chain4">研发测试链路</option>
+                  <option value="chain5">市场推广链路</option>
+                  <option value="chain6">财务分析链路</option>
+                </select>
+            </div>
+              
+              <div class="flex items-center gap-4">
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" name="auth-permissions" value="export" class="rounded" onchange="togglePermissionChain('export')">
+                  <span>导出权限</span>
+                </label>
+                <select id="export-chain-select" class="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="">选择链路</option>
+                  <option value="chain1">数据管理链路</option>
+                  <option value="chain2">业务分析链路</option>
+                  <option value="chain3">合规审计链路</option>
+                  <option value="chain4">研发测试链路</option>
+                  <option value="chain5">市场推广链路</option>
+                  <option value="chain6">财务分析链路</option>
+                </select>
+          </div>
+          
+              <div class="flex items-center gap-4">
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" name="auth-permissions" value="share" class="rounded" onchange="togglePermissionChain('share')">
+                  <span>分享权限</span>
+                </label>
+                <select id="share-chain-select" class="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="">选择链路</option>
+                  <option value="chain1">数据管理链路</option>
+                  <option value="chain2">业务分析链路</option>
+                  <option value="chain3">合规审计链路</option>
+                  <option value="chain4">研发测试链路</option>
+                  <option value="chain5">市场推广链路</option>
+                  <option value="chain6">财务分析链路</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 授权时间 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">生效时间 *</label>
+              <input type="datetime-local" id="auth-start-time" required class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">到期时间</label>
+              <input type="datetime-local" id="auth-end-time" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+          </div>
+          
+          <!-- 授权说明 -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">授权说明</label>
+            <textarea id="auth-description" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入授权说明信息"></textarea>
+          </div>
+          
+          <div class="flex justify-end gap-4 pt-4 border-t">
+            <button type="button" onclick="closeModal('assignAuthModal')" class="btn-outline">取消</button>
+            <button type="submit" class="btn-blue">确认分配</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // 侧边栏切换
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const mainContent = document.querySelector('main');
+      const toggleBtn = document.getElementById('sidebar-toggle');
+      const toggleIcon = toggleBtn.querySelector('i');
+      
+      sidebar.classList.toggle('hidden');
+      mainContent.classList.toggle('ml-60');
+      
+      if (sidebar.classList.contains('hidden')) {
+        // 侧边栏收起状态
+        toggleBtn.style.left = '0.5rem';
+        toggleIcon.className = 'fas fa-bars';
+        mainContent.style.marginLeft = '0';
+        mainContent.style.maxWidth = '100%';
+      } else {
+        // 侧边栏展开状态
+        toggleBtn.style.left = '16rem';
+        toggleIcon.className = 'fas fa-chevron-left';
+        mainContent.style.marginLeft = '240px';
+        mainContent.style.maxWidth = 'calc(100% - 240px)';
+      }
+    }
+    
+    // 子菜单切换
+    function toggleSubMenu(menuId) {
+      const submenu = document.getElementById(menuId + '-submenu');
+      const arrow = document.getElementById(menuId + '-arrow');
+      submenu.classList.toggle('hidden');
+      arrow.style.transform = submenu.classList.contains('hidden') ? '' : 'rotate(180deg)';
+    }
+    
+
+    
+    // 模态框显示
+    function showModal(modalId) {
+      document.getElementById(modalId).classList.remove('hidden');
+    }
+    
+    // 模态框关闭
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.add('hidden');
+    }
+    
+
+    
+    // 查看权属详情
+    function viewOwnershipDetails(id) {
+      showModal('ownershipDetailsModal');
+    }
+    
+    // 编辑权属信息
+    function editOwnership(id) {
+      showModal('editOwnershipModal');
+    }
+    
+    // 切换权属详情展开
+    function toggleOwnershipDetails(id) {
+      const arrow = document.getElementById(`ownership-arrow-${id}`);
+      const ownershipCell = document.querySelector(`tr[data-id="${id}"] td:nth-child(4) .space-y-2`);
+      
+      // 切换箭头方向
+      arrow.style.transform = arrow.style.transform === 'rotate(180deg)' ? '' : 'rotate(180deg)';
+      
+      // 这里可以添加展开/收起的逻辑
+      // 比如显示更多的权属信息或隐藏部分信息
+      console.log('切换权属详情展开:', id);
+    }
+    
+    // 按权属类型筛选
+    function filterByOwnershipType(type) {
+      const rows = document.querySelectorAll('tbody tr');
+      
+      rows.forEach(row => {
+        const ownershipCell = row.querySelector('td:nth-child(4)');
+        if (!ownershipCell) return;
+        
+        const ownershipTypes = ownershipCell.querySelectorAll('.inline-flex');
+        let hasType = false;
+        
+        if (type === 'multiple') {
+          // 多权属类型：检查是否有多个权属类型
+          hasType = ownershipTypes.length > 1;
+        } else if (type === '') {
+          // 显示全部
+          hasType = true;
+        } else {
+          // 检查是否包含指定类型
+          ownershipTypes.forEach(badge => {
+            const badgeText = badge.textContent.toLowerCase();
+            if (badgeText.includes(type)) {
+              hasType = true;
+            }
+          });
+        }
+        
+        row.style.display = hasType ? '' : 'none';
+      });
+    }
+    
+    // 按状态筛选
+    function filterByStatus(status) {
+      // 状态筛选功能已移至详情弹窗中，这里暂时显示全部
+      const rows = document.querySelectorAll('tbody tr');
+      rows.forEach(row => {
+        row.style.display = '';
+      });
+      
+      if (status !== '') {
+        alert('状态筛选功能请在详情弹窗中使用');
+      }
+    }
+    
+    // 显示高级筛选
+    function showAdvancedFilter() {
+      // 这里可以实现更复杂的筛选逻辑
+      alert('高级筛选功能开发中...');
+    }
+    
+    // 分配授权
+    function assignAuthorization(id) {
+      // 根据ID获取资产信息并填充到模态框
+      const assetName = document.querySelector(`tr[data-id="${id}"] .font-semibold`).textContent;
+      const assetId = document.querySelector(`tr[data-id="${id}"] .font-mono`).textContent;
+      
+      document.getElementById('auth-asset-name').textContent = assetName;
+      document.getElementById('auth-asset-id').textContent = assetId;
+      
+      showModal('assignAuthModal');
+    }
+    
+
+    
+    // 确认分配授权
+    function confirmAssignAuth() {
+      if (confirm('确认分配授权？')) {
+        alert('授权分配成功！');
+        closeModal('assignAuthModal');
+      }
+    }
+    
+
+    
+
+    
+
+    
+    // 续期权属
+    function renewOwnership() {
+      if (confirm('确认续期该权属记录？')) {
+        alert('权属续期成功！');
+        closeModal('editOwnershipModal');
+      }
+    }
+    
+    // 终止权属
+    function terminateOwnership() {
+      if (confirm('确认终止该权属记录？此操作不可撤销。')) {
+        alert('权属终止成功！');
+        closeModal('editOwnershipModal');
+      }
+    }
+    
+
+    
+
+    
+
+    
+    // 切换权属详情显示
+    function toggleOwnershipDetails(assetId) {
+      const arrow = document.getElementById(`ownership-arrow-${assetId}`);
+      const row = document.querySelector(`tr[data-id="${assetId}"]`);
+      const ownershipCell = row.querySelector('td:nth-child(4)');
+      const ownershipCards = ownershipCell.querySelectorAll('[class*="bg-"]');
+      
+      // 切换显示状态
+      const isExpanded = arrow.classList.contains('fa-chevron-up');
+      
+      if (isExpanded) {
+        // 收起：只显示前2个权属
+        ownershipCards.forEach((card, index) => {
+          if (index >= 2) {
+            card.style.display = 'none';
+          }
+        });
+        arrow.classList.remove('fa-chevron-up');
+        arrow.classList.add('fa-chevron-down');
+      } else {
+        // 展开：显示所有权属
+        ownershipCards.forEach(card => {
+          card.style.display = 'flex';
+        });
+        arrow.classList.remove('fa-chevron-down');
+        arrow.classList.add('fa-chevron-up');
+      }
+    }
+    
+    // 更新链路详情
+    function updateChainDetails() {
+      const select = document.getElementById('auth-chain-select');
+      const details = document.getElementById('chain-details');
+      const chainName = document.getElementById('chain-name');
+      const chainType = document.getElementById('chain-type');
+      const chainStatus = document.getElementById('chain-status');
+      const chainScenario = document.getElementById('chain-scenario');
+      const chainScope = document.getElementById('chain-scope');
+      
+      if (select.value) {
+        // 链路数据
+        const chainData = {
+          'chain1': {
+            name: '数据管理链路',
+            type: '直接授权',
+            status: '有效',
+            scenario: '数据管理、ETL处理',
+            scope: '读取、写入、删除'
+          },
+          'chain2': {
+            name: '业务分析链路',
+            type: '继承授权',
+            status: '有效',
+            scenario: '业务分析、报表生成',
+            scope: '读取、导出'
+          },
+          'chain3': {
+            name: '合规审计链路',
+            type: '委托授权',
+            status: '有效',
+            scenario: '合规检查、审计追踪',
+            scope: '读取、审计'
+          },
+          'chain4': {
+            name: '研发测试链路',
+            type: '直接授权',
+            status: '有效',
+            scenario: '研发测试、数据验证',
+            scope: '读取、写入'
+          },
+          'chain5': {
+            name: '市场推广链路',
+            type: '继承授权',
+            status: '有效',
+            scenario: '市场分析、客户画像',
+            scope: '读取、分析'
+          },
+          'chain6': {
+            name: '财务分析链路',
+            type: '委托授权',
+            status: '有效',
+            scenario: '财务分析、风险评估',
+            scope: '读取、分析、导出'
+          }
+        };
+        
+        const selectedChain = chainData[select.value];
+        if (selectedChain) {
+          chainName.textContent = selectedChain.name;
+          chainType.textContent = selectedChain.type;
+          chainStatus.textContent = selectedChain.status;
+          chainScenario.textContent = selectedChain.scenario;
+          chainScope.textContent = selectedChain.scope;
+          details.classList.remove('hidden');
+        }
+      } else {
+        details.classList.add('hidden');
+      }
+    }
+    
+    // 页面加载完成后的初始化
+    document.addEventListener('DOMContentLoaded', function() {
+      // 初始化侧边栏状态
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.remove('hidden');
+      
+      // 初始化读取权限的链路选择为显示状态
+      const readChainSelect = document.getElementById('read-chain-select');
+      if (readChainSelect) {
+        readChainSelect.style.display = 'block';
+        readChainSelect.required = true;
+      }
+    });
+    
+    // 用户下拉菜单切换
+    function toggleUserDropdown() {
+      const dropdownMenu = document.getElementById('user-dropdown-menu');
+      const arrow = document.getElementById('dropdown-arrow');
+      
+      if (dropdownMenu.classList.contains('hidden')) {
+        dropdownMenu.classList.remove('hidden');
+        arrow.style.transform = 'rotate(180deg)';
+      } else {
+        dropdownMenu.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+      }
+    }
+    
+    // 点击外部关闭下拉菜单
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('user-dropdown');
+      const dropdownMenu = document.getElementById('user-dropdown-menu');
+      const arrow = document.getElementById('dropdown-arrow');
+      
+      if (!dropdown.contains(event.target)) {
+        dropdownMenu.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+      }
+    });
+    
+    // 处理授权对象变化
+    function handleTargetChange() {
+      const selectedTargets = Array.from(document.querySelectorAll('input[name="auth-targets"]:checked'))
+        .map(cb => cb.value);
+      const chainSection = document.getElementById('auth-chain-section');
+      const chainSelect = document.getElementById('auth-chain-select');
+      
+      // 重置链路选择
+      chainSelect.value = '';
+      
+      // 如果有选择授权对象，显示链路选择
+      if (selectedTargets.length > 0) {
+        chainSection.classList.remove('hidden');
+      } else {
+        chainSection.classList.add('hidden');
+      }
+    }
+    
+    // 处理授权链路变化
+    function handleChainChange() {
+      // 链路选择变化时的处理逻辑
+      // 可以根据需要添加其他逻辑
+    }
+    
+    // 加载当前权属信息
+
+    
+    // 处理分配授权
+    function handleAssignAuth(event) {
+      event.preventDefault();
+      
+      // 获取表单数据
+      const targets = Array.from(document.querySelectorAll('input[name="auth-targets"]:checked'))
+        .map(cb => cb.value);
+      const permissions = Array.from(document.querySelectorAll('input[name="auth-permissions"]:checked'))
+        .map(cb => cb.value);
+      const startTime = document.getElementById('auth-start-time').value;
+      const endTime = document.getElementById('auth-end-time').value;
+      const description = document.getElementById('auth-description').value;
+      
+      // 获取每个权限对应的链路
+      const permissionChains = {};
+      permissions.forEach(permission => {
+        const chainSelect = document.getElementById(`${permission}-chain-select`);
+        if (chainSelect && chainSelect.value) {
+          permissionChains[permission] = chainSelect.value;
+        }
+      });
+      
+      // 验证必填字段
+      if (targets.length === 0) {
+        alert('请选择授权对象');
+        return;
+      }
+      if (permissions.length === 0) {
+        alert('请至少选择一种权限');
+        return;
+      }
+      
+      // 验证每个权限是否都选择了链路
+      const missingChains = permissions.filter(permission => !permissionChains[permission]);
+      if (missingChains.length > 0) {
+        const permissionNames = missingChains.map(p => {
+          const permissionMap = {
+            'read': '读取权限',
+            'write': '写入权限',
+            'export': '导出权限',
+            'share': '分享权限'
+          };
+          return permissionMap[p] || p;
+        }).join('、');
+        alert(`请为以下权限选择链路：${permissionNames}`);
+        return;
+      }
+      
+      if (!startTime) {
+        alert('请设置生效时间');
+        return;
+      }
+      
+      // 构建授权信息
+      const authInfo = {
+        targets: targets,
+        permissionChains: permissionChains,
+        permissions: permissions,
+        startTime: startTime,
+        endTime: endTime,
+        description: description
+      };
+      
+      // 显示确认信息
+      const targetTexts = targets.map(target => {
+        const targetMap = {
+          'dept1': '客户数据部',
+          'dept2': '产品研发部',
+          'dept3': '市场运营部',
+          'dept4': '财务部',
+          'dept5': '人力资源部',
+          'dept6': '技术部'
+        };
+        return targetMap[target] || target;
+      }).join('、');
+      const permissionsText = permissions.map(p => {
+        const permissionMap = {
+          'read': '读取权限',
+          'write': '写入权限',
+          'export': '导出权限',
+          'share': '分享权限'
+        };
+        const chainText = permissionChains[p] ? document.querySelector(`#${p}-chain-select option[value="${permissionChains[p]}"]`).text : '';
+        return `${permissionMap[p] || p} (${chainText})`;
+      }).join('\n');
+      
+      let confirmMessage = `确认分配授权？
+      
+授权对象: ${targetTexts}
+授权权限及链路:
+${permissionsText}
+生效时间: ${startTime}
+${endTime ? `到期时间: ${endTime}` : ''}
+${description ? `授权说明: ${description}` : ''}`;
+      
+      if (confirm(confirmMessage)) {
+        // 这里可以发送到后端API
+        console.log('分配授权信息:', authInfo);
+        
+        // 显示成功消息
+        alert('授权分配成功！');
+        
+        // 关闭模态框
+        closeModal('assignAuthModal');
+        
+        // 重置表单
+        document.querySelectorAll('input[name="auth-targets"]').forEach(cb => cb.checked = false);
+        document.getElementById('auth-chain-section').classList.add('hidden');
+        document.querySelectorAll('input[name="auth-permissions"]').forEach(cb => cb.checked = false);
+        document.querySelector('input[name="auth-permissions"][value="read"]').checked = true;
+        document.querySelectorAll('[id$="-chain-select"]').forEach(select => {
+          select.value = '';
+          select.style.display = 'none';
+          select.required = false;
+        });
+        document.getElementById('read-chain-select').style.display = 'block';
+        document.getElementById('read-chain-select').required = true;
+        document.getElementById('auth-start-time').value = '';
+        document.getElementById('auth-end-time').value = '';
+        document.getElementById('auth-description').value = '';
+      }
+    }
+    
+    // 处理权限链路切换
+    function togglePermissionChain(permission) {
+      const checkbox = document.querySelector(`input[name="auth-permissions"][value="${permission}"]`);
+      const chainSelect = document.getElementById(`${permission}-chain-select`);
+      
+      if (checkbox.checked) {
+        chainSelect.style.display = 'block';
+        chainSelect.required = true;
+      } else {
+        chainSelect.style.display = 'none';
+        chainSelect.required = false;
+        chainSelect.value = '';
+      }
+    }
+
+    // 全选授权对象
+    function selectAllTargets() {
+      document.querySelectorAll('input[name="auth-targets"]').forEach(cb => {
+        cb.checked = true;
+      });
+      handleTargetChange();
+    }
+
+    // 清空授权对象
+    function clearAllTargets() {
+      document.querySelectorAll('input[name="auth-targets"]').forEach(cb => {
+        cb.checked = false;
+      });
+      handleTargetChange();
+    }
+
+  </script>
+</body>
+</html> 
+
+
