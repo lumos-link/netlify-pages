@@ -508,6 +508,15 @@
               </div>
             </div>
 
+            <!-- 附件显示（有则显示文件名，无则显示无） + 上传发文按钮 -->
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label class="block text-sm font-medium text-gray-700">附件</label>
+                <button type="button" onclick="openEditModal()" class="text-sm px-3 py-1 rounded border border-blue-200 text-blue-700 bg-blue-50 hover:bg-blue-100 transition">上传发文</button>
+              </div>
+              <div id="attachmentDisplay" class="text-sm text-gray-700">无</div>
+            </div>
+
             <!-- 是否启用 -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2 required">是否启用</label>
@@ -527,7 +536,7 @@
             <!-- 操作按钮 -->
             <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
               <button type="button" class="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition">取消</button>
-              <button type="button" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">修改</button>
+              <button type="button" onclick="submitLevelUpdate()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">修改</button>
             </div>
           </form>
         </div>
@@ -631,6 +640,10 @@
           </div>
         </div>
         <div class="mt-6">
+          <label class="block text-sm font-medium text-gray-500 mb-1">附件</label>
+          <p id="detail-attachment" class="text-gray-900">无</p>
+        </div>
+        <div class="mt-6">
           <label class="block text-sm font-medium text-gray-500 mb-2">分级描述</label>
           <div class="bg-gray-50 rounded-lg p-4 text-sm text-gray-700">
             <p>公开数据是指可以对外公开的数据，包括一般公开和限制公开两个子级别，主要用于对外展示和宣传。</p>
@@ -644,7 +657,54 @@
     </div>
   </div>
 
+  <!-- 修改分级模态框（需上传发文） -->
+  <div id="editLevelModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4">
+      <div class="flex items-center justify-between p-6 border-b">
+        <h3 class="text-lg font-semibold text-gray-900">修改数据分级</h3>
+        <button onclick="closeModal('editLevelModal')" class="text-gray-400 hover:text-gray-600">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="p-6">
+        <form id="editLevelForm" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">修改说明</label>
+            <textarea id="edit-remark" rows="3" placeholder="请简要填写修改原因" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2 required">上传发文（支持：PDF/DOC/DOCX/JPG/PNG）</label>
+            <input id="edit-file" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+            <p class="text-xs text-gray-500 mt-2">请上传相关发文作为修改依据，大小不超过 20MB。</p>
+            <div id="edit-file-name" class="text-sm text-gray-600 mt-2"></div>
+          </div>
+        </form>
+      </div>
+      <div class="flex items-center justify-end gap-3 p-6 border-t">
+        <button onclick="closeModal('editLevelModal')" class="btn-secondary">取消</button>
+        <button onclick="submitEditLevel()" class="btn-primary">提交申请</button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // 通用关闭模态框
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (!modal) return;
+      modal.classList.add('hidden');
+      if (modalId === 'editLevelModal') {
+        const fileInput = document.getElementById('edit-file');
+        const nameBox = document.getElementById('edit-file-name');
+        if (fileInput) fileInput.value = '';
+        if (nameBox) nameBox.textContent = '';
+      }
+    }
+
+    // 附件存储（按分级名）与当前选中分级
+    const levelAttachments = {};
+    let currentSelectedLevel = null;
+
     // 侧边栏切换
     function toggleSidebar() {
       const sidebar = document.getElementById('sidebar');
@@ -669,6 +729,16 @@
         mainContent.style.maxWidth = 'calc(100% - 240px)';
       }
     }
+
+    // 点击遮罩关闭弹窗
+    document.addEventListener('click', function(e) {
+      ['addLevelModal', 'levelDetailModal', 'editLevelModal'].forEach(function(id) {
+        const modal = document.getElementById(id);
+        if (modal && !modal.classList.contains('hidden') && e.target === modal) {
+          closeModal(id);
+        }
+      });
+    });
 
     // 子菜单切换
     function toggleSubMenu(menuId) {
@@ -701,6 +771,13 @@
       // 更新表单数据
       document.getElementById('levelName').value = name;
       document.getElementById('levelDescription').value = `这是${name}的描述信息`;
+      currentSelectedLevel = name;
+      // 更新附件显示（右侧与详情）
+      const attName = levelAttachments[name];
+      const rightAtt = document.getElementById('attachmentDisplay');
+      if (rightAtt) rightAtt.textContent = attName ? attName : '无';
+      const detailAtt = document.getElementById('detail-attachment');
+      if (detailAtt) detailAtt.textContent = attName ? attName : '无';
       
       // 更新字符计数
       updateCharCount(document.getElementById('levelName'), 'nameCount');
@@ -943,6 +1020,64 @@
         arrow.style.transform = 'rotate(0deg)';
       }
     });
+
+    // 打开修改分级弹窗
+    function openEditModal() {
+      const modal = document.getElementById('editLevelModal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    // 从详情进入编辑
+    function editLevelFromDetail() {
+      closeModal('levelDetailModal');
+      openEditModal();
+    }
+
+    // 监听文件选择展示文件名（编辑弹窗内）
+    document.addEventListener('change', function(e) {
+      if (e.target && e.target.id === 'edit-file') {
+        const file = e.target.files && e.target.files[0];
+        const nameBox = document.getElementById('edit-file-name');
+        if (file && nameBox) {
+          nameBox.textContent = `已选择：${file.name}`;
+        } else if (nameBox) {
+          nameBox.textContent = '';
+        }
+      }
+    });
+
+    // 提交修改（校验必须上传发文）
+    function submitEditLevel() {
+      const fileInput = document.getElementById('edit-file');
+      if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        alert('请先上传发文后再提交申请');
+        return;
+      }
+      const file = fileInput.files[0];
+      const allowed = ['pdf','doc','docx','jpg','jpeg','png'];
+      const ext = (file.name.split('.').pop() || '').toLowerCase();
+      if (!allowed.includes(ext)) {
+        alert('发文格式不支持，请上传 PDF/DOC/DOCX/JPG/PNG 文件');
+        return;
+      }
+      // 记录到当前分级的附件并刷新显示
+      if (currentSelectedLevel) {
+        levelAttachments[currentSelectedLevel] = file.name;
+        const rightAtt = document.getElementById('attachmentDisplay');
+        if (rightAtt) rightAtt.textContent = file.name;
+        const detailAtt = document.getElementById('detail-attachment');
+        if (detailAtt) detailAtt.textContent = file.name;
+      }
+      // 原型页面：仅提示成功
+      showNotification('修改已提交，并附带发文。', 'success');
+      closeModal('editLevelModal');
+    }
+
+    // 分级信息保存（不弹出上传发文弹窗）
+    function submitLevelUpdate() {
+      // 原型行为：直接提示保存
+      showNotification('分级信息已保存。', 'success');
+    }
   </script>
 </body>
 </html>

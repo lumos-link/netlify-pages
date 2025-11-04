@@ -2317,14 +2317,72 @@
               </div>
             </div>
             
-            <!-- 资产声明确认 -->
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-              <h3 class="text-lg font-medium text-gray-800 mb-4">资产信息</h3>
-              <p class="text-sm text-gray-600 mb-4">说明：展示立项环节中定义的资产信息，可在此进行最终确认和编辑。</p>
+            <!-- 资产分页签 -->
+            <div class="mt-6">
+              <!-- 页签导航 -->
+              <div class="border-b border-gray-200">
+                <nav class="-mb-px flex space-x-6 overflow-x-auto items-center" aria-label="资产页签">
+                  <button onclick="switchAssetTab('asset1')" id="asset-tab-1" class="asset-tab-button border-b-2 border-blue-500 py-2 px-1 text-sm font-medium text-blue-600 whitespace-nowrap" data-asset="asset1">
+                    采购业务分析数据集
+                  </button>
+                  <button onclick="switchAssetTab('asset2')" id="asset-tab-2" class="asset-tab-button border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap" data-asset="asset2">
+                    成交分析数据集
+                  </button>
+                  <button onclick="showAddAssetDialog()" class="ml-4 px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 flex items-center whitespace-nowrap">
+                    <i class="fas fa-plus mr-2"></i>新增资产
+                  </button>
+                </nav>
+              </div>
               
-              <!-- 资产基本信息 -->
-              <div class="mb-6">
-                <h4 class="text-md font-medium text-gray-700 mb-3">资产 1</h4>
+              <!-- 资产1页签内容 -->
+              <div id="asset-tab-content-1" class="asset-tab-content space-y-6 mt-6">
+                <!-- 资产内容容器 -->
+                <div class="border-2 border-blue-300 rounded-lg p-6 bg-blue-50/30">
+                  <!-- 资产信息 -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <h3 class="text-lg font-medium text-gray-800 mb-4">资产信息</h3>
+                  <p class="text-sm text-gray-600 mb-4">说明：展示立项环节中定义的资产信息，可在此进行最终确认和编辑。</p>
+                  
+                  <!-- 是否为增资 -->
+                  <div class="mb-6">
+                    <div class="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4">
+                      <label class="block text-sm font-medium text-gray-700 mb-3">
+                        <i class="fas fa-plus-circle mr-2 text-yellow-600"></i>
+                        是否为增资
+                      </label>
+                      <div class="flex items-center space-x-6">
+                        <label class="inline-flex items-center">
+                          <input type="radio" name="is-addition" value="no" class="form-radio text-blue-600" checked onchange="toggleAdditionFields()">
+                          <span class="ml-2 text-sm">否（新建资产）</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                          <input type="radio" name="is-addition" value="yes" class="form-radio text-blue-600" onchange="toggleAdditionFields()">
+                          <span class="ml-2 text-sm">是（增资）</span>
+                        </label>
+                      </div>
+                      
+                      <!-- 增资相关字段 -->
+                      <div id="addition-fields" class="mt-4 space-y-4 hidden">
+                        <div>
+                          <label class="block text-sm font-medium text-gray-700 mb-2">关联现有资产</label>
+                          <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">请选择要增资的资产</option>
+                            <option>客户数据分析平台</option>
+                            <option>供应商管理系统</option>
+                            <option>采购业务分析数据集</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-700 mb-2">增资金额（万元）</label>
+                          <input type="number" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入增资金额" min="0" step="0.01">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- 资产基本信息 -->
+                  <div class="mb-6">
+                    <h4 class="text-md font-medium text-gray-700 mb-3">资产 1</h4>
                 <div class="grid grid-cols-4 gap-4 mb-4">
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">资产名称</label>
@@ -2359,43 +2417,6 @@
                   <div class="col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2">详细描述</label>
                     <textarea class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" rows="2">该数据集包含采购业务相关的分析数据，包括采购订单、供应商信息、采购金额、采购周期等关键指标。主要用于采购决策分析、供应商评估、成本控制等业务场景。数据来源于采购管理系统，每日更新，是采购业务分析的重要数据资产。</textarea>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 是否为增资 -->
-              <div class="mb-6">
-                <div class="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4">
-                  <label class="block text-sm font-medium text-gray-700 mb-3">
-                    <i class="fas fa-plus-circle mr-2 text-yellow-600"></i>
-                    是否为增资
-                  </label>
-                  <div class="flex items-center space-x-6">
-                    <label class="inline-flex items-center">
-                      <input type="radio" name="is-addition" value="no" class="form-radio text-blue-600" checked onchange="toggleAdditionFields()">
-                      <span class="ml-2 text-sm">否（新建资产）</span>
-                    </label>
-                    <label class="inline-flex items-center">
-                      <input type="radio" name="is-addition" value="yes" class="form-radio text-blue-600" onchange="toggleAdditionFields()">
-                      <span class="ml-2 text-sm">是（增资）</span>
-                    </label>
-                  </div>
-                  
-                  <!-- 增资相关字段 -->
-                  <div id="addition-fields" class="mt-4 space-y-4 hidden">
-                    <div>
-                      <label class="block text-sm font-medium text-gray-700 mb-2">关联现有资产</label>
-                      <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">请选择要增资的资产</option>
-                        <option>客户数据分析平台</option>
-                        <option>供应商管理系统</option>
-                        <option>采购业务分析数据集</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label class="block text-sm font-medium text-gray-700 mb-2">增资金额（万元）</label>
-                      <input type="number" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入增资金额" min="0" step="0.01">
-                    </div>
                   </div>
                 </div>
               </div>
@@ -2514,169 +2535,9 @@
               </div>
             </div>
             
-            <!-- 以下是原有的账面价值等内容 -->
-            <!-- 账面价值 -->
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-              <h3 class="text-lg font-medium text-gray-800 mb-4">账面价值</h3>
-              
-              <!-- 费用分类汇总 -->
-              <div class="mb-6">
-                <h4 class="text-md font-medium text-gray-700 mb-3">费用分类汇总</h4>
-                <div class="grid grid-cols-4 gap-4">
-                  <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                    <div class="text-center">
-                      <div class="text-lg font-bold text-blue-600" id="material-total">¥50万</div>
-                      <div class="text-sm text-blue-600">材料费</div>
-                    </div>
-                  </div>
-                  <div class="bg-green-50 border border-green-200 rounded-lg p-3">
-                    <div class="text-center">
-                      <div class="text-lg font-bold text-green-600" id="labor-total">¥80万</div>
-                      <div class="text-sm text-green-600">工时费</div>
-                    </div>
-                  </div>
-                  <div class="bg-orange-50 border border-orange-200 rounded-lg p-3">
-                    <div class="text-center">
-                      <div class="text-lg font-bold text-orange-600" id="service-total">¥70万</div>
-                      <div class="text-sm text-orange-600">服务费</div>
-                    </div>
-                  </div>
-                  <div class="bg-purple-50 border border-purple-200 rounded-lg p-3">
-                    <div class="text-center">
-                      <div class="text-lg font-bold text-purple-600" id="allocation-total">¥200万</div>
-                      <div class="text-sm text-purple-600">分配汇总</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 资产价值分配表 -->
-              <div class="mb-4">
-                <h4 class="text-md font-medium text-gray-700 mb-3">资产价值分配</h4>
-                <div class="overflow-x-auto">
-                  <table class="w-full border border-gray-200 rounded-lg">
-                    <thead class="bg-gray-100">
-                      <tr>
-                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">费用分类</th>
-                        <th class="px-4 py-2 text-center text-sm font-medium text-gray-700 border-b">采购业务分析数据集</th>
-                        <th class="px-4 py-2 text-center text-sm font-medium text-gray-700 border-b">成交分析数据集</th>
-                        <th class="px-4 py-2 text-center text-sm font-medium text-gray-700 border-b">分类总计</th>
-                      </tr>
-                    </thead>
-                    <tbody id="asset-allocation-table">
-                      <!-- 材料费 -->
-                      <tr class="border-b">
-                        <td class="px-4 py-2 text-sm font-medium text-gray-900 bg-blue-50">材料费</td>
-                        <td class="px-4 py-2 text-center">
-                          <div class="mb-2">
-                            <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded text-center" 
-                                   value="60" min="0" max="100" onchange="calculateAllocationByCategory(this, 'material')">
-                            <span class="text-xs text-gray-500 ml-1">%</span>
-                          </div>
-                          <div class="text-sm text-gray-600" id="asset1-material">¥30万</div>
-                        </td>
-                        <td class="px-4 py-2 text-center">
-                          <div class="mb-2">
-                            <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded text-center" 
-                                   value="40" min="0" max="100" onchange="calculateAllocationByCategory(this, 'material')">
-                            <span class="text-xs text-gray-500 ml-1">%</span>
-                          </div>
-                          <div class="text-sm text-gray-600" id="asset2-material">¥20万</div>
-                        </td>
-                        <td class="px-4 py-2 text-center text-sm font-bold text-blue-600" id="material-total-allocated">¥50万</td>
-                      </tr>
-                      <!-- 工时费 -->
-                      <tr class="border-b">
-                        <td class="px-4 py-2 text-sm font-medium text-gray-900 bg-green-50">工时费</td>
-                        <td class="px-4 py-2 text-center">
-                          <div class="mb-2">
-                            <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded text-center" 
-                                   value="50" min="0" max="100" onchange="calculateAllocationByCategory(this, 'labor')">
-                            <span class="text-xs text-gray-500 ml-1">%</span>
-                          </div>
-                          <div class="text-sm text-gray-600" id="asset1-labor">¥40万</div>
-                        </td>
-                        <td class="px-4 py-2 text-center">
-                          <div class="mb-2">
-                            <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded text-center" 
-                                   value="50" min="0" max="100" onchange="calculateAllocationByCategory(this, 'labor')">
-                            <span class="text-xs text-gray-500 ml-1">%</span>
-                          </div>
-                          <div class="text-sm text-gray-600" id="asset2-labor">¥40万</div>
-                        </td>
-                        <td class="px-4 py-2 text-center text-sm font-bold text-green-600" id="labor-total-allocated">¥80万</td>
-                      </tr>
-                      <!-- 服务费 -->
-                      <tr class="border-b">
-                        <td class="px-4 py-2 text-sm font-medium text-gray-900 bg-yellow-50">服务费</td>
-                        <td class="px-4 py-2 text-center">
-                          <div class="mb-2">
-                            <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded text-center" 
-                                   value="60" min="0" max="100" onchange="calculateAllocationByCategory(this, 'service')">
-                            <span class="text-xs text-gray-500 ml-1">%</span>
-                          </div>
-                          <div class="text-sm text-gray-600" id="asset1-service">¥42万</div>
-                        </td>
-                        <td class="px-4 py-2 text-center">
-                          <div class="mb-2">
-                            <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded text-center" 
-                                   value="40" min="0" max="100" onchange="calculateAllocationByCategory(this, 'service')">
-                            <span class="text-xs text-gray-500 ml-1">%</span>
-                          </div>
-                          <div class="text-sm text-gray-600" id="asset2-service">¥28万</div>
-                        </td>
-                        <td class="px-4 py-2 text-center text-sm font-bold text-yellow-600" id="service-total-allocated">¥70万</td>
-                      </tr>
-                      <!-- 按资产合计 -->
-                      <tr class="bg-gray-100 border-t-2 border-gray-400">
-                        <td class="px-4 py-2 text-sm font-bold text-gray-900">按资产合计</td>
-                        <td class="px-4 py-2 text-center">
-                          <div class="text-lg font-bold text-gray-800" id="asset1-total">¥112万</div>
-                        </td>
-                        <td class="px-4 py-2 text-center">
-                          <div class="text-lg font-bold text-gray-800" id="asset2-total">¥88万</div>
-                        </td>
-                        <td class="px-4 py-2 text-center">
-                          <div class="text-lg font-bold text-gray-800" id="grand-total-allocated">¥200万</div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <!-- 审核成本计量支撑文件 -->
-              <div class="mb-4">
-                <h4 class="text-md font-medium text-gray-700 mb-3">审核成本计量支撑文件</h4>
-                <div class="space-y-4">
-                  <!-- 文件上传 -->
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">成本计量支撑文件</label>
-                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                      <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
-                      <div class="text-sm text-gray-600 mt-2">
-                        <label for="cost-support-file" class="cursor-pointer text-blue-600 hover:text-blue-800">点击上传</label>或拖拽文件到此处
-                      </div>
-                      <p class="text-xs text-gray-500 mt-1">支持 PDF、Excel、Word 格式</p>
-                      <input type="file" id="cost-support-file" class="hidden" accept=".pdf,.xlsx,.xls,.doc,.docx">
-                      <div class="mt-4">
-                        <div class="flex items-center justify-between bg-blue-50 px-4 py-2 rounded-md">
-                          <div class="flex items-center space-x-2 text-sm text-blue-600">
-                            <i class="fas fa-file-excel"></i>
-                            <span>成本计量支撑文件.xlsx</span>
-                          </div>
-                          <button class="text-red-500 hover:text-red-700"><i class="fas fa-times"></i></button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 资产使用年限 -->
-             <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
-               <h3 class="text-lg font-medium text-gray-800 mb-4">资产使用年限</h3>
+                <!-- 资产使用年限 -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                  <h3 class="text-lg font-medium text-gray-800 mb-4">资产使用年限</h3>
                <div class="space-y-6">
                  <!-- 资产1使用年限 -->
                  <div class="space-y-4">
@@ -2709,9 +2570,9 @@
               </div>
             </div>
 
-            <!-- 资产登记信息 -->
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-              <h3 class="text-lg font-medium text-gray-800 mb-4">资产登记信息</h3>
+                <!-- 资产登记信息 -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <h3 class="text-lg font-medium text-gray-800 mb-4">资产登记信息</h3>
               <div class="grid grid-cols-5 gap-4">
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">资产名称</label>
@@ -2747,9 +2608,9 @@
               </div>
             </div>
 
-            <!-- 资产评估价值 -->
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
-              <h3 class="text-lg font-medium text-gray-800 mb-4">资产评估价值（选填，也可在资产卡片中修改）</h3>
+                <!-- 资产评估价值 -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                  <h3 class="text-lg font-medium text-gray-800 mb-4">资产评估价值（选填，也可在资产卡片中修改）</h3>
                <div class="space-y-4">
                  <div class="grid grid-cols-4 gap-4">
                    <div>
@@ -2789,10 +2650,10 @@
               </div>
             </div>
 
-            <!-- 数据权属证明 -->
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
-              <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-medium text-gray-800">数据权属证明</h3>
+                <!-- 数据权属证明 -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+                  <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-medium text-gray-800">数据权属证明</h3>
                 <button onclick="loadPreviousAssetOwnership()" class="px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 flex items-center">
                   <i class="fas fa-copy mr-2"></i>代入上一资产权属证明
                 </button>
@@ -3307,9 +3168,9 @@
               </div>
             </div>
 
-            <!-- 附件上传 -->
-            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-              <h3 class="text-lg font-medium text-gray-800 mb-4">其他附件上传</h3>
+                <!-- 其他附件上传 -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <h3 class="text-lg font-medium text-gray-800 mb-4">其他附件上传</h3>
               
               <!-- 转资增资申请表 -->
               <div class="mb-6">
@@ -3325,25 +3186,6 @@
                     <div class="flex items-center space-x-2 text-sm text-blue-600"><i class="fas fa-file-excel"></i><span>转资增资申请表.xlsx</span></div>
                     <button class="text-red-500 hover:text-red-700"><i class="fas fa-times"></i></button>
                   </div></div>
-                </div>
-              </div>
-              
-              <!-- 审核成本计量支撑文件 -->
-              <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">审核成本计量支撑文件</label>
-                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                  <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
-                  <div class="text-sm text-gray-600 mt-2">
-                    <label for="cost-docs" class="cursor-pointer text-blue-600 hover:text-blue-800">点击上传</label>或拖拽文件到此处
-                  </div>
-                  <p class="text-xs text-gray-500 mt-1">支持 PDF、DOC、DOCX 格式，可上传多个文件</p>
-                  <input type="file" id="cost-docs" class="hidden" accept=".pdf,.doc,.docx" multiple>
-                  <div class="mt-4 space-y-2">
-                    <div class="flex items-center justify-between bg-blue-50 px-4 py-2 rounded-md">
-                      <div class="flex items-center space-x-2 text-sm text-blue-600"><i class="fas fa-file-pdf"></i><span>成本计量说明.pdf</span></div>
-                      <button class="text-red-500 hover:text-red-700"><i class="fas fa-times"></i></button>
-                    </div>
-                  </div>
                 </div>
               </div>
               
@@ -3405,6 +3247,512 @@
                         <span>数据质量报告.pdf</span>
                       </div>
                       <button class="text-red-500 hover:text-red-700"><i class="fas fa-times"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                </div>
+              </div>
+              
+              <!-- 资产2页签内容 -->
+              <div id="asset-tab-content-2" class="asset-tab-content hidden space-y-6 mt-6">
+                <!-- 资产内容容器 -->
+                <div class="border-2 border-blue-300 rounded-lg p-6 bg-blue-50/30">
+                  <!-- 资产信息 -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <h3 class="text-lg font-medium text-gray-800 mb-4">资产信息</h3>
+                  <p class="text-sm text-gray-600 mb-4">说明：展示立项环节中定义的资产信息，可在此进行最终确认和编辑。</p>
+                  
+                  <!-- 是否为增资 -->
+                  <div class="mb-6">
+                    <div class="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4">
+                      <label class="block text-sm font-medium text-gray-700 mb-3">
+                        <i class="fas fa-plus-circle mr-2 text-yellow-600"></i>
+                        是否为增资
+                      </label>
+                      <div class="flex items-center space-x-6">
+                        <label class="inline-flex items-center">
+                          <input type="radio" name="is-addition-2" value="no" class="form-radio text-blue-600" checked onchange="toggleAdditionFields2()">
+                          <span class="ml-2 text-sm">否（新建资产）</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                          <input type="radio" name="is-addition-2" value="yes" class="form-radio text-blue-600" onchange="toggleAdditionFields2()">
+                          <span class="ml-2 text-sm">是（增资）</span>
+                        </label>
+                      </div>
+                      
+                      <!-- 增资相关字段 -->
+                      <div id="addition-fields-2" class="mt-4 space-y-4 hidden">
+                        <div>
+                          <label class="block text-sm font-medium text-gray-700 mb-2">关联现有资产</label>
+                          <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">请选择要增资的资产</option>
+                            <option>客户数据分析平台</option>
+                            <option>供应商管理系统</option>
+                            <option>采购业务分析数据集</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-700 mb-2">增资金额（万元）</label>
+                          <input type="number" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入增资金额" min="0" step="0.01">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- 资产基本信息 -->
+                  <div class="mb-6">
+                    <h4 class="text-md font-medium text-gray-700 mb-3">资产 2</h4>
+                    <div class="grid grid-cols-4 gap-4 mb-4">
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">资产名称</label>
+                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="成交分析数据集" readonly>
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">资产类型确认 *</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                          <option value="">请选择</option>
+                          <option value="无形资产" selected>无形资产</option>
+                          <option value="存货">存货</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">持有目的</label>
+                        <div class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-700">业务运营</div>
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">所属部门</label>
+                        <div class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-700">数据管理部</div>
+                      </div>
+                    </div>
+                    <div class="grid grid-cols-4 gap-4 mb-4">
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">业务归属</label>
+                        <div class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-700">零售业务</div>
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">所属行业</label>
+                        <div class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-700">银行业</div>
+                      </div>
+                      <div class="col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">详细描述</label>
+                        <textarea class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" rows="2">该数据集包含成交业务相关的分析数据，包括成交记录、成交金额、成交周期等关键指标。主要用于成交分析、业绩评估等业务场景。</textarea>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 资产基础信息配置 -->
+                  <div class="mb-6">
+                    <div class="flex items-center justify-between mb-3">
+                      <h4 class="text-md font-medium text-gray-700">资产基础信息配置</h4>
+                      <button class="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700">
+                        <i class="fas fa-cog mr-1"></i>配置标签属性
+                      </button>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-lg p-4">
+                      <div class="space-y-2 text-sm text-gray-600">
+                        <div><span class="font-medium">技术标签：</span>未配置</div>
+                        <div><span class="font-medium">业务标签：</span>未配置</div>
+                        <div><span class="font-medium">安全标签：</span>未配置</div>
+                        <div><span class="font-medium">资产属性：</span>未配置</div>
+                        <div><span class="font-medium">所属目录：</span>未配置</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 数据集管理 -->
+                  <div class="mb-6">
+                    <div class="flex items-center justify-between mb-3">
+                      <h4 class="text-md font-medium text-gray-700">数据集管理</h4>
+                      <button class="px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700">
+                        <i class="fas fa-plus mr-1"></i>新增数据集
+                      </button>
+                    </div>
+                    <div class="text-sm text-gray-500">暂未配置数据集</div>
+                  </div>
+                </div>
+                
+                <!-- 资产使用年限 -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                  <h3 class="text-lg font-medium text-gray-800 mb-4">资产使用年限</h3>
+                  <div class="space-y-6">
+                    <div class="space-y-4">
+                      <div class="grid grid-cols-3 gap-4">
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">资产名称</label>
+                          <div class="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">成交分析数据集</div>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">预计使用年限</label>
+                          <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value="5年" placeholder="请输入预计使用年限">
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-600 mb-1">摊销方法</label>
+                          <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="直线摊销法" selected>直线摊销法</option>
+                            <option value="产量摊销法">产量摊销法</option>
+                            <option value="年限平均法">年限平均法</option>
+                            <option value="其他">其他</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">使用年限说明</label>
+                        <div class="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md min-h-[80px]">
+                          根据数据资产的技术特性和业务价值，预计该资产可使用5年。在5年内，资产将保持其核心价值，之后可能需要技术升级或重新开发。
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 资产登记信息 -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <h3 class="text-lg font-medium text-gray-800 mb-4">资产登记信息</h3>
+                  <div class="grid grid-cols-5 gap-4">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">资产名称</label>
+                      <div class="text-sm text-gray-900 bg-white px-3 py-2 rounded-md border border-gray-200">
+                        成交分析数据集
+                      </div>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">资产编号</label>
+                      <div class="text-sm text-gray-900 bg-white px-3 py-2 rounded-md border border-gray-200">
+                        DA-2025-002
+                      </div>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">登记日期</label>
+                      <div class="text-sm text-gray-900 bg-white px-3 py-2 rounded-md border border-gray-200">
+                        2025年9月25日
+                      </div>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">资产状态</label>
+                      <div class="text-sm text-gray-900 bg-white px-3 py-2 rounded-md border border-gray-200">
+                        已登记
+                      </div>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">管理责任人</label>
+                      <div class="text-sm text-gray-900 bg-white px-3 py-2 rounded-md border border-gray-200">
+                        数据资产管理部
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 资产评估价值 -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                  <h3 class="text-lg font-medium text-gray-800 mb-4">资产评估价值（选填，也可在资产卡片中修改）</h3>
+                  <div class="space-y-4">
+                    <div class="grid grid-cols-4 gap-4">
+                      <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">资产名称</label>
+                        <div class="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">成交分析数据集</div>
+                      </div>
+                      <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">评估价值</label>
+                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value="150万元" placeholder="请输入评估价值">
+                      </div>
+                      <div>
+                       <label class="block text-sm font-medium text-gray-600 mb-1">评估方法</label>
+                       <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value="成本法 + 收益法综合评估" placeholder="请选择评估方法">
+                      </div>
+                      <div>
+                       <label class="block text-sm font-medium text-gray-600 mb-1">评估结论</label>
+                       <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value="基于成本法和收益法的综合评估,该数据资产的总价值约为150万元。" placeholder="请输入评估结论">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 评估附件 -->
+                  <h3 class="text-lg font-medium text-gray-800 mb-4 mt-4">评估附件</h3>
+                  <div class="space-y-2">
+                    <div class="flex items-center space-x-2 text-sm text-gray-600">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                      </svg>
+                      <span>数据资产评估报告.pdf</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 数据权属证明 -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+                  <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-medium text-gray-800">数据权属证明</h3>
+                    <button onclick="loadPreviousAssetOwnership()" class="px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 flex items-center">
+                      <i class="fas fa-copy mr-2"></i>代入上一资产权属证明
+                    </button>
+                  </div>
+                  <p class="text-sm text-gray-600 mb-4">说明：请根据实际情况选择涉及的权属表单类型，并填写相应的指标评估表。</p>
+                  
+                  <!-- 权属表单类型选择 -->
+                  <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">请选择涉及的权属表单类型（可多选）<span class="text-red-500">*</span></label>
+                    <div class="space-y-2">
+                      <label class="flex items-center p-3 bg-white border border-gray-300 rounded-lg hover:bg-blue-50 cursor-pointer">
+                        <input type="checkbox" class="mr-3 ownership-type-checkbox-2" value="device" onchange="toggleOwnershipForm2('device')">
+                        <span class="text-sm text-gray-700">（一）通过设备自行收集数据指标评估表</span>
+                      </label>
+                      <label class="flex items-center p-3 bg-white border border-gray-300 rounded-lg hover:bg-blue-50 cursor-pointer">
+                        <input type="checkbox" class="mr-3 ownership-type-checkbox-2" value="platform" onchange="toggleOwnershipForm2('platform')">
+                        <span class="text-sm text-gray-700">（二）通过电子业务平台收集的数据指标评估表</span>
+                      </label>
+                      <label class="flex items-center p-3 bg-white border border-gray-300 rounded-lg hover:bg-blue-50 cursor-pointer">
+                        <input type="checkbox" class="mr-3 ownership-type-checkbox-2" value="public" onchange="toggleOwnershipForm2('public')">
+                        <span class="text-sm text-gray-700">（三）收集公开数据指标评估表</span>
+                      </label>
+                      <label class="flex items-center p-3 bg-white border border-gray-300 rounded-lg hover:bg-blue-50 cursor-pointer">
+                        <input type="checkbox" class="mr-3 ownership-type-checkbox-2" value="authorized" onchange="toggleOwnershipForm2('authorized')">
+                        <span class="text-sm text-gray-700">（四）经授权使用第三方企业数据指标评估表</span>
+                      </label>
+                      <label class="flex items-center p-3 bg-white border border-gray-300 rounded-lg hover:bg-blue-50 cursor-pointer">
+                        <input type="checkbox" class="mr-3 ownership-type-checkbox-2" value="purchase" onchange="toggleOwnershipForm2('purchase')">
+                        <span class="text-sm text-gray-700">（五）向第三方企业采购数据指标评估表</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 其他附件上传 -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <h3 class="text-lg font-medium text-gray-800 mb-4">其他附件上传</h3>
+                  
+                  <!-- 转资增资申请表 -->
+                  <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">转资增资申请表</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                      <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
+                      <div class="text-sm text-gray-600 mt-2">
+                        <label for="asset-application-2" class="cursor-pointer text-blue-600 hover:text-blue-800">点击上传</label>或拖拽文件到此处
+                      </div>
+                      <p class="text-xs text-gray-500 mt-1">支持 PDF、DOC、DOCX、XLS、XLSX 格式</p>
+                      <input type="file" id="asset-application-2" class="hidden" accept=".pdf,.doc,.docx,.xls,.xlsx">
+                    </div>
+                  </div>
+                  
+                  <!-- 预期经济利益流入的论证材料 -->
+                  <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">预期经济利益流入的论证材料</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                      <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
+                      <div class="text-sm text-gray-600 mt-2">
+                        <label for="benefit-docs-2" class="cursor-pointer text-blue-600 hover:text-blue-800">点击上传</label>或拖拽文件到此处
+                      </div>
+                      <p class="text-xs text-gray-500 mt-1">支持 PDF、DOC、DOCX 格式，可上传多个文件</p>
+                      <input type="file" id="benefit-docs-2" class="hidden" accept=".pdf,.doc,.docx" multiple>
+                    </div>
+                  </div>
+                  
+                  <!-- 知识产权登记 -->
+                  <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">知识产权登记</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                      <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
+                      <div class="text-sm text-gray-600 mt-2">
+                        <label for="intellectual-property-file-2" class="cursor-pointer text-blue-600 hover:text-blue-800">点击上传</label>或拖拽文件到此处
+                      </div>
+                      <p class="text-xs text-gray-500 mt-1">支持 PDF、DOC、DOCX 格式</p>
+                      <input type="file" id="intellectual-property-file-2" class="hidden" accept=".pdf,.doc,.docx">
+                    </div>
+                  </div>
+                  
+                  <!-- 数据质量 -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">数据质量</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                      <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
+                      <div class="text-sm text-gray-600 mt-2">
+                        <label for="data-quality-file-2" class="cursor-pointer text-blue-600 hover:text-blue-800">点击上传</label>或拖拽文件到此处
+                      </div>
+                      <p class="text-xs text-gray-500 mt-1">支持 PDF、Excel、Word 格式</p>
+                      <input type="file" id="data-quality-file-2" class="hidden" accept=".pdf,.xlsx,.xls,.doc,.docx">
+                    </div>
+                  </div>
+                </div>
+              </div>
+                </div>
+              </div>
+
+            <!-- 新增资产弹窗 -->
+            <div id="add-asset-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50 flex items-center justify-center">
+              <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-lg font-medium text-gray-800">新增资产</h3>
+                  <button onclick="closeAddAssetDialog()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                    资产名称 <span class="text-red-500">*</span>
+                  </label>
+                  <input type="text" id="new-asset-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入资产名称" maxlength="50">
+                </div>
+                <div class="flex justify-end space-x-3">
+                  <button onclick="closeAddAssetDialog()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
+                    取消
+                  </button>
+                  <button onclick="addNewAsset()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    确定
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 账面价值（移至页签底部） -->
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+              <h3 class="text-lg font-medium text-gray-800 mb-4">账面价值</h3>
+              
+              <!-- 费用分类汇总 -->
+              <div class="mb-6">
+                <h4 class="text-md font-medium text-gray-700 mb-3">费用分类汇总</h4>
+                <div class="grid grid-cols-4 gap-4">
+                  <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <div class="text-center">
+                      <div class="text-lg font-bold text-blue-600" id="material-total">¥50万</div>
+                      <div class="text-sm text-blue-600">材料费</div>
+                    </div>
+                  </div>
+                  <div class="bg-green-50 border border-green-200 rounded-lg p-3">
+                    <div class="text-center">
+                      <div class="text-lg font-bold text-green-600" id="labor-total">¥80万</div>
+                      <div class="text-sm text-green-600">工时费</div>
+                    </div>
+                  </div>
+                  <div class="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                    <div class="text-center">
+                      <div class="text-lg font-bold text-orange-600" id="service-total">¥70万</div>
+                      <div class="text-sm text-orange-600">服务费</div>
+                    </div>
+                  </div>
+                  <div class="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                    <div class="text-center">
+                      <div class="text-lg font-bold text-purple-600" id="allocation-total">¥200万</div>
+                      <div class="text-sm text-purple-600">分配汇总</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 资产价值分配表 -->
+              <div class="mb-4">
+                <h4 class="text-md font-medium text-gray-700 mb-3">资产价值分配</h4>
+                <div class="overflow-x-auto">
+                  <table class="w-full border border-gray-200 rounded-lg">
+                    <thead class="bg-gray-100">
+                      <tr>
+                        <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 border-b">费用分类</th>
+                        <th class="px-4 py-2 text-center text-sm font-medium text-gray-700 border-b bg-blue-50">材料费</th>
+                        <th class="px-4 py-2 text-center text-sm font-medium text-gray-700 border-b bg-green-50">工时费</th>
+                        <th class="px-4 py-2 text-center text-sm font-medium text-gray-700 border-b bg-yellow-50">服务费</th>
+                        <th class="px-4 py-2 text-center text-sm font-medium text-gray-700 border-b bg-gray-100">按资产合计</th>
+                      </tr>
+                    </thead>
+                    <tbody id="asset-allocation-table">
+                      <!-- 采购业务分析数据集 -->
+                      <tr class="border-b">
+                        <td class="px-4 py-2 text-sm font-medium text-gray-900">采购业务分析数据集</td>
+                        <td class="px-4 py-2 text-center">
+                          <div class="mb-2">
+                            <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded text-center" 
+                                   value="60" min="0" max="100" onchange="calculateAllocationByCategory(this, 'material')">
+                            <span class="text-xs text-gray-500 ml-1">%</span>
+                          </div>
+                          <div class="text-sm text-gray-600" id="asset1-material">¥30万</div>
+                        </td>
+                        <td class="px-4 py-2 text-center">
+                          <div class="mb-2">
+                            <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded text-center" 
+                                   value="50" min="0" max="100" onchange="calculateAllocationByCategory(this, 'labor')">
+                            <span class="text-xs text-gray-500 ml-1">%</span>
+                          </div>
+                          <div class="text-sm text-gray-600" id="asset1-labor">¥40万</div>
+                        </td>
+                        <td class="px-4 py-2 text-center">
+                          <div class="mb-2">
+                            <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded text-center" 
+                                   value="60" min="0" max="100" onchange="calculateAllocationByCategory(this, 'service')">
+                            <span class="text-xs text-gray-500 ml-1">%</span>
+                          </div>
+                          <div class="text-sm text-gray-600" id="asset1-service">¥42万</div>
+                        </td>
+                        <td class="px-4 py-2 text-center">
+                          <div class="text-lg font-bold text-gray-800" id="asset1-total">¥112万</div>
+                        </td>
+                      </tr>
+                      <!-- 成交分析数据集 -->
+                      <tr class="border-b">
+                        <td class="px-4 py-2 text-sm font-medium text-gray-900">成交分析数据集</td>
+                        <td class="px-4 py-2 text-center">
+                          <div class="mb-2">
+                            <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded text-center" 
+                                   value="40" min="0" max="100" onchange="calculateAllocationByCategory(this, 'material')">
+                            <span class="text-xs text-gray-500 ml-1">%</span>
+                          </div>
+                          <div class="text-sm text-gray-600" id="asset2-material">¥20万</div>
+                        </td>
+                        <td class="px-4 py-2 text-center">
+                          <div class="mb-2">
+                            <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded text-center" 
+                                   value="50" min="0" max="100" onchange="calculateAllocationByCategory(this, 'labor')">
+                            <span class="text-xs text-gray-500 ml-1">%</span>
+                          </div>
+                          <div class="text-sm text-gray-600" id="asset2-labor">¥40万</div>
+                        </td>
+                        <td class="px-4 py-2 text-center">
+                          <div class="mb-2">
+                            <input type="number" class="w-16 px-2 py-1 text-sm border border-gray-300 rounded text-center" 
+                                   value="40" min="0" max="100" onchange="calculateAllocationByCategory(this, 'service')">
+                            <span class="text-xs text-gray-500 ml-1">%</span>
+                          </div>
+                          <div class="text-sm text-gray-600" id="asset2-service">¥28万</div>
+                        </td>
+                        <td class="px-4 py-2 text-center">
+                          <div class="text-lg font-bold text-gray-800" id="asset2-total">¥88万</div>
+                        </td>
+                      </tr>
+                      <!-- 分类总计 -->
+                      <tr class="bg-gray-100 border-t-2 border-gray-400">
+                        <td class="px-4 py-2 text-sm font-bold text-gray-900">分类总计</td>
+                        <td class="px-4 py-2 text-center text-sm font-bold text-blue-600" id="material-total-allocated">¥50万</td>
+                        <td class="px-4 py-2 text-center text-sm font-bold text-green-600" id="labor-total-allocated">¥80万</td>
+                        <td class="px-4 py-2 text-center text-sm font-bold text-yellow-600" id="service-total-allocated">¥70万</td>
+                        <td class="px-4 py-2 text-center">
+                          <div class="text-lg font-bold text-gray-800" id="grand-total-allocated">¥200万</div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- 审核成本计量支撑文件 -->
+              <div class="mb-4">
+                <h4 class="text-md font-medium text-gray-700 mb-3">审核成本计量支撑文件</h4>
+                <div class="space-y-4">
+                  <!-- 文件上传 -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">成本计量支撑文件</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                      <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
+                      <div class="text-sm text-gray-600 mt-2">
+                        <label for="cost-support-file" class="cursor-pointer text-blue-600 hover:text-blue-800">点击上传</label>或拖拽文件到此处
+                      </div>
+                      <p class="text-xs text-gray-500 mt-1">支持 PDF、Excel、Word 格式</p>
+                      <input type="file" id="cost-support-file" class="hidden" accept=".pdf,.xlsx,.xls,.doc,.docx">
+                      <div class="mt-4">
+                        <div class="flex items-center justify-between bg-blue-50 px-4 py-2 rounded-md">
+                          <div class="flex items-center space-x-2 text-sm text-blue-600">
+                            <i class="fas fa-file-excel"></i>
+                            <span>成本计量支撑文件.xlsx</span>
+                          </div>
+                          <button class="text-red-500 hover:text-red-700"><i class="fas fa-times"></i></button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -3769,35 +4117,48 @@
     
     // 页签切换功能
     function showTab(tabName) {
-      // 隐藏所有页签内容
-      const tabContents = document.querySelectorAll('.tab-content');
-      tabContents.forEach(content => content.classList.remove('active'));
-      
-      // 移除所有页签按钮的激活状态
-      const tabButtons = document.querySelectorAll('.tab-button');
-      tabButtons.forEach(button => button.classList.remove('active'));
-      
-      // 显示选中的页签内容
-      const selectedTab = document.getElementById(tabName + '-tab');
-      if (selectedTab) {
-        selectedTab.classList.add('active');
-      }
-      
-      // 激活对应的页签按钮
-      const selectedButton = document.querySelector(`[data-tab="${tabName}"]`);
-      if (selectedButton) {
-        selectedButton.classList.add('active');
-      }
-      
-      // 自动显示第一个子页签（如果有的话）
-      if (selectedTab) {
-        const firstSubButton = selectedTab.querySelector('.sub-tab-button');
-        if (firstSubButton) {
-          const firstSubTabName = firstSubButton.getAttribute('data-subtab');
-          if (firstSubTabName) {
-            showSubTab(tabName, firstSubTabName);
+      try {
+        // 隐藏所有页签内容
+        const tabContents = document.querySelectorAll('.tab-content');
+        tabContents.forEach(content => {
+          content.classList.remove('active');
+        });
+        
+        // 移除所有页签按钮的激活状态
+        const tabButtons = document.querySelectorAll('.tab-button');
+        tabButtons.forEach(button => {
+          button.classList.remove('active', 'text-blue-600');
+          button.classList.add('text-gray-500');
+        });
+        
+        // 显示选中的页签内容
+        const selectedTab = document.getElementById(tabName + '-tab');
+        if (selectedTab) {
+          selectedTab.classList.add('active');
+        }
+        
+        // 激活对应的页签按钮
+        const selectedButton = document.querySelector(`[data-tab="${tabName}"]`);
+        if (selectedButton) {
+          selectedButton.classList.remove('text-gray-500');
+          selectedButton.classList.add('active', 'text-blue-600');
+        }
+        
+        // 自动显示第一个子页签（如果有的话）
+        if (selectedTab) {
+          const firstSubButton = selectedTab.querySelector('.sub-tab-button.active');
+          if (!firstSubButton) {
+            const firstSubButtonAll = selectedTab.querySelector('.sub-tab-button');
+            if (firstSubButtonAll) {
+              const firstSubTabName = firstSubButtonAll.getAttribute('data-subtab');
+              if (firstSubTabName) {
+                showSubTab(tabName, firstSubTabName);
+              }
+            }
           }
         }
+      } catch (error) {
+        console.error('页签切换错误:', error);
       }
     }
     
@@ -3827,10 +4188,467 @@
       }
     }
     
+    // 资产计数器
+    let assetCounter = 2; // 从2开始，因为已经有资产1和资产2
+    
+    // 资产页签切换函数
+    function switchAssetTab(assetId) {
+      // 隐藏所有资产页签内容
+      const assetTabContents = document.querySelectorAll('.asset-tab-content');
+      assetTabContents.forEach(content => content.classList.add('hidden'));
+      
+      // 移除所有资产页签按钮的激活状态
+      const assetTabButtons = document.querySelectorAll('.asset-tab-button');
+      assetTabButtons.forEach(button => {
+        button.classList.remove('border-blue-500', 'text-blue-600');
+        button.classList.add('border-transparent', 'text-gray-500');
+      });
+      
+      // 显示选中的资产页签内容
+      const assetNumber = assetId.replace('asset', '');
+      const selectedAssetTab = document.getElementById('asset-tab-content-' + assetNumber);
+      if (selectedAssetTab) {
+        selectedAssetTab.classList.remove('hidden');
+      }
+      
+      // 激活选中的资产页签按钮
+      const selectedAssetButton = document.getElementById('asset-tab-' + assetNumber);
+      if (selectedAssetButton) {
+        selectedAssetButton.classList.remove('border-transparent', 'text-gray-500');
+        selectedAssetButton.classList.add('border-blue-500', 'text-blue-600');
+      }
+    }
+    
+    // 显示新增资产弹窗
+    function showAddAssetDialog() {
+      const modal = document.getElementById('add-asset-modal');
+      const input = document.getElementById('new-asset-name');
+      if (modal && input) {
+        modal.classList.remove('hidden');
+        input.value = '';
+        input.focus();
+      }
+    }
+    
+    // 关闭新增资产弹窗
+    function closeAddAssetDialog() {
+      const modal = document.getElementById('add-asset-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+      }
+    }
+    
+    // 创建新资产
+    function addNewAsset() {
+      const assetNameInput = document.getElementById('new-asset-name');
+      const assetName = assetNameInput ? assetNameInput.value.trim() : '';
+      
+      if (!assetName) {
+        alert('请输入资产名称');
+        return;
+      }
+      
+      assetCounter++;
+      const assetId = 'asset' + assetCounter;
+      const assetNumber = assetCounter;
+      
+      // 创建页签按钮
+      const tabNav = document.querySelector('nav[aria-label="资产页签"]');
+      if (tabNav) {
+        const newTabButton = document.createElement('button');
+        newTabButton.onclick = () => switchAssetTab(assetId);
+        newTabButton.id = 'asset-tab-' + assetNumber;
+        newTabButton.className = 'asset-tab-button border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap';
+        newTabButton.setAttribute('data-asset', assetId);
+        newTabButton.textContent = assetName;
+        
+        // 在"新增资产"按钮之前插入
+        const addButton = tabNav.querySelector('button[onclick="showAddAssetDialog()"]');
+        if (addButton) {
+          tabNav.insertBefore(newTabButton, addButton);
+        } else {
+          tabNav.appendChild(newTabButton);
+        }
+      }
+      
+      // 创建资产内容
+      const asset2Content = document.getElementById('asset-tab-content-2');
+      if (asset2Content && asset2Content.parentNode) {
+        const newAssetContent = createAssetContent(assetNumber, assetName);
+        // 在资产2内容之后插入新资产内容
+        asset2Content.parentNode.insertBefore(newAssetContent, asset2Content.nextSibling);
+      }
+      
+      // 切换到新创建的资产页签
+      switchAssetTab(assetId);
+      
+      // 关闭弹窗
+      closeAddAssetDialog();
+    }
+    
+    // 创建资产内容模板
+    function createAssetContent(assetNumber, assetName) {
+      const contentDiv = document.createElement('div');
+      contentDiv.id = 'asset-tab-content-' + assetNumber;
+      contentDiv.className = 'asset-tab-content hidden space-y-6 mt-6';
+      
+      contentDiv.innerHTML = `
+        <!-- 资产内容容器 -->
+        <div class="border-2 border-blue-300 rounded-lg p-6 bg-blue-50/30">
+          <!-- 资产信息 -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+          <h3 class="text-lg font-medium text-gray-800 mb-4">资产信息</h3>
+          <p class="text-sm text-gray-600 mb-4">说明：展示立项环节中定义的资产信息，可在此进行最终确认和编辑。</p>
+          
+          <!-- 是否为增资 -->
+          <div class="mb-6">
+            <div class="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4">
+              <label class="block text-sm font-medium text-gray-700 mb-3">
+                <i class="fas fa-plus-circle mr-2 text-yellow-600"></i>
+                是否为增资
+              </label>
+              <div class="flex items-center space-x-6">
+                <label class="inline-flex items-center">
+                  <input type="radio" name="is-addition-${assetNumber}" value="no" class="form-radio text-blue-600" checked onchange="toggleAdditionFieldsDynamic(${assetNumber})">
+                  <span class="ml-2 text-sm">否（新建资产）</span>
+                </label>
+                <label class="inline-flex items-center">
+                  <input type="radio" name="is-addition-${assetNumber}" value="yes" class="form-radio text-blue-600" onchange="toggleAdditionFieldsDynamic(${assetNumber})">
+                  <span class="ml-2 text-sm">是（增资）</span>
+                </label>
+              </div>
+              
+              <!-- 增资相关字段 -->
+              <div id="addition-fields-${assetNumber}" class="mt-4 space-y-4 hidden">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">关联现有资产</label>
+                  <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">请选择要增资的资产</option>
+                    <option>客户数据分析平台</option>
+                    <option>供应商管理系统</option>
+                    <option>采购业务分析数据集</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">增资金额（万元）</label>
+                  <input type="number" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入增资金额" min="0" step="0.01">
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 资产基本信息 -->
+          <div class="mb-6">
+            <h4 class="text-md font-medium text-gray-700 mb-3">资产 ${assetNumber}</h4>
+            <div class="grid grid-cols-4 gap-4 mb-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">资产名称</label>
+                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="${assetName}" readonly>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">资产类型确认 *</label>
+                <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="">请选择</option>
+                  <option value="无形资产">无形资产</option>
+                  <option value="存货">存货</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">持有目的</label>
+                <div class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-700">业务运营</div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">所属部门</label>
+                <div class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-700">数据管理部</div>
+              </div>
+            </div>
+            <div class="grid grid-cols-4 gap-4 mb-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">业务归属</label>
+                <div class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-700">零售业务</div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">所属行业</label>
+                <div class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-700">银行业</div>
+              </div>
+              <div class="col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-2">详细描述</label>
+                <textarea class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" rows="2" placeholder="请输入详细描述"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- 资产基础信息配置 -->
+          <div class="mb-6">
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="text-md font-medium text-gray-700">资产基础信息配置</h4>
+              <button class="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700">
+                <i class="fas fa-cog mr-1"></i>配置标签属性
+              </button>
+            </div>
+            <div class="bg-white border border-gray-200 rounded-lg p-4">
+              <div class="space-y-2 text-sm text-gray-600">
+                <div><span class="font-medium">技术标签：</span>未配置</div>
+                <div><span class="font-medium">业务标签：</span>未配置</div>
+                <div><span class="font-medium">安全标签：</span>未配置</div>
+                <div><span class="font-medium">资产属性：</span>未配置</div>
+                <div><span class="font-medium">所属目录：</span>未配置</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 数据集管理 -->
+          <div class="mb-6">
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="text-md font-medium text-gray-700">数据集管理</h4>
+              <button class="px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700">
+                <i class="fas fa-plus mr-1"></i>新增数据集
+              </button>
+            </div>
+            <div class="text-sm text-gray-500">暂未配置数据集</div>
+          </div>
+        </div>
+        
+        <!-- 资产使用年限 -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+          <h3 class="text-lg font-medium text-gray-800 mb-4">资产使用年限</h3>
+          <div class="space-y-6">
+            <div class="space-y-4">
+              <div class="grid grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-600 mb-1">资产名称</label>
+                  <div class="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">${assetName}</div>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-600 mb-1">预计使用年限</label>
+                  <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="请输入预计使用年限">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-600 mb-1">摊销方法</label>
+                  <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="直线摊销法" selected>直线摊销法</option>
+                    <option value="产量摊销法">产量摊销法</option>
+                    <option value="年限平均法">年限平均法</option>
+                    <option value="其他">其他</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">使用年限说明</label>
+                <div class="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md min-h-[80px]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 资产登记信息 -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+          <h3 class="text-lg font-medium text-gray-800 mb-4">资产登记信息</h3>
+          <div class="grid grid-cols-5 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">资产名称</label>
+              <div class="text-sm text-gray-900 bg-white px-3 py-2 rounded-md border border-gray-200">
+                ${assetName}
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">资产编号</label>
+              <div class="text-sm text-gray-900 bg-white px-3 py-2 rounded-md border border-gray-200">
+                -
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">登记日期</label>
+              <div class="text-sm text-gray-900 bg-white px-3 py-2 rounded-md border border-gray-200">
+                -
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">资产状态</label>
+              <div class="text-sm text-gray-900 bg-white px-3 py-2 rounded-md border border-gray-200">
+                -
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">管理责任人</label>
+              <div class="text-sm text-gray-900 bg-white px-3 py-2 rounded-md border border-gray-200">
+                -
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 资产评估价值 -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+          <h3 class="text-lg font-medium text-gray-800 mb-4">资产评估价值（选填，也可在资产卡片中修改）</h3>
+          <div class="space-y-4">
+            <div class="grid grid-cols-4 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">资产名称</label>
+                <div class="text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md">${assetName}</div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-600 mb-1">评估价值</label>
+                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="请输入评估价值">
+              </div>
+              <div>
+               <label class="block text-sm font-medium text-gray-600 mb-1">评估方法</label>
+               <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="请选择评估方法">
+              </div>
+              <div>
+               <label class="block text-sm font-medium text-gray-600 mb-1">评估结论</label>
+               <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="请输入评估结论">
+              </div>
+            </div>
+          </div>
+          <h3 class="text-lg font-medium text-gray-800 mb-4 mt-4">评估附件</h3>
+          <div class="space-y-2">
+            <div class="text-sm text-gray-500">暂无附件</div>
+          </div>
+        </div>
+
+        <!-- 数据权属证明 -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium text-gray-800">数据权属证明</h3>
+          </div>
+          <p class="text-sm text-gray-600 mb-4">说明：请根据实际情况选择涉及的权属表单类型，并填写相应的指标评估表。</p>
+          
+          <!-- 权属表单类型选择 -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-3">请选择涉及的权属表单类型（可多选）<span class="text-red-500">*</span></label>
+            <div class="space-y-2">
+              <label class="flex items-center p-3 bg-white border border-gray-300 rounded-lg hover:bg-blue-50 cursor-pointer">
+                <input type="checkbox" class="mr-3 ownership-type-checkbox-${assetNumber}" value="device" onchange="toggleOwnershipFormDynamic('device', ${assetNumber})">
+                <span class="text-sm text-gray-700">（一）通过设备自行收集数据指标评估表</span>
+              </label>
+              <label class="flex items-center p-3 bg-white border border-gray-300 rounded-lg hover:bg-blue-50 cursor-pointer">
+                <input type="checkbox" class="mr-3 ownership-type-checkbox-${assetNumber}" value="platform" onchange="toggleOwnershipFormDynamic('platform', ${assetNumber})">
+                <span class="text-sm text-gray-700">（二）通过电子业务平台收集的数据指标评估表</span>
+              </label>
+              <label class="flex items-center p-3 bg-white border border-gray-300 rounded-lg hover:bg-blue-50 cursor-pointer">
+                <input type="checkbox" class="mr-3 ownership-type-checkbox-${assetNumber}" value="public" onchange="toggleOwnershipFormDynamic('public', ${assetNumber})">
+                <span class="text-sm text-gray-700">（三）收集公开数据指标评估表</span>
+              </label>
+              <label class="flex items-center p-3 bg-white border border-gray-300 rounded-lg hover:bg-blue-50 cursor-pointer">
+                <input type="checkbox" class="mr-3 ownership-type-checkbox-${assetNumber}" value="authorized" onchange="toggleOwnershipFormDynamic('authorized', ${assetNumber})">
+                <span class="text-sm text-gray-700">（四）经授权使用第三方企业数据指标评估表</span>
+              </label>
+              <label class="flex items-center p-3 bg-white border border-gray-300 rounded-lg hover:bg-blue-50 cursor-pointer">
+                <input type="checkbox" class="mr-3 ownership-type-checkbox-${assetNumber}" value="purchase" onchange="toggleOwnershipFormDynamic('purchase', ${assetNumber})">
+                <span class="text-sm text-gray-700">（五）向第三方企业采购数据指标评估表</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 其他附件上传 -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+          <h3 class="text-lg font-medium text-gray-800 mb-4">其他附件上传</h3>
+          
+          <!-- 转资增资申请表 -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">转资增资申请表</label>
+            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+              <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
+              <div class="text-sm text-gray-600 mt-2">
+                <label for="asset-application-${assetNumber}" class="cursor-pointer text-blue-600 hover:text-blue-800">点击上传</label>或拖拽文件到此处
+              </div>
+              <p class="text-xs text-gray-500 mt-1">支持 PDF、DOC、DOCX、XLS、XLSX 格式</p>
+              <input type="file" id="asset-application-${assetNumber}" class="hidden" accept=".pdf,.doc,.docx,.xls,.xlsx">
+            </div>
+          </div>
+          
+          <!-- 预期经济利益流入的论证材料 -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">预期经济利益流入的论证材料</label>
+            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+              <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
+              <div class="text-sm text-gray-600 mt-2">
+                <label for="benefit-docs-${assetNumber}" class="cursor-pointer text-blue-600 hover:text-blue-800">点击上传</label>或拖拽文件到此处
+              </div>
+              <p class="text-xs text-gray-500 mt-1">支持 PDF、DOC、DOCX 格式，可上传多个文件</p>
+              <input type="file" id="benefit-docs-${assetNumber}" class="hidden" accept=".pdf,.doc,.docx" multiple>
+            </div>
+          </div>
+          
+          <!-- 知识产权登记 -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">知识产权登记</label>
+            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+              <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
+              <div class="text-sm text-gray-600 mt-2">
+                <label for="intellectual-property-file-${assetNumber}" class="cursor-pointer text-blue-600 hover:text-blue-800">点击上传</label>或拖拽文件到此处
+              </div>
+              <p class="text-xs text-gray-500 mt-1">支持 PDF、DOC、DOCX 格式</p>
+              <input type="file" id="intellectual-property-file-${assetNumber}" class="hidden" accept=".pdf,.doc,.docx">
+            </div>
+          </div>
+          
+          <!-- 数据质量 -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">数据质量</label>
+            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+              <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
+              <div class="text-sm text-gray-600 mt-2">
+                <label for="data-quality-file-${assetNumber}" class="cursor-pointer text-blue-600 hover:text-blue-800">点击上传</label>或拖拽文件到此处
+              </div>
+              <p class="text-xs text-gray-500 mt-1">支持 PDF、Excel、Word 格式</p>
+              <input type="file" id="data-quality-file-${assetNumber}" class="hidden" accept=".pdf,.xlsx,.xls,.doc,.docx">
+            </div>
+          </div>
+        </div>
+        </div>
+      `;
+      
+      return contentDiv;
+    }
+    
+    // 动态切换增资字段显示/隐藏
+    function toggleAdditionFieldsDynamic(assetNumber) {
+      const additionFields = document.getElementById('addition-fields-' + assetNumber);
+      const isAddition = document.querySelector(`input[name="is-addition-${assetNumber}"]:checked`).value === 'yes';
+      
+      if (additionFields) {
+        if (isAddition) {
+          additionFields.classList.remove('hidden');
+        } else {
+          additionFields.classList.add('hidden');
+        }
+      }
+    }
+    
+    // 动态切换权属证明表单显示
+    function toggleOwnershipFormDynamic(type, assetNumber) {
+      const formId = 'ownership-form-' + type + '-' + assetNumber;
+      const form = document.getElementById(formId);
+      const checkbox = document.querySelector(`input[value="${type}"].ownership-type-checkbox-${assetNumber}`);
+      
+      if (checkbox && checkbox.checked) {
+        if (form) {
+          form.classList.remove('hidden');
+        }
+      } else if (form) {
+        form.classList.add('hidden');
+      }
+    }
+    
     // 切换增资字段显示/隐藏
     function toggleAdditionFields() {
       const additionFields = document.getElementById('addition-fields');
       const isAddition = document.querySelector('input[name="is-addition"]:checked').value === 'yes';
+      
+      if (isAddition) {
+        additionFields.classList.remove('hidden');
+      } else {
+        additionFields.classList.add('hidden');
+      }
+    }
+    
+    // 切换资产2增资字段显示/隐藏
+    function toggleAdditionFields2() {
+      const additionFields = document.getElementById('addition-fields-2');
+      const isAddition = document.querySelector('input[name="is-addition-2"]:checked').value === 'yes';
       
       if (isAddition) {
         additionFields.classList.remove('hidden');
@@ -3847,6 +4665,21 @@
       
       if (checkbox && checkbox.checked) {
         form.classList.remove('hidden');
+      } else if (form) {
+        form.classList.add('hidden');
+      }
+    }
+    
+    // 切换资产2权属证明表单显示
+    function toggleOwnershipForm2(type) {
+      const formId = 'ownership-form-' + type + '-2';
+      const form = document.getElementById(formId);
+      const checkbox = document.querySelector(`input[value="${type}"].ownership-type-checkbox-2`);
+      
+      if (checkbox && checkbox.checked) {
+        if (form) {
+          form.classList.remove('hidden');
+        }
       } else if (form) {
         form.classList.add('hidden');
       }
@@ -5576,7 +6409,7 @@
     }
 
     // 资产管理函数
-    let assetCounter = 1; // 从1开始，因为已经有默认的资产1
+    // assetCounter 已在上面定义，这里不再重复声明
     
     function addNewAsset() {
       const container = document.getElementById('assets-container');

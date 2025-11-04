@@ -520,6 +520,15 @@
               </div>
             </div>
 
+            <!-- 附件显示（有则显示文件名，无则显示无） + 上传发文按钮 -->
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label class="block text-sm font-medium text-gray-700">附件</label>
+                <button type="button" onclick="openEditModal()" class="text-sm px-3 py-1 rounded border border-blue-200 text-blue-700 bg-blue-50 hover:bg-blue-100 transition">上传发文</button>
+              </div>
+              <div id="attachmentDisplay" class="text-sm text-gray-700">无</div>
+            </div>
+
             <!-- 分级 -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2 required">分级</label>
@@ -551,13 +560,43 @@
             <!-- 操作按钮 -->
             <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
               <button type="button" class="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition">取消</button>
-              <button type="button" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">修改</button>
+              <button type="button" onclick="submitCategoryUpdate()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">修改</button>
             </div>
           </form>
         </div>
       </div>
     </div>
   </main>
+
+  <!-- 修改分类模态框（需上传发文） -->
+  <div id="editCategoryModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4">
+      <div class="flex items-center justify-between p-6 border-b">
+        <h3 class="text-lg font-semibold text-gray-900">修改数据分类</h3>
+        <button onclick="closeModal('editCategoryModal')" class="text-gray-400 hover:text-gray-600">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="p-6">
+        <form id="editCategoryForm" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">修改说明</label>
+            <textarea id="edit-remark" rows="3" placeholder="请简要填写修改原因" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2 required">上传发文（支持：PDF/DOC/DOCX/JPG/PNG）</label>
+            <input id="edit-file" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+            <p class="text-xs text-gray-500 mt-2">请上传相关发文作为修改依据，大小不超过 20MB。</p>
+            <div id="edit-file-name" class="text-sm text-gray-600 mt-2"></div>
+          </div>
+        </form>
+      </div>
+      <div class="flex items-center justify-end gap-3 p-6 border-t">
+        <button onclick="closeModal('editCategoryModal')" class="btn-secondary">取消</button>
+        <button onclick="submitEditCategory()" class="btn-primary">提交申请</button>
+      </div>
+    </div>
+  </div>
 
   <!-- 新增分类模态框 -->
   <div id="addCategoryModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
@@ -655,6 +694,10 @@
           </div>
         </div>
         <div class="mt-6">
+          <label class="block text-sm font-medium text-gray-500 mb-1">附件</label>
+          <p id="detail-attachment" class="text-gray-900">无</p>
+        </div>
+        <div class="mt-6">
           <label class="block text-sm font-medium text-gray-500 mb-2">分类描述</label>
           <div class="bg-gray-50 rounded-lg p-4 text-sm text-gray-700">
             <p>内部数据是指由企业内部产生和管理的各类数据，包括用户数据、财务数据、产品数据等，主要用于企业内部业务运营和决策支持。</p>
@@ -669,6 +712,67 @@
   </div>
 
   <script>
+    // 附件存储（按分类名）与当前选中分类
+    const categoryAttachments = {};
+    let currentSelectedCategory = null;
+
+    // 通用关闭模态框
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.add('hidden');
+    }
+
+    // 打开修改分类弹窗
+    function openEditModal() {
+      const modal = document.getElementById('editCategoryModal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    // 监听文件选择展示文件名
+    document.addEventListener('change', function(e) {
+      if (e.target && e.target.id === 'edit-file') {
+        const file = e.target.files && e.target.files[0];
+        const nameBox = document.getElementById('edit-file-name');
+        if (file && nameBox) {
+          nameBox.textContent = `已选择：${file.name}`;
+        } else if (nameBox) {
+          nameBox.textContent = '';
+        }
+      }
+    });
+
+    // 提交修改（校验必须上传发文）
+    function submitEditCategory() {
+      const fileInput = document.getElementById('edit-file');
+      if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        alert('请先上传发文后再提交申请');
+        return;
+      }
+      const file = fileInput.files[0];
+      const allowed = ['pdf','doc','docx','jpg','jpeg','png'];
+      const ext = (file.name.split('.').pop() || '').toLowerCase();
+      if (!allowed.includes(ext)) {
+        alert('发文格式不支持，请上传 PDF/DOC/DOCX/JPG/PNG 文件');
+        return;
+      }
+      // 记录到当前分类的附件并刷新显示
+      if (currentSelectedCategory) {
+        categoryAttachments[currentSelectedCategory] = file.name;
+        const rightAtt = document.getElementById('attachmentDisplay');
+        if (rightAtt) rightAtt.textContent = file.name;
+        const detailAtt = document.getElementById('detail-attachment');
+        if (detailAtt) detailAtt.textContent = file.name;
+      }
+      // 原型页面：仅提示成功，不做实际上传
+      showNotification('修改已提交，并附带发文。', 'success');
+      closeModal('editCategoryModal');
+    }
+
+    // 分类信息保存（不弹出上传发文弹窗）
+    function submitCategoryUpdate() {
+      // 此处为原型保存行为，仅做提示
+      showNotification('分类信息已保存。', 'success');
+    }
     // 侧边栏切换
     function toggleSidebar() {
       const sidebar = document.getElementById('sidebar');
@@ -725,6 +829,13 @@
       // 更新表单数据
       document.getElementById('categoryName').value = name;
       document.getElementById('categoryDescription').value = `这是${name}的描述信息`;
+      currentSelectedCategory = name;
+      // 更新附件显示（右侧与详情）
+      const attName = categoryAttachments[name];
+      const rightAtt = document.getElementById('attachmentDisplay');
+      if (rightAtt) rightAtt.textContent = attName ? attName : '无';
+      const detailAtt = document.getElementById('detail-attachment');
+      if (detailAtt) detailAtt.textContent = attName ? attName : '无';
       
       // 更新字符计数
       updateCharCount(document.getElementById('categoryName'), 'nameCount');

@@ -449,10 +449,6 @@
                 <p class="text-sm text-gray-900" id="tableDescription">-</p>
               </div>
               <div>
-                <label class="text-sm font-medium text-gray-500">所属库</label>
-                <p class="text-sm text-gray-900" id="tableDatabase">-</p>
-              </div>
-              <div>
                 <label class="text-sm font-medium text-gray-500">状态</label>
                 <div id="tableStatus">-</div>
               </div>
@@ -545,9 +541,9 @@
             
             <div class="bg-red-50 p-6 rounded-lg">
               <div class="text-center">
-                <div class="text-4xl font-bold text-red-600 mb-2" id="totalAnomalies">0</div>
-                <h4 class="font-semibold text-red-800 mb-1">累计状态异常</h4>
-                <p class="text-sm text-red-600">所有扫描发现的状态异常总数</p>
+                <div class="text-4xl font-bold text-red-600 mb-2" id="totalChanges">0</div>
+                <h4 class="font-semibold text-red-800 mb-1">累计变更资源</h4>
+                <p class="text-sm text-red-600">所有扫描发现的变更资源总数</p>
               </div>
             </div>
           </div>
@@ -639,8 +635,8 @@
                         <span>状态</span>
                         <div class="relative group">
                           <i class="fas fa-question-circle text-gray-400 hover:text-gray-600 cursor-help" onmouseenter="showTooltip(event)" onmouseleave="hideTooltip()"></i>
-                          <div id="status-tooltip" class="fixed px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 transition-opacity duration-200 whitespace-nowrap pointer-events-none" style="z-index: 99999; position: fixed !important;">
-                            此状态为与上一版本比对结果
+                          <div id="change-tooltip" class="fixed px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 transition-opacity duration-200 whitespace-nowrap pointer-events-none" style="z-index: 99999; position: fixed !important;">
+                            此结果为与上一版本比对的变更情况
                             <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
                           </div>
                         </div>
@@ -879,11 +875,10 @@
     }
 
     // 查看表详情
-    function viewTableDetail(tableName, tableDescription, tableDatabase, tableStatus) {
+    function viewTableDetail(tableName, tableDescription, tableStatus) {
       // 设置表基本信息
       document.getElementById('tableName').textContent = tableName;
       document.getElementById('tableDescription').textContent = tableDescription;
-      document.getElementById('tableDatabase').textContent = tableDatabase;
       
       // 设置带颜色徽章的状态显示
       const statusElement = document.getElementById('tableStatus');
@@ -1285,7 +1280,7 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
               <div class="flex items-center space-x-2">
-                <button onclick="viewTableDetail('${tableName}', '${tableDescription}', '${database}', '${status}')" class="text-blue-600 hover:text-blue-900">查看</button>
+                <button onclick="viewTableDetail('${tableName}', '${tableDescription}', '${status}')" class="text-blue-600 hover:text-blue-900">查看</button>
               </div>
             </td>
           </tr>
@@ -1442,10 +1437,10 @@
                 <div class="text-3xl font-bold text-blue-600">${item.resources}</div>
                 <div class="text-sm text-gray-500">数据资源数量</div>
               </div>
-              <div class="text-center">
-                <div class="text-3xl font-bold text-red-600">${item.anomalies || 0}</div>
-                <div class="text-sm text-gray-500">状态异常数量</div>
-              </div>
+                <div class="text-center">
+                  <div class="text-3xl font-bold text-red-600">${item.anomalies || 0}</div>
+                  <div class="text-sm text-gray-500">变更资源个数</div>
+                </div>
             </div>
             
                           <div class="flex items-center justify-between">
@@ -1576,7 +1571,7 @@
                 </div>
                 <div class="text-center">
                   <div class="text-3xl font-bold text-red-600">${item.anomalies || 0}</div>
-                  <div class="text-sm text-gray-500">状态异常数量</div>
+                  <div class="text-sm text-gray-500">变更资源个数</div>
                 </div>
               </div>
               
@@ -1624,7 +1619,7 @@
     
     // 显示提示框
     function showTooltip(event) {
-      const tooltip = document.getElementById('status-tooltip');
+      const tooltip = document.getElementById('change-tooltip');
       if (tooltip) {
         const rect = event.target.getBoundingClientRect();
         tooltip.style.left = (rect.left + rect.width / 2) + 'px';
@@ -1636,7 +1631,7 @@
 
     // 隐藏提示框
     function hideTooltip() {
-      const tooltip = document.getElementById('status-tooltip');
+      const tooltip = document.getElementById('change-tooltip');
       if (tooltip) {
         tooltip.style.opacity = '0';
         tooltip.style.display = 'none';

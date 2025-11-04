@@ -545,19 +545,19 @@
               <div class="flex-1 h-px bg-gray-300 mx-4"></div>
             </div>
             
-            <!-- 上游依赖 -->
+            <!-- 来源系统（上游） -->
             <div class="flex-1 relative">
               <h5 class="text-sm font-medium text-gray-900 mb-4 flex items-center">
                 <i class="fas fa-arrow-right text-blue-500 mr-2"></i>
-                上游依赖
+                来源系统
               </h5>
               <div class="space-y-3">
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 relative">
                   <div class="flex items-center">
                     <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
                     <div>
-                      <div class="text-sm font-medium text-gray-900">采购订单表</div>
-                      <div class="text-xs text-gray-500 font-mono">procurement_orders</div>
+                      <div class="text-sm font-medium text-gray-900">智慧管理系统</div>
+                      <div class="text-xs text-gray-500 font-mono">smart_mgmt_sys</div>
                     </div>
                   </div>
                   <!-- 连接点 -->
@@ -567,8 +567,8 @@
                   <div class="flex items-center">
                     <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
                     <div>
-                      <div class="text-sm font-medium text-gray-900">供应商信息表</div>
-                      <div class="text-xs text-gray-500 font-mono">supplier_info</div>
+                      <div class="text-sm font-medium text-gray-900">国能购平台</div>
+                      <div class="text-xs text-gray-500 font-mono">gn_egou_platform</div>
                     </div>
                   </div>
                   <!-- 连接点 -->
@@ -577,13 +577,13 @@
               </div>
             </div>
 
-            <!-- 当前表 -->
+            <!-- 中心模型 -->
             <div class="flex-shrink-0 relative">
               <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg p-4 shadow-lg">
                 <div class="text-center">
                   <i class="fas fa-database mb-2"></i>
-                  <div class="text-sm font-medium">采购专题分析数据集</div>
-                  <div class="text-xs opacity-75 font-mono">procurement_analysis</div>
+                  <div class="text-sm font-medium">采购数据专题分析模型</div>
+                  <div class="text-xs opacity-75 font-mono">user_behavior_log</div>
                 </div>
               </div>
               <!-- 连接点 -->
@@ -591,18 +591,18 @@
               <div class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-1/2 w-2 h-2 bg-purple-500 rounded-full"></div>
             </div>
 
-            <!-- 下游影响 -->
+            <!-- 被授权方（下游） -->
             <div class="flex-1 relative">
               <h5 class="text-sm font-medium text-gray-900 mb-4 flex items-center justify-end">
                 <i class="fas fa-arrow-left text-green-500 mr-2"></i>
-                下游影响
+                被授权方
               </h5>
               <div class="space-y-3">
                 <div class="bg-green-50 border border-green-200 rounded-lg p-4 relative">
                   <div class="flex items-center justify-end">
                     <div>
-                      <div class="text-sm font-medium text-gray-900">采购分析报告表</div>
-                      <div class="text-xs text-gray-500 font-mono">procurement_reports</div>
+                      <div class="text-sm font-medium text-gray-900">产品分析团队</div>
+                      <div class="text-xs text-gray-500 font-mono">team_product_analytics</div>
                     </div>
                     <div class="w-3 h-3 bg-green-500 rounded-full ml-3"></div>
                   </div>
@@ -612,8 +612,8 @@
                 <div class="bg-green-50 border border-green-200 rounded-lg p-4 relative">
                   <div class="flex items-center justify-end">
                     <div>
-                      <div class="text-sm font-medium text-gray-900">成本分析表</div>
-                      <div class="text-xs text-gray-500 font-mono">cost_analysis</div>
+                      <div class="text-sm font-medium text-gray-900">用户研究团队</div>
+                      <div class="text-xs text-gray-500 font-mono">team_user_research</div>
                     </div>
                     <div class="w-3 h-3 bg-green-500 rounded-full ml-3"></div>
                   </div>
@@ -1259,47 +1259,147 @@
         <!-- 权属证明信息标签页 -->
         <div id="protocols-tab" class="tab-content hidden">
           <div class="mb-4">
-            <p class="text-sm text-gray-600">管理资产的权属证明文件</p>
+            <p class="text-sm text-gray-600">展示资产形成环节填写的权属证明材料，可补充新增未选择的表。</p>
           </div>
-          
-          <!-- 新增权属证明上传区域 -->
-          <div class="mb-6 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
-            <div class="mb-4">
-              <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
-            </div>
-            <div class="mb-4">
-              <p class="text-sm text-gray-600 mb-2">点击选择文件或拖拽文件到此区域</p>
-              <p class="text-xs text-gray-500">支持 PDF、DOC、DOCX 格式，文件大小不超过 10MB</p>
-            </div>
-            <input type="file" id="proofFileUpload" class="hidden" accept=".pdf,.doc,.docx" onchange="handleProofFileSelect(this)">
-            <button onclick="document.getElementById('proofFileUpload').click()" class="btn-primary">
-              <i class="fas fa-upload mr-2"></i>上传权属证明文件
-            </button>
+
+          <!-- 权属类型选择（多选） -->
+          <div class="space-y-3 mb-4">
+            <label class="flex items-center gap-3 p-3 border rounded cursor-pointer hover:bg-gray-50">
+              <input type="checkbox" class="text-blue-600" checked onchange="toggleProtocolGroup('proto-self-collect', this.checked)">
+              <span class="text-gray-800">(一) 通过设备自行收集数据指标评估表</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 border rounded cursor-pointer hover:bg-gray-50">
+              <input type="checkbox" class="text-blue-600" onchange="toggleProtocolGroup('proto-business', this.checked)">
+              <span class="text-gray-800">(二) 通过电子业务平台收集的数据指标评估表</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 border rounded cursor-pointer hover:bg-gray-50">
+              <input type="checkbox" class="text-blue-600" onchange="toggleProtocolGroup('proto-third-share', this.checked)">
+              <span class="text-gray-800">(三) 以共享形式获取数据指标评估表</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 border rounded cursor-pointer hover:bg-gray-50">
+              <input type="checkbox" class="text-blue-600" onchange="toggleProtocolGroup('proto-third-use', this.checked)">
+              <span class="text-gray-800">(四) 经授权使用第三方企业数据指标评估表</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 border rounded cursor-pointer hover:bg-gray-50">
+              <input type="checkbox" class="text-blue-600" onchange="toggleProtocolGroup('proto-third-purchase', this.checked)">
+              <span class="text-gray-800">(五) 向第三方企业采购数据指标评估表</span>
+            </label>
           </div>
-          
-          <div class="space-y-4" id="protocolsContainer">
-            <div class="border rounded-lg p-4">
-              <div class="mb-3">
-                <h4 class="font-semibold text-gray-900">数据共享协议</h4>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                <div><strong>上传时间：</strong>2024-01-15</div>
-              </div>
-              <div class="mt-3 flex gap-2">
-                <button class="text-green-600 hover:text-green-800 text-sm">下载文件</button>
-              </div>
-            </div>
-            <div class="border rounded-lg p-4">
-              <div class="mb-3">
-                <h4 class="font-semibold text-gray-900">数据使用授权协议</h4>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                <div><strong>上传时间：</strong>2024-01-20</div>
-              </div>
-              <div class="mt-3 flex gap-2">
-                <button class="text-green-600 hover:text-green-800 text-sm">下载文件</button>
+
+          <!-- (一) 自行收集 数据指标评估表 -->
+          <div id="proto-self-collect" class="border rounded-lg overflow-hidden mb-6">
+            <div class="flex items-center justify-between bg-gray-50 px-4 py-3 border-b">
+              <div class="text-blue-700 font-semibold">(一) 通过设备自行收集数据指标评估表</div>
+              <div class="flex items-center gap-2 text-sm">
+                <span class="text-gray-600">权属有效期:</span>
+                <input type="date" class="border rounded px-2 py-1">
+                <span class="mx-1">至</span>
+                <input type="date" class="border rounded px-2 py-1">
+                
               </div>
             </div>
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-white">
+                <tr>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">指标序号</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">名称</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">上传内容</th>
+                </tr>
+              </thead>
+              <tbody id="proto-self-tbody" class="bg-white divide-y divide-gray-200 text-sm">
+                <tr>
+                  <td class="px-4 py-3 text-gray-900">1</td>
+                  <td class="px-4 py-3 text-gray-900">设备合同及发票</td>
+                  <td class="px-4 py-3">
+                    <label class="inline-flex items-center gap-2 cursor-pointer text-blue-600">
+                      <input type="file" class="hidden" onchange="handleProtoFileChange(this)">
+                      <span class="px-3 py-1 border rounded">选择文件</span>
+                    </label>
+                    <span class="ml-3 text-gray-500">支持: word, pdf, 图片</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 text-gray-900">2</td>
+                  <td class="px-4 py-3 text-gray-900">自行开发材料</td>
+                  <td class="px-4 py-3">
+                    <label class="inline-flex items-center gap-2 cursor-pointer text-blue-600">
+                      <input type="file" class="hidden" onchange="handleProtoFileChange(this)">
+                      <span class="px-3 py-1 border rounded">选择文件</span>
+                    </label>
+                    <span class="ml-3 text-gray-500">支持: word, pdf, 图片</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 其它类型容器（初始隐藏，勾选后显示） -->
+          <div id="proto-business" class="hidden border rounded-lg overflow-hidden mb-6">
+            <div class="flex items-center justify-between bg-gray-50 px-4 py-3 border-b">
+              <div class="text-gray-800 font-semibold">(二) 通过电子业务平台收集的数据指标评估表</div>
+              
+            </div>
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-white">
+                <tr>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">指标序号</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">名称</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">上传内容</th>
+                </tr>
+              </thead>
+              <tbody id="proto-business-tbody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
+            </table>
+          </div>
+
+          <div id="proto-third-share" class="hidden border rounded-lg overflow-hidden mb-6">
+            <div class="flex items-center justify-between bg-gray-50 px-4 py-3 border-b">
+              <div class="text-gray-800 font-semibold">(三) 以共享形式获取数据指标评估表</div>
+              
+            </div>
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-white">
+                <tr>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">指标序号</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">名称</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">上传内容</th>
+                </tr>
+              </thead>
+              <tbody id="proto-share-tbody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
+            </table>
+          </div>
+
+          <div id="proto-third-use" class="hidden border rounded-lg overflow-hidden mb-6">
+            <div class="flex items-center justify-between bg-gray-50 px-4 py-3 border-b">
+              <div class="text-gray-800 font-semibold">(四) 经授权使用第三方企业数据指标评估表</div>
+              
+            </div>
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-white">
+                <tr>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">指标序号</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">名称</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">上传内容</th>
+                </tr>
+              </thead>
+              <tbody id="proto-use-tbody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
+            </table>
+          </div>
+
+          <div id="proto-third-purchase" class="hidden border rounded-lg overflow-hidden">
+            <div class="flex items-center justify-between bg-gray-50 px-4 py-3 border-b">
+              <div class="text-gray-800 font-semibold">(五) 向第三方企业采购数据指标评估表</div>
+              
+            </div>
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-white">
+                <tr>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">指标序号</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">名称</th>
+                  <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">上传内容</th>
+                </tr>
+              </thead>
+              <tbody id="proto-purchase-tbody" class="bg-white divide-y divide-gray-200 text-sm"></tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -2043,6 +2143,64 @@
     
     // 授权链路信息为系统自动生成，不可在此页面修改
     // 相关功能已移除
+
+    // --- 权属证明信息（展示形成环节内容，支持补充新增表） ---
+    function toggleProtocolGroup(groupId, checked) {
+      const el = document.getElementById(groupId);
+      if (!el) return;
+      if (checked) {
+        el.classList.remove('hidden');
+      } else {
+        el.classList.add('hidden');
+      }
+    }
+
+    function handleProtoFileChange(input) {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      const label = input.parentElement.querySelector('span');
+      if (label) label.textContent = '已选择: ' + file.name;
+    }
+
+    function openAddProtocolRow(type) {
+      // 简易选择器：模拟“新增之前未选择的表”
+      const candidateMap = {
+        self: ['许可使用材料', '委托开发材料', '收集资质证明', '个人信息授权'],
+        business: ['平台使用协议', '平台权限截图', '平台日志记录'],
+        share: ['共享协议', '共享范围说明', '共享审计记录'],
+        use: ['第三方授权函', '授权范围说明', '合规审查材料'],
+        purchase: ['采购合同', '发票凭证', '采购验收单']
+      };
+      const names = candidateMap[type] || ['新增材料'];
+      const name = prompt('选择或填写要新增的表/材料名称：\n' + names.join('、')) || '';
+      const trimmed = name.trim();
+      if (!trimmed) return;
+
+      const tbodyIdMap = {
+        self: 'proto-self-tbody',
+        business: 'proto-business-tbody',
+        share: 'proto-share-tbody',
+        use: 'proto-use-tbody',
+        purchase: 'proto-purchase-tbody'
+      };
+      const tbody = document.getElementById(tbodyIdMap[type]);
+      if (!tbody) return;
+
+      const nextIndex = tbody.children.length + 1;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="px-4 py-3 text-gray-900">${nextIndex}</td>
+        <td class="px-4 py-3 text-gray-900">${trimmed}</td>
+        <td class="px-4 py-3">
+          <label class="inline-flex items-center gap-2 cursor-pointer text-blue-600">
+            <input type="file" class="hidden" onchange="handleProtoFileChange(this)">
+            <span class="px-3 py-1 border rounded">选择文件</span>
+          </label>
+          <span class="ml-3 text-gray-500">支持: word, pdf, 图片</span>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    }
     
     // 关闭模态框
     function closeModal(modalId) {
