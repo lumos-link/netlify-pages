@@ -1,8 +1,8 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>资产内容管理 - 数据资产管理平台</title>
+  <title>资产内容管理 - 数据资产管理系统</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -42,37 +42,26 @@
       background: #2563eb;
       color: white;
     }
-    .status-active {
-      background: #dcfce7;
-      color: #166534;
-    }
-    .status-inactive {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-    .status-pending {
-      background: #fef3c7;
-      color: #92400e;
-    }
+
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
   <!-- 顶部主导航栏 -->
   <header class="bg-gradient-to-r from-red-900 via-red-800 to-red-900 shadow flex items-center justify-between px-10 h-16 sticky top-0 z-20">
     <div class="flex items-center space-x-4">
-      <img src="https://img1.imgtp.com/2023/07/21/0Qw6Qk4n.png" alt="LOGO" class="h-10 w-10 rounded-full border-2 border-red-400 shadow bg-white object-contain">
-      <span class="text-xl font-bold text-white tracking-wide whitespace-nowrap">数据资产管理平台</span>
+      <div class="h-10 w-10 rounded-full border-2 border-red-400 shadow bg-white flex items-center justify-center">
+          <svg class="h-6 w-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+      <span class="text-xl font-bold text-white tracking-wide whitespace-nowrap">数据资产管理系统</span>
     </div>
     <nav class="flex-1 flex items-center justify-center space-x-8">
-      <a href="首页.html" class="text-red-100 hover:text-red-400 font-medium">首页</a>
-      <a href="数据资产.html" class="text-red-100 hover:text-red-400 font-medium">资产运营管理</a>
-      <a href="数据来源管理.html" class="text-red-100 hover:text-red-400 font-medium">资源盘点登记</a>
-      <a href="权属信息管理.html" class="text-red-100 hover:text-red-400 font-medium">资产确权与管理</a>
-      <a href="资产开发管理.html" class="text-red-100 hover:text-red-400 font-medium bg-red-700 px-3 py-1 rounded">资产开发管理</a>
-      <a href="#" class="text-red-100 hover:text-red-400 font-medium">资产会计核算</a>
-      <a href="API目录管理.html" class="text-red-100 hover:text-red-400 font-medium">API管理</a>
     </nav>
     <div class="flex items-center space-x-4">
+      <a href="首页.html" class="text-red-100 hover:text-red-400 font-medium px-3 py-1 rounded border border-red-400 hover:bg-red-700 transition">
+        <i class="fas fa-home mr-2"></i>返回首页
+      </a>
       <div class="relative" id="user-dropdown">
         <div class="flex items-center space-x-2 cursor-pointer hover:bg-red-700 px-2 py-1 rounded-lg transition" onclick="toggleUserDropdown()">
           <img src="https://i.pravatar.cc/32?img=3" class="rounded-full w-8 h-8 border-2 border-red-200" alt="用户头像">
@@ -80,7 +69,7 @@
           <i class="fas fa-chevron-down text-xs text-red-300 transition-transform" id="dropdown-arrow"></i>
         </div>
         <div id="user-dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 hidden z-50">
-          <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+          <a href="个人中心.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
             <i class="fas fa-user-circle mr-3 text-red-500"></i>
             个人中心
           </a>
@@ -104,24 +93,6 @@
       <span class="text-lg font-bold text-red-100">平台导航</span>
     </div>
     <ul class="mt-4 space-y-2 px-4">
-      <!-- 首页 -->
-      <li><a href="首页.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100"><i class="fas fa-home"></i> 首页</a></li>
-      
-      <!-- 资产运营管理 -->
-      <li>
-        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('operation')">
-          <div class="flex items-center gap-3">
-            <i class="fas fa-chart-line"></i>
-            <span>资产运营管理</span>
-          </div>
-          <i class="fas fa-chevron-down text-xs transition-transform" id="operation-arrow"></i>
-        </div>
-        <ul id="operation-submenu" class="ml-6 mt-2 space-y-1 hidden">
-          <li><a href="数据资产.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据资产</a></li>
-          <li><a href="数据看板.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-chart-bar"></i> 数据看板</a></li>
-        </ul>
-      </li>
-      
       <!-- 资源盘点登记 -->
       <li>
         <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('inventory')">
@@ -139,6 +110,7 @@
           <li><a href="资产标签管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-tag"></i> 资产标签管理</a></li>
           <li><a href="资产目录管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-sitemap"></i> 资产目录管理</a></li>
           <li><a href="数据分类管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据分类管理</a></li>
+          <li><a href="数据分级管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-layer-group"></i> 数据分级管理</a></li>
         </ul>
       </li>
       
@@ -152,10 +124,12 @@
           <i class="fas fa-chevron-down text-xs transition-transform" id="rights-arrow"></i>
         </div>
         <ul id="rights-submenu" class="ml-6 mt-2 space-y-1 hidden">
-          <li><a href="权属信息管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-user-shield"></i> 权属信息管理</a></li>
-          <li><a href="授权链路管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-link"></i> 授权链路管理</a></li>
+          <li><a href="内部申请记录.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-user-shield"></i> 内部申请记录</a></li>
+          <li><a href="授权链路记录.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-link"></i> 授权链路记录</a></li>
           
-          <li><a href="协议管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 协议管理</a></li>
+          <li><a href="权属转移记录.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-exchange-alt"></i> 权属转移记录</a></li>
+
+          <li><a href="权属证明记录.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-certificate"></i> 权属证明记录</a></li>
         </ul>
       </li>
       
@@ -170,40 +144,24 @@
         </div>
         <ul id="development-submenu" class="ml-6 mt-2 space-y-1">
           <li><a href="资产开发管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 资产开发管理</a></li>
-          <li><a href="流程监控管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 流程监控管理</a></li>
           <li><a href="资产内容管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm bg-red-700"><i class="fas fa-cogs"></i> 资产内容管理</a></li>
         </ul>
       </li>
       
       <!-- 资产会计核算 -->
-      <li>
-        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('accounting')">
-          <div class="flex items-center gap-3">
-            <i class="fas fa-calculator"></i>
-            <span>资产会计核算</span>
-          </div>
-          <i class="fas fa-chevron-down text-xs transition-transform" id="accounting-arrow"></i>
-        </div>
-        <ul id="accounting-submenu" class="ml-6 mt-2 space-y-1 hidden">
-          <li><a href="资产会计计量.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-calculator"></i> 资产会计计量</a></li>
-          <li><a href="资产披露.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-file-alt"></i> 资产披露</a></li>
-          <li><a href="资产应用.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-chart-bar"></i> 资产应用</a></li>
-        </ul>
-      </li>
+            <li>
+                <a href="资产会计核算.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100">
+                    <i class="fas fa-calculator"></i>
+                    <span>资产会计核算</span>
+                </a>
+            </li>
       
       <!-- API管理 -->
       <li>
-        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('api')">
-          <div class="flex items-center gap-3">
-            <i class="fas fa-plug"></i>
-            <span>API管理</span>
-          </div>
-          <i class="fas fa-chevron-down text-xs transition-transform" id="api-arrow"></i>
-        </div>
-        <ul id="api-submenu" class="ml-6 mt-2 space-y-1 hidden">
-          <li><a href="API目录管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-sitemap"></i> API目录管理</a></li>
-          <li><a href="API管理页面.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> API管理</a></li>
-        </ul>
+        <a href="API管理页面.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100">
+          <i class="fas fa-plug"></i>
+          <span>API管理</span>
+        </a>
       </li>
     </ul>
   </aside>
@@ -234,199 +192,78 @@
     <div class="content-card p-6">
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-xl font-bold text-gray-800">资产列表</h2>
-        <div class="text-gray-600">共找到 <span id="assetCount">8</span> 个资产</div>
+        <div class="text-gray-600">共找到 <span id="assetCount">3</span> 个资产</div>
       </div>
+
+
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="assetGrid">
         <!-- 资产卡片 -->
         <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200">
           <div class="p-4">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-lg font-semibold text-gray-900">用户行为数据</h3>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-active">活跃</span>
+            <div class="mb-3">
+              <h3 class="text-lg font-semibold text-gray-900">采购专题分析数据集</h3>
             </div>
             <div class="space-y-2 text-sm text-gray-600 mb-4">
-              <div><strong>编号：</strong>ASSET-2024-001</div>
-              <div><strong>类型：</strong>结构化数据</div>
-              <div><strong>大小：</strong>2.5GB</div>
-              <div><strong>更新：</strong>2024-01-15</div>
+              <div><strong>资产编号：</strong>ASSET-2024-001</div>
+              <div><strong>所属部门：</strong>客户数据部</div>
+              <div><strong>最后更新：</strong>2024-01-15</div>
             </div>
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-end">
               <div class="flex space-x-2">
-                <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">用户数据</span>
-                <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">行为分析</span>
+                <button onclick="editAssetContent('ASSET-2024-001')" class="btn-primary text-sm px-3 py-1">
+                  <i class="fas fa-edit mr-1"></i>编辑
+                </button>
+                <button onclick="showDisposalModal('ASSET-2024-001')" class="bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1 rounded transition-colors">
+                  <i class="fas fa-trash mr-1"></i>处置
+                </button>
               </div>
-              <button onclick="editAssetContent('ASSET-2024-001')" class="btn-primary text-sm px-3 py-1">
-                <i class="fas fa-edit mr-1"></i>编辑
-              </button>
             </div>
           </div>
         </div>
 
         <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200">
           <div class="p-4">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-lg font-semibold text-gray-900">财务报表数据</h3>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-active">活跃</span>
+            <div class="mb-3">
+              <h3 class="text-lg font-semibold text-gray-900">供应商信用评价与合规性分析数据集</h3>
             </div>
             <div class="space-y-2 text-sm text-gray-600 mb-4">
-              <div><strong>编号：</strong>ASSET-2024-002</div>
-              <div><strong>类型：</strong>结构化数据</div>
-              <div><strong>大小：</strong>1.8GB</div>
-              <div><strong>更新：</strong>2024-01-10</div>
+              <div><strong>资产编号：</strong>ASSET-2024-002</div>
+              <div><strong>所属部门：</strong>业务分析部</div>
+              <div><strong>最后更新：</strong>2024-01-10</div>
             </div>
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-end">
               <div class="flex space-x-2">
-                <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">财务</span>
-                <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">报表</span>
+                <button onclick="editAssetContent('ASSET-2024-002')" class="btn-primary text-sm px-3 py-1">
+                  <i class="fas fa-edit mr-1"></i>编辑
+                </button>
+                <button onclick="showDisposalModal('ASSET-2024-002')" class="bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1 rounded transition-colors">
+                  <i class="fas fa-trash mr-1"></i>处置
+                </button>
               </div>
-              <button onclick="editAssetContent('ASSET-2024-002')" class="btn-primary text-sm px-3 py-1">
-                <i class="fas fa-edit mr-1"></i>编辑
-              </button>
             </div>
           </div>
         </div>
 
         <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200">
           <div class="p-4">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-lg font-semibold text-gray-900">API接口数据</h3>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-pending">待审核</span>
+            <div class="mb-3">
+              <h3 class="text-lg font-semibold text-gray-900">成交分析数据集</h3>
             </div>
             <div class="space-y-2 text-sm text-gray-600 mb-4">
-              <div><strong>编号：</strong>ASSET-2024-003</div>
-              <div><strong>类型：</strong>API接口</div>
-              <div><strong>大小：</strong>500MB</div>
-              <div><strong>更新：</strong>2024-01-08</div>
+              <div><strong>资产编号：</strong>ASSET-2024-003</div>
+              <div><strong>所属部门：</strong>市场部</div>
+              <div><strong>最后更新：</strong>2024-01-08</div>
             </div>
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-end">
               <div class="flex space-x-2">
-                <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">API</span>
-                <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">接口</span>
+                <button onclick="editAssetContent('ASSET-2024-003')" class="btn-primary text-sm px-3 py-1">
+                  <i class="fas fa-edit mr-1"></i>编辑
+                </button>
+                <button onclick="showDisposalModal('ASSET-2024-003')" class="bg-red-600 hover:bg-red-700 text-white text-sm px-3 py-1 rounded transition-colors">
+                  <i class="fas fa-trash mr-1"></i>处置
+                </button>
               </div>
-              <button onclick="editAssetContent('ASSET-2024-003')" class="btn-primary text-sm px-3 py-1">
-                <i class="fas fa-edit mr-1"></i>编辑
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200">
-          <div class="p-4">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-lg font-semibold text-gray-900">客户数据</h3>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-active">活跃</span>
-            </div>
-            <div class="space-y-2 text-sm text-gray-600 mb-4">
-              <div><strong>编号：</strong>ASSET-2024-004</div>
-              <div><strong>类型：</strong>结构化数据</div>
-              <div><strong>大小：</strong>3.2GB</div>
-              <div><strong>更新：</strong>2024-01-12</div>
-            </div>
-            <div class="flex items-center justify-between">
-              <div class="flex space-x-2">
-                <span class="bg-pink-100 text-pink-800 text-xs px-2 py-1 rounded">客户</span>
-                <span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded">CRM</span>
-              </div>
-              <button onclick="editAssetContent('ASSET-2024-004')" class="btn-primary text-sm px-3 py-1">
-                <i class="fas fa-edit mr-1"></i>编辑
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200">
-          <div class="p-4">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-lg font-semibold text-gray-900">产品数据</h3>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-active">活跃</span>
-            </div>
-            <div class="space-y-2 text-sm text-gray-600 mb-4">
-              <div><strong>编号：</strong>ASSET-2024-005</div>
-              <div><strong>类型：</strong>结构化数据</div>
-              <div><strong>大小：</strong>1.5GB</div>
-              <div><strong>更新：</strong>2024-01-14</div>
-            </div>
-            <div class="flex items-center justify-between">
-              <div class="flex space-x-2">
-                <span class="bg-teal-100 text-teal-800 text-xs px-2 py-1 rounded">产品</span>
-                <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">库存</span>
-              </div>
-              <button onclick="editAssetContent('ASSET-2024-005')" class="btn-primary text-sm px-3 py-1">
-                <i class="fas fa-edit mr-1"></i>编辑
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200">
-          <div class="p-4">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-lg font-semibold text-gray-900">日志数据</h3>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-inactive">停用</span>
-            </div>
-            <div class="space-y-2 text-sm text-gray-600 mb-4">
-              <div><strong>编号：</strong>ASSET-2024-006</div>
-              <div><strong>类型：</strong>非结构化数据</div>
-              <div><strong>大小：</strong>8.7GB</div>
-              <div><strong>更新：</strong>2024-01-05</div>
-            </div>
-            <div class="flex items-center justify-between">
-              <div class="flex space-x-2">
-                <span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">日志</span>
-                <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">监控</span>
-              </div>
-              <button onclick="editAssetContent('ASSET-2024-006')" class="btn-primary text-sm px-3 py-1">
-                <i class="fas fa-edit mr-1"></i>编辑
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200">
-          <div class="p-4">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-lg font-semibold text-gray-900">市场数据</h3>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-active">活跃</span>
-            </div>
-            <div class="space-y-2 text-sm text-gray-600 mb-4">
-              <div><strong>编号：</strong>ASSET-2024-007</div>
-              <div><strong>类型：</strong>结构化数据</div>
-              <div><strong>大小：</strong>2.1GB</div>
-              <div><strong>更新：</strong>2024-01-13</div>
-            </div>
-            <div class="flex items-center justify-between">
-              <div class="flex space-x-2">
-                <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">市场</span>
-                <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">分析</span>
-              </div>
-              <button onclick="editAssetContent('ASSET-2024-007')" class="btn-primary text-sm px-3 py-1">
-                <i class="fas fa-edit mr-1"></i>编辑
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200">
-          <div class="p-4">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-lg font-semibold text-gray-900">质量数据</h3>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-active">活跃</span>
-            </div>
-            <div class="space-y-2 text-sm text-gray-600 mb-4">
-              <div><strong>编号：</strong>ASSET-2024-008</div>
-              <div><strong>类型：</strong>结构化数据</div>
-              <div><strong>大小：</strong>1.2GB</div>
-              <div><strong>更新：</strong>2024-01-11</div>
-            </div>
-            <div class="flex items-center justify-between">
-              <div class="flex space-x-2">
-                <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">质量</span>
-                <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">检测</span>
-              </div>
-              <button onclick="editAssetContent('ASSET-2024-008')" class="btn-primary text-sm px-3 py-1">
-                <i class="fas fa-edit mr-1"></i>编辑
-              </button>
             </div>
           </div>
         </div>
@@ -435,188 +272,911 @@
   </main>
 
   <!-- 资产内容编辑模态框 -->
-  <div id="assetEditModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg shadow-xl w-full max-w-6xl mx-4 max-h-[90vh] overflow-y-auto">
-      <div class="flex items-center justify-between p-6 border-b sticky top-0 bg-white">
-        <h3 class="text-lg font-semibold text-gray-900">编辑资产内容 - <span id="editAssetName">用户行为数据</span></h3>
+  <div id="assetEditModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden" style="display: none; overflow-y: auto; padding: 2rem;">
+    <div class="bg-white rounded-lg shadow-xl w-[90%] md:w-[85%] lg:w-[80%] max-w-6xl mx-auto my-4 flex flex-col" style="max-height: calc(100vh - 4rem);">
+      <div class="flex items-center justify-between p-4 border-b bg-white flex-shrink-0">
+        <h3 class="text-lg font-semibold text-gray-900">编辑资产内容 - <span id="editAssetName">采购专题分析数据集</span></h3>
         <button onclick="closeAssetEditModal()" class="text-gray-400 hover:text-gray-600">
           <i class="fas fa-times"></i>
         </button>
       </div>
       
-      <div class="p-6">
+      <div class="p-6 flex-1 overflow-y-auto" style="min-height: 0;">
         <!-- 标签页导航 -->
         <div class="border-b border-gray-200 mb-6">
           <nav class="flex space-x-8">
             <button onclick="switchTab('basic')" class="tab-btn active py-2 px-1 border-b-2 border-blue-500 text-blue-600 font-medium">
-              基本信息
+              基础信息
+            </button>
+            <button onclick="switchTab('dataset')" class="tab-btn py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium">
+              数据集详情
+            </button>
+            <button onclick="switchTab('lineage')" class="tab-btn py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium">
+              血缘关系
             </button>
             <button onclick="switchTab('attributes')" class="tab-btn py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium">
-              属性管理
+              属性信息
             </button>
             <button onclick="switchTab('tags')" class="tab-btn py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium">
-              标签管理
+              标签信息
             </button>
             <button onclick="switchTab('ownership')" class="tab-btn py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium">
               权属信息
+            </button>
+            <button onclick="switchTab('finance')" class="tab-btn py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium">
+              财务详情
             </button>
             <button onclick="switchTab('authorization')" class="tab-btn py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium">
               授权链路
             </button>
             <button onclick="switchTab('protocols')" class="tab-btn py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium">
-              协议管理
+              权属证明信息
             </button>
           </nav>
         </div>
 
-        <!-- 基本信息标签页 -->
+        <!-- 基础信息标签页 -->
         <div id="basic-tab" class="tab-content">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">资产名称</label>
-              <input type="text" value="用户行为数据" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <input type="text" value="采购专题分析数据集" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">资产编号</label>
-              <input type="text" value="ASSET-2024-001" readonly class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50">
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">数据类型</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2">资产类型</label>
               <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="structured" selected>结构化数据</option>
                 <option value="unstructured">非结构化数据</option>
                 <option value="semi-structured">半结构化数据</option>
-                <option value="api">API接口</option>
+                <option value="model">数据模型</option>
+                <option value="algorithm">算法</option>
               </select>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">数据分类</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2">持有目的</label>
               <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="CAT-001" selected>内部数据</option>
-                <option value="CAT-002">外部数据</option>
-                <option value="CAT-003">敏感数据</option>
-                <option value="CAT-004">公开数据</option>
-                <option value="CAT-005">用户数据</option>
-                <option value="CAT-006">财务数据</option>
+                <option value="operations" selected>运营使用</option>
+                <option value="sales">对外销售</option>
+                <option value="development">研发使用</option>
+                <option value="analysis">数据分析</option>
+                <option value="archive">存档备份</option>
               </select>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">数据大小</label>
-              <input type="text" value="2.5GB" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <label class="block text-sm font-medium text-gray-700 mb-2">所属部门</label>
+              <input type="text" value="数据资产管理部" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">创建日期</label>
-              <input type="date" value="2024-01-01" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <label class="block text-sm font-medium text-gray-700 mb-2">业务归属</label>
+              <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="procurement" selected>采购业务</option>
+                <option value="sales">销售业务</option>
+                <option value="finance">财务业务</option>
+                <option value="hr">人力资源</option>
+                <option value="operations">运营管理</option>
+                <option value="other">其他</option>
+              </select>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">最后更新</label>
-              <input type="date" value="2024-01-15" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <label class="block text-sm font-medium text-gray-700 mb-2">所属行业</label>
+              <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="energy" selected>能源行业</option>
+                <option value="finance">金融行业</option>
+                <option value="manufacturing">制造业</option>
+                <option value="retail">零售业</option>
+                <option value="internet">互联网</option>
+                <option value="other">其他</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">所属目录</label>
+              <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="business-dev" selected>业务发展</option>
+                <option value="green-dev">绿色发展</option>
+                <option value="smart-dev">智能发展</option>
+                <option value="supervision">业务监督</option>
+              </select>
             </div>
             <div class="md:col-span-2">
-              <label class="block text-sm font-medium text-gray-700 mb-2">描述</label>
-              <textarea rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">用户行为数据包含用户在平台上的各种操作记录，用于行为分析和用户画像构建。</textarea>
+              <label class="block text-sm font-medium text-gray-700 mb-2">详细描述</label>
+              <textarea rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">采购专题分析数据集包含采购流程中的各类数据，用于采购行为分析和决策支持。</textarea>
             </div>
           </div>
         </div>
 
-        <!-- 属性管理标签页 -->
-        <div id="attributes-tab" class="tab-content hidden">
+        <!-- 数据集详情标签页 -->
+        <div id="dataset-tab" class="tab-content hidden">
           <div class="mb-4">
-            <button onclick="addAttribute()" class="btn-primary">
-              <i class="fas fa-plus mr-2"></i>添加属性
+            <button onclick="showAddCompleteDatasetModal()" class="btn-primary">
+              <i class="fas fa-plus mr-2"></i>新增数据集
             </button>
           </div>
-          <div class="space-y-4">
-            <div class="flex items-center gap-4 p-4 border rounded-lg">
-              <div class="flex-1">
-                <div class="flex items-center gap-4">
-                  <input type="text" value="数据源" placeholder="属性名称" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <input type="text" value="用户系统" placeholder="属性值" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <div class="space-y-4" id="selectedDatasets">
+            <!-- 数据集树形结构 -->
+            <div class="border border-gray-200 rounded-lg">
+              <!-- 数据集1 -->
+              <div class="dataset-tree-item">
+                <div class="flex items-center justify-between p-3 bg-gray-50 border-b border-gray-200">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-chevron-down text-gray-500 cursor-pointer tree-toggle" onclick="toggleDatasetTree(this)"></i>
+                    <i class="fas fa-database text-blue-500"></i>
+                    <span class="font-medium text-gray-900">采购订单数据集</span>
                 </div>
+                  <button onclick="deleteDataset(this)" class="text-red-600 hover:text-red-800 text-sm">
+                    <i class="fas fa-trash mr-1"></i>删除数据集
+                  </button>
               </div>
-              <button onclick="removeAttribute(this)" class="text-red-600 hover:text-red-800">
-                <i class="fas fa-trash"></i>
-              </button>
+                
+                <!-- 数据集详细信息 -->
+                <div class="dataset-details p-4 bg-white">
+                  <div class="grid grid-cols-2 gap-3 text-sm mb-4">
+                    <div><span class="text-gray-600">数据库类型：</span><span class="text-gray-900">MySQL</span></div>
+                    <div><span class="text-gray-600">数据结构：</span><span class="text-gray-900">结构化数据</span></div>
+                    <div><span class="text-gray-600">规模：</span><span class="text-gray-900">100GB</span></div>
+                    <div><span class="text-gray-600">条数：</span><span class="text-gray-900">100万条</span></div>
+                    <div><span class="text-gray-600">更新频率：</span><span class="text-gray-900">每日</span></div>
+                    <div><span class="text-gray-600">加工性质：</span><span class="text-gray-900">加工数据</span></div>
+                    <div><span class="text-gray-600">数据来源：</span><span class="text-gray-900">业务系统</span></div>
+                    <div class="col-span-2"><span class="text-gray-600">详细描述：</span><span class="text-gray-900">采购订单相关数据集</span></div>
+                </div>
+                  
+                  <!-- 数据表列表 -->
+                  <div class="border-t border-gray-200 pt-3">
+                    <div class="flex items-center justify-between mb-2">
+                      <h5 class="text-sm font-medium text-gray-700">数据表</h5>
+                </div>
+                    <div class="space-y-2 ml-6">
+                      <div class="flex items-center justify-between p-2 bg-gray-50 rounded hover:bg-gray-100">
+                        <div class="flex items-center gap-2">
+                          <i class="fas fa-table text-green-500 text-sm"></i>
+                          <span class="text-sm text-gray-900">采购订单表</span>
+                          <span class="text-xs text-gray-500">(procurement_orders)</span>
+                </div>
+                        <button onclick="deleteTable(this)" class="text-red-600 hover:text-red-800 text-xs">
+                          <i class="fas fa-times"></i>
+                        </button>
+              </div>
+                      <div class="flex items-center justify-between p-2 bg-gray-50 rounded hover:bg-gray-100">
+                        <div class="flex items-center gap-2">
+                          <i class="fas fa-table text-green-500 text-sm"></i>
+                          <span class="text-sm text-gray-900">采购明细表</span>
+                          <span class="text-xs text-gray-500">(procurement_details)</span>
+                        </div>
+                        <button onclick="deleteTable(this)" class="text-red-600 hover:text-red-800 text-xs">
+                          <i class="fas fa-times"></i>
+                        </button>
+                      </div>
+                      <div class="flex items-center justify-between p-2 bg-gray-50 rounded hover:bg-gray-100">
+                        <div class="flex items-center gap-2">
+                          <i class="fas fa-table text-green-500 text-sm"></i>
+                          <span class="text-sm text-gray-900">采购合同表</span>
+                          <span class="text-xs text-gray-500">(procurement_contracts)</span>
+                        </div>
+                        <button onclick="deleteTable(this)" class="text-red-600 hover:text-red-800 text-xs">
+                          <i class="fas fa-times"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="mt-3 ml-6">
+                      <button onclick="showTableSelectionModal(this)" class="text-blue-600 hover:text-blue-800 text-sm">
+                        <i class="fas fa-plus mr-1"></i>新增数据表
+                      </button>
+                    </div>
+                  </div>
+              </div>
             </div>
-            <div class="flex items-center gap-4 p-4 border rounded-lg">
-              <div class="flex-1">
-                <div class="flex items-center gap-4">
-                  <input type="text" value="更新频率" placeholder="属性名称" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <input type="text" value="每日" placeholder="属性值" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            
+              <!-- 数据集2 -->
+              <div class="dataset-tree-item border-t border-gray-200">
+                <div class="flex items-center justify-between p-3 bg-gray-50">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-chevron-down text-gray-500 cursor-pointer tree-toggle" onclick="toggleDatasetTree(this)"></i>
+                    <i class="fas fa-database text-green-500"></i>
+                    <span class="font-medium text-gray-900">供应商数据集</span>
+                </div>
+                  <button onclick="deleteDataset(this)" class="text-red-600 hover:text-red-800 text-sm">
+                    <i class="fas fa-trash mr-1"></i>删除数据集
+                  </button>
+              </div>
+                
+                <!-- 数据集详细信息 -->
+                <div class="dataset-details p-4 bg-white">
+                  <div class="grid grid-cols-2 gap-3 text-sm mb-4">
+                    <div><span class="text-gray-600">数据库类型：</span><span class="text-gray-900">Oracle</span></div>
+                    <div><span class="text-gray-600">数据结构：</span><span class="text-gray-900">结构化数据</span></div>
+                    <div><span class="text-gray-600">规模：</span><span class="text-gray-900">50GB</span></div>
+                    <div><span class="text-gray-600">条数：</span><span class="text-gray-900">50万条</span></div>
+                    <div><span class="text-gray-600">更新频率：</span><span class="text-gray-900">每周</span></div>
+                    <div><span class="text-gray-600">加工性质：</span><span class="text-gray-900">原始数据</span></div>
+                    <div><span class="text-gray-600">数据来源：</span><span class="text-gray-900">供应商系统</span></div>
+                    <div class="col-span-2"><span class="text-gray-600">详细描述：</span><span class="text-gray-900">供应商相关数据集</span></div>
+                </div>
+                  
+                  <!-- 数据表列表 -->
+                  <div class="border-t border-gray-200 pt-3">
+                    <div class="flex items-center justify-between mb-2">
+                      <h5 class="text-sm font-medium text-gray-700">数据表</h5>
+                </div>
+                    <div class="space-y-2 ml-6">
+                      <div class="flex items-center justify-between p-2 bg-gray-50 rounded hover:bg-gray-100">
+                        <div class="flex items-center gap-2">
+                          <i class="fas fa-table text-green-500 text-sm"></i>
+                          <span class="text-sm text-gray-900">供应商基础信息表</span>
+                          <span class="text-xs text-gray-500">(supplier_basic_info)</span>
+              </div>
+                        <button onclick="deleteTable(this)" class="text-red-600 hover:text-red-800 text-xs">
+                          <i class="fas fa-times"></i>
+                        </button>
+              </div>
+                      <div class="flex items-center justify-between p-2 bg-gray-50 rounded hover:bg-gray-100">
+                        <div class="flex items-center gap-2">
+                          <i class="fas fa-table text-green-500 text-sm"></i>
+                          <span class="text-sm text-gray-900">供应商评价表</span>
+                          <span class="text-xs text-gray-500">(supplier_ratings)</span>
+                        </div>
+                        <button onclick="deleteTable(this)" class="text-red-600 hover:text-red-800 text-xs">
+                          <i class="fas fa-times"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="mt-3 ml-6">
+                      <button onclick="showTableSelectionModal(this)" class="text-blue-600 hover:text-blue-800 text-sm">
+                        <i class="fas fa-plus mr-1"></i>新增数据表
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <button onclick="removeAttribute(this)" class="text-red-600 hover:text-red-800">
-                <i class="fas fa-trash"></i>
-              </button>
             </div>
           </div>
         </div>
 
-        <!-- 标签管理标签页 -->
+        <!-- 血缘关系标签页 -->
+        <div id="lineage-tab" class="tab-content hidden">
+          <div class="mb-4">
+            <p class="text-sm text-gray-600">血缘关系信息为系统自动生成，不可在此页面修改</p>
+          </div>
+          
+          <!-- 血缘关系图 - 左右排布 -->
+          <div class="flex items-center justify-between space-x-8 relative">
+            <!-- 连接线 -->
+            <div class="absolute inset-0 flex items-center justify-between pointer-events-none">
+              <div class="flex-1 h-px bg-gray-300 mx-4"></div>
+              <div class="flex-1 h-px bg-gray-300 mx-4"></div>
+            </div>
+            
+            <!-- 上游依赖 -->
+            <div class="flex-1 relative">
+              <h5 class="text-sm font-medium text-gray-900 mb-4 flex items-center">
+                <i class="fas fa-arrow-right text-blue-500 mr-2"></i>
+                上游依赖
+              </h5>
+              <div class="space-y-3">
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 relative">
+                  <div class="flex items-center">
+                    <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">采购订单表</div>
+                      <div class="text-xs text-gray-500 font-mono">procurement_orders</div>
+                    </div>
+                  </div>
+                  <!-- 连接点 -->
+                  <div class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                </div>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 relative">
+                  <div class="flex items-center">
+                    <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">供应商信息表</div>
+                      <div class="text-xs text-gray-500 font-mono">supplier_info</div>
+                    </div>
+                  </div>
+                  <!-- 连接点 -->
+                  <div class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-1/2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 当前表 -->
+            <div class="flex-shrink-0 relative">
+              <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg p-4 shadow-lg">
+                <div class="text-center">
+                  <i class="fas fa-database mb-2"></i>
+                  <div class="text-sm font-medium">采购专题分析数据集</div>
+                  <div class="text-xs opacity-75 font-mono">procurement_analysis</div>
+                </div>
+              </div>
+              <!-- 连接点 -->
+              <div class="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1/2 w-2 h-2 bg-purple-500 rounded-full"></div>
+              <div class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-1/2 w-2 h-2 bg-purple-500 rounded-full"></div>
+            </div>
+
+            <!-- 下游影响 -->
+            <div class="flex-1 relative">
+              <h5 class="text-sm font-medium text-gray-900 mb-4 flex items-center justify-end">
+                <i class="fas fa-arrow-left text-green-500 mr-2"></i>
+                下游影响
+              </h5>
+              <div class="space-y-3">
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4 relative">
+                  <div class="flex items-center justify-end">
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">采购分析报告表</div>
+                      <div class="text-xs text-gray-500 font-mono">procurement_reports</div>
+                    </div>
+                    <div class="w-3 h-3 bg-green-500 rounded-full ml-3"></div>
+                  </div>
+                  <!-- 连接点 -->
+                  <div class="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1/2 w-2 h-2 bg-green-500 rounded-full"></div>
+                </div>
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4 relative">
+                  <div class="flex items-center justify-end">
+                    <div>
+                      <div class="text-sm font-medium text-gray-900">成本分析表</div>
+                      <div class="text-xs text-gray-500 font-mono">cost_analysis</div>
+                    </div>
+                    <div class="w-3 h-3 bg-green-500 rounded-full ml-3"></div>
+                  </div>
+                  <!-- 连接点 -->
+                  <div class="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1/2 w-2 h-2 bg-green-500 rounded-full"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 属性信息标签页 -->
+        <div id="attributes-tab" class="tab-content hidden">
+          <!-- 添加属性表单 -->
+          <div class="mb-6 border border-gray-200 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-gray-800 mb-3">添加属性</h4>
+            <div class="flex gap-3 items-start">
+              <!-- 树状下拉选择属性 -->
+              <div class="flex-1 relative">
+                <label class="block text-sm font-medium text-gray-700 mb-2">选择属性</label>
+                <div class="relative">
+                  <button type="button" id="attributeDropdownBtn" onclick="toggleAttributeDropdown()" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-left bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center justify-between">
+                    <span id="selectedAttributeText" class="text-gray-500">请选择属性</span>
+                    <i class="fas fa-chevron-down text-gray-400"></i>
+                  </button>
+                  
+                  <!-- 树状下拉菜单 -->
+                  <div id="attributeDropdownMenu" class="hidden absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-96 overflow-y-auto">
+                    <div class="p-2">
+                      <!-- 基础属性分类 -->
+                      <div class="mb-2">
+                        <div class="flex items-center px-3 py-2 hover:bg-gray-50 rounded cursor-pointer" onclick="toggleAttributeCategory('basic')">
+                          <i id="basic-arrow" class="fas fa-chevron-right text-gray-500 text-xs mr-2 transition-transform"></i>
+                          <i class="fas fa-folder text-blue-500 mr-2"></i>
+                          <span class="font-medium text-gray-900">基础属性</span>
+                        </div>
+                        <div id="basic-attributes" class="hidden ml-6">
+                          <div class="px-3 py-2 hover:bg-blue-50 rounded cursor-pointer text-sm" onclick="selectAttribute('基础属性', '数据格式')">数据格式</div>
+                          <div class="px-3 py-2 hover:bg-blue-50 rounded cursor-pointer text-sm" onclick="selectAttribute('基础属性', '存储类型')">存储类型</div>
+                          <div class="px-3 py-2 hover:bg-blue-50 rounded cursor-pointer text-sm" onclick="selectAttribute('基础属性', '数据量级')">数据量级</div>
+                          <div class="px-3 py-2 hover:bg-blue-50 rounded cursor-pointer text-sm" onclick="selectAttribute('基础属性', '更新频率')">更新频率</div>
+                          <div class="px-3 py-2 hover:bg-blue-50 rounded cursor-pointer text-sm" onclick="selectAttribute('基础属性', '数据结构')">数据结构</div>
+                          <div class="px-3 py-2 hover:bg-blue-50 rounded cursor-pointer text-sm" onclick="selectAttribute('基础属性', '字段数量')">字段数量</div>
+                        </div>
+                      </div>
+                      
+                      <!-- 质量属性分类 -->
+                      <div class="mb-2">
+                        <div class="flex items-center px-3 py-2 hover:bg-gray-50 rounded cursor-pointer" onclick="toggleAttributeCategory('quality')">
+                          <i id="quality-arrow" class="fas fa-chevron-right text-gray-500 text-xs mr-2 transition-transform"></i>
+                          <i class="fas fa-folder text-green-500 mr-2"></i>
+                          <span class="font-medium text-gray-900">质量属性</span>
+                        </div>
+                        <div id="quality-attributes" class="hidden ml-6">
+                          <div class="px-3 py-2 hover:bg-green-50 rounded cursor-pointer text-sm" onclick="selectAttribute('质量属性', '数据质量')">数据质量</div>
+                          <div class="px-3 py-2 hover:bg-green-50 rounded cursor-pointer text-sm" onclick="selectAttribute('质量属性', '完整性')">完整性</div>
+                          <div class="px-3 py-2 hover:bg-green-50 rounded cursor-pointer text-sm" onclick="selectAttribute('质量属性', '准确性')">准确性</div>
+                          <div class="px-3 py-2 hover:bg-green-50 rounded cursor-pointer text-sm" onclick="selectAttribute('质量属性', '时效性')">时效性</div>
+                          <div class="px-3 py-2 hover:bg-green-50 rounded cursor-pointer text-sm" onclick="selectAttribute('质量属性', '一致性')">一致性</div>
+                          <div class="px-3 py-2 hover:bg-green-50 rounded cursor-pointer text-sm" onclick="selectAttribute('质量属性', '唯一性')">唯一性</div>
+                        </div>
+                      </div>
+                      
+                      <!-- 业务属性分类 -->
+                      <div class="mb-2">
+                        <div class="flex items-center px-3 py-2 hover:bg-gray-50 rounded cursor-pointer" onclick="toggleAttributeCategory('business')">
+                          <i id="business-arrow" class="fas fa-chevron-right text-gray-500 text-xs mr-2 transition-transform"></i>
+                          <i class="fas fa-folder text-purple-500 mr-2"></i>
+                          <span class="font-medium text-gray-900">业务属性</span>
+                        </div>
+                        <div id="business-attributes" class="hidden ml-6">
+                          <div class="px-3 py-2 hover:bg-purple-50 rounded cursor-pointer text-sm" onclick="selectAttribute('业务属性', '数据源')">数据源</div>
+                          <div class="px-3 py-2 hover:bg-purple-50 rounded cursor-pointer text-sm" onclick="selectAttribute('业务属性', '业务域')">业务域</div>
+                          <div class="px-3 py-2 hover:bg-purple-50 rounded cursor-pointer text-sm" onclick="selectAttribute('业务属性', '业务负责人')">业务负责人</div>
+                          <div class="px-3 py-2 hover:bg-purple-50 rounded cursor-pointer text-sm" onclick="selectAttribute('业务属性', '应用系统')">应用系统</div>
+                          <div class="px-3 py-2 hover:bg-purple-50 rounded cursor-pointer text-sm" onclick="selectAttribute('业务属性', '数据用途')">数据用途</div>
+                        </div>
+                      </div>
+                      
+                      <!-- 技术属性分类 -->
+                      <div class="mb-2">
+                        <div class="flex items-center px-3 py-2 hover:bg-gray-50 rounded cursor-pointer" onclick="toggleAttributeCategory('technical')">
+                          <i id="technical-arrow" class="fas fa-chevron-right text-gray-500 text-xs mr-2 transition-transform"></i>
+                          <i class="fas fa-folder text-orange-500 mr-2"></i>
+                          <span class="font-medium text-gray-900">技术属性</span>
+                        </div>
+                        <div id="technical-attributes" class="hidden ml-6">
+                          <div class="px-3 py-2 hover:bg-orange-50 rounded cursor-pointer text-sm" onclick="selectAttribute('技术属性', '技术栈')">技术栈</div>
+                          <div class="px-3 py-2 hover:bg-orange-50 rounded cursor-pointer text-sm" onclick="selectAttribute('技术属性', '存储路径')">存储路径</div>
+                          <div class="px-3 py-2 hover:bg-orange-50 rounded cursor-pointer text-sm" onclick="selectAttribute('技术属性', '接口协议')">接口协议</div>
+                          <div class="px-3 py-2 hover:bg-orange-50 rounded cursor-pointer text-sm" onclick="selectAttribute('技术属性', '加密方式')">加密方式</div>
+                          <div class="px-3 py-2 hover:bg-orange-50 rounded cursor-pointer text-sm" onclick="selectAttribute('技术属性', '备份策略')">备份策略</div>
+                        </div>
+                      </div>
+                      
+                      <!-- 自定义属性分类 -->
+                      <div>
+                        <div class="flex items-center px-3 py-2 hover:bg-gray-50 rounded cursor-pointer" onclick="toggleAttributeCategory('custom')">
+                          <i id="custom-arrow" class="fas fa-chevron-right text-gray-500 text-xs mr-2 transition-transform"></i>
+                          <i class="fas fa-folder text-gray-500 mr-2"></i>
+                          <span class="font-medium text-gray-900">自定义属性</span>
+                        </div>
+                        <div id="custom-attributes" class="hidden ml-6">
+                          <div class="px-3 py-2 hover:bg-gray-50 rounded cursor-pointer text-sm" onclick="selectAttribute('自定义属性', '自定义字段1')">自定义字段1</div>
+                          <div class="px-3 py-2 hover:bg-gray-50 rounded cursor-pointer text-sm" onclick="selectAttribute('自定义属性', '自定义字段2')">自定义字段2</div>
+                          <div class="px-3 py-2 hover:bg-gray-50 rounded cursor-pointer text-sm" onclick="selectAttribute('自定义属性', '自定义字段3')">自定义字段3</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- 输入属性值 -->
+              <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-2">属性值</label>
+                <input type="text" id="attributeValueInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入属性值">
+              </div>
+              
+              <!-- 添加按钮 -->
+              <div class="pt-7">
+                <button onclick="addNewAttribute()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                  <i class="fas fa-plus mr-1"></i>添加
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 已添加的属性列表 -->
+          <div>
+            <h4 class="text-sm font-semibold text-gray-800 mb-3">已添加的属性</h4>
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">属性分类</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">属性名称</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">属性值</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                  </tr>
+                </thead>
+                <tbody id="addedAttributesList" class="bg-white divide-y divide-gray-200">
+                  <!-- 示例数据 -->
+                  <tr>
+                    <td class="px-4 py-3 text-sm text-gray-900">基础属性</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">数据格式</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">JSON</td>
+                    <td class="px-4 py-3 text-sm">
+                      <button onclick="removeAddedAttribute(this)" class="text-red-600 hover:text-red-800">
+                        <i class="fas fa-trash mr-1"></i>删除
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-4 py-3 text-sm text-gray-900">基础属性</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">存储类型</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">分布式存储</td>
+                    <td class="px-4 py-3 text-sm">
+                      <button onclick="removeAddedAttribute(this)" class="text-red-600 hover:text-red-800">
+                        <i class="fas fa-trash mr-1"></i>删除
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-4 py-3 text-sm text-gray-900">质量属性</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">数据质量</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">优秀</td>
+                    <td class="px-4 py-3 text-sm">
+                      <button onclick="removeAddedAttribute(this)" class="text-red-600 hover:text-red-800">
+                        <i class="fas fa-trash mr-1"></i>删除
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-4 py-3 text-sm text-gray-900">质量属性</td>
+                    <td class="px-4 py-3 text-sm text-gray-900">完整性</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">98.5%</td>
+                    <td class="px-4 py-3 text-sm">
+                      <button onclick="removeAddedAttribute(this)" class="text-red-600 hover:text-red-800">
+                        <i class="fas fa-trash mr-1"></i>删除
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 标签信息标签页 -->
         <div id="tags-tab" class="tab-content hidden">
           <div class="mb-4">
             <div class="flex gap-2">
-              <input type="text" id="newTag" placeholder="输入新标签" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <select id="newTag" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">选择标签</option>
+                <option value="用户分析">用户分析</option>
+                <option value="行为分析">行为分析</option>
+                <option value="用户画像">用户画像</option>
+                <option value="结构化数据">结构化数据</option>
+                <option value="实时处理">实时处理</option>
+                <option value="P2级">P2级</option>
+                <option value="内部使用">内部使用</option>
+                <option value="财务数据">财务数据</option>
+                <option value="营销数据">营销数据</option>
+                <option value="订单数据">订单数据</option>
+                <option value="日志数据">日志数据</option>
+                <option value="API接口">API接口</option>
+                <option value="数据仓库">数据仓库</option>
+                <option value="数据湖">数据湖</option>
+                <option value="机器学习">机器学习</option>
+                <option value="数据挖掘">数据挖掘</option>
+                <option value="商业智能">商业智能</option>
+              </select>
               <button onclick="addTag()" class="btn-primary">添加标签</button>
             </div>
           </div>
-          <div class="flex flex-wrap gap-2" id="tagsContainer">
-            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center gap-2">
-              用户数据
-              <button onclick="removeTag(this)" class="text-blue-600 hover:text-blue-800"><i class="fas fa-times"></i></button>
-            </span>
-            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm flex items-center gap-2">
-              行为分析
-              <button onclick="removeTag(this)" class="text-green-600 hover:text-green-800"><i class="fas fa-times"></i></button>
-            </span>
-            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm flex items-center gap-2">
-              用户画像
-              <button onclick="removeTag(this)" class="text-purple-600 hover:text-purple-800"><i class="fas fa-times"></i></button>
-            </span>
+          
+          <div class="space-y-4">
+            <div>
+              <h3 class="text-sm font-medium text-gray-900 mb-2">业务标签</h3>
+              <div class="flex flex-wrap gap-2" id="businessTags">
+                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                  用户分析
+                  <button onclick="removeTag(this)" class="text-blue-600 hover:text-blue-800"><i class="fas fa-times"></i></button>
+                </span>
+                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                  行为分析
+                  <button onclick="removeTag(this)" class="text-green-600 hover:text-green-800"><i class="fas fa-times"></i></button>
+                </span>
+                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                  用户画像
+                  <button onclick="removeTag(this)" class="text-purple-600 hover:text-purple-800"><i class="fas fa-times"></i></button>
+                </span>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-sm font-medium text-gray-900 mb-2">技术标签</h3>
+              <div class="flex flex-wrap gap-2" id="technicalTags">
+                <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                  结构化数据
+                  <button onclick="removeTag(this)" class="text-gray-600 hover:text-gray-800"><i class="fas fa-times"></i></button>
+                </span>
+                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                  实时处理
+                  <button onclick="removeTag(this)" class="text-red-600 hover:text-red-800"><i class="fas fa-times"></i></button>
+                </span>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-sm font-medium text-gray-900 mb-2">安全标签</h3>
+              <div class="flex flex-wrap gap-2" id="securityTags">
+                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                  P2级
+                  <button onclick="removeTag(this)" class="text-red-600 hover:text-red-800"><i class="fas fa-times"></i></button>
+                </span>
+                <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                  内部使用
+                  <button onclick="removeTag(this)" class="text-orange-600 hover:text-orange-800"><i class="fas fa-times"></i></button>
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
         <!-- 权属信息标签页 -->
         <div id="ownership-tab" class="tab-content hidden">
           <div class="mb-4">
-            <button onclick="addOwnership()" class="btn-primary">
-              <i class="fas fa-plus mr-2"></i>添加权属信息
-            </button>
+            <p class="text-sm text-gray-600">权属信息为系统自动生成，不可在此页面修改</p>
           </div>
-          <div class="space-y-4" id="ownershipContainer">
-            <div class="border rounded-lg p-4">
-              <div class="flex items-center justify-between mb-3">
-                <h4 class="font-semibold text-gray-900">权属信息 #1</h4>
-                <button onclick="removeOwnership(this)" class="text-red-600 hover:text-red-800">
-                  <i class="fas fa-trash"></i>
-                </button>
+          
+          <!-- 权属标签页导航 -->
+          <div class="border border-gray-200 rounded-t-lg border-b-0">
+            <div class="flex border-b border-gray-200">
+              <button onclick="switchOwnershipSubTab('internal')" id="ownership-subtab-internal" class="ownership-subtab px-6 py-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600">
+                内部使用
+              </button>
+              <button onclick="switchOwnershipSubTab('external')" id="ownership-subtab-external" class="ownership-subtab px-6 py-3 text-sm font-semibold text-gray-500 hover:text-gray-700">
+                外部权属
+              </button>
+            </div>
+          </div>
+
+          <!-- 内部使用表格 -->
+          <div id="ownership-content-internal" class="ownership-subcontent border border-gray-200 rounded-b-lg">
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">授权方</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">被授权方</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">权属信息</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">最后更新</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm text-gray-600">物资公司</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">客户数据部</td>
+                    <td class="px-6 py-4">
+                      <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">数据加工使用权</span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-600">2024-01-15 08:30:25</td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm text-gray-600">物资公司</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">业务分析部</td>
+                    <td class="px-6 py-4">
+                      <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">数据加工使用权</span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-600">2024-01-20 14:15:30</td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm text-gray-600">物资公司</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">市场部</td>
+                    <td class="px-6 py-4">
+                      <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">数据加工使用权</span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-600">2023-12-15 10:45:20</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 外部权属表格 -->
+          <div id="ownership-content-external" class="ownership-subcontent border border-gray-200 rounded-b-lg hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">授权方</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">被授权方</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">权属信息</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">最后更新</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm text-gray-600">物资公司</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">其他公司</td>
+                    <td class="px-6 py-4">
+                      <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">数据资源持有权</span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-600">2024-01-15 08:30:25</td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm text-gray-600">物资公司</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">其他公司</td>
+                    <td class="px-6 py-4">
+                      <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">数据加工使用权</span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-600">2024-01-20 14:15:30</td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm text-gray-600">物资公司</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">其他公司</td>
+                    <td class="px-6 py-4">
+                      <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">数据产品经营权</span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-600">2023-12-15 10:45:20</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 财务详情标签页（只读） -->
+        <div id="finance-tab" class="tab-content hidden">
+          <div class="mb-4">
+            <p class="text-sm text-gray-600">财务信息为系统自动生成，不可在此页面修改</p>
+          </div>
+          
+          <!-- 基础财务信息 -->
+          <div class="border border-gray-200 rounded-lg p-4 mb-6">
+            <h4 class="text-md font-semibold text-gray-800 mb-4">基础财务信息</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">资产类型</label>
+                <input type="text" value="无形资产" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50" readonly>
               </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">权属类型</label>
-              <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="owned" selected>自有资产</option>
-                <option value="licensed">授权使用</option>
-                <option value="shared">共享资产</option>
-                <option value="disputed">争议资产</option>
-              </select>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">所属单位</label>
+                <input type="text" value="物资公司" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50" readonly>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">公司代码</label>
+                <input type="text" value="COMP-2024-001" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50" readonly>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">项目编码</label>
+                <input type="text" value="PRJ-2024-001" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50" readonly>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">利润中心</label>
+                <input type="text" value="PC-001 数据业务中心" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50" readonly>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">内部订单</label>
+                <input type="text" value="IO-2024-0815" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50" readonly>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">所属部门</label>
+                <input type="text" value="数据资产管理部" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50" readonly>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">所属项目</label>
+                <input type="text" value="客户数据分析平台建设项目" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50" readonly>
+              </div>
             </div>
-                            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">权属方</label>
-              <input type="text" value="数据管理部" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          
+          <!-- 资产价值信息 -->
+          <div class="border border-gray-200 rounded-lg p-4 mb-6">
+            <h4 class="text-md font-semibold text-gray-800 mb-4">资产价值信息</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">原值</label>
+                <input type="text" value="¥1,250,000.00" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50" readonly>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">现有价值</label>
+                <input type="text" value="¥1,000,000.00" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50" readonly>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">累计摊销</label>
+                <input type="text" value="¥250,000.00" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50" readonly>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">摊销方法</label>
+                <input type="text" value="直线法" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50" readonly>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">使用年限</label>
+                <input type="text" value="5年" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50" readonly>
+              </div>
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">负责人</label>
-              <input type="text" value="张三" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          
+          <!-- 减值/跌价情况 -->
+          <div class="border border-gray-200 rounded-lg p-4 mb-6">
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="text-md font-semibold text-gray-800">减值/跌价情况</h4>
+              <span class="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded">存在减值</span>
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">联系方式</label>
-              <input type="text" value="zhangsan@company.com" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-                <div class="md:col-span-2">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">权属说明</label>
-                  <textarea rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">该数据资产由数据管理部负责管理和维护，主要用于用户行为分析和业务决策支持。</textarea>
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">减值金额</label>
+                  <input type="text" value="¥50,000.00" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" readonly>
                 </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">减值日期</label>
+                  <input type="text" value="2024-06-30" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" readonly>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">减值说明</label>
+                <textarea rows="2" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" readonly>由于市场数据更新频率降低，部分数据时效性下降，导致数据资产价值减值。经评估，减值金额为¥50,000.00。</textarea>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">审批附件</label>
+                <div class="flex items-center gap-2">
+                  <a href="#" class="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>减值审批报告.pdf</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 披露情况 -->
+          <div class="border border-gray-200 rounded-lg p-4">
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="text-md font-semibold text-gray-800">披露情况</h4>
+              <span class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded">已披露</span>
+            </div>
+            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">披露类型</label>
+                  <input type="text" value="年度报告" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" readonly>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">披露日期</label>
+                  <input type="text" value="2024-03-31" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" readonly>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">披露标题</label>
+                <input type="text" value="2023年度数据资产核算与管理报告" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" readonly>
+              </div>
+              <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">披露内容</label>
+                <textarea rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" readonly>本报告披露了公司2023年度数据资产的整体情况，包括数据资产的获取、开发、运营和处置等全生命周期管理情况。重点介绍了客户数据分析平台的建设成果，数据资产总价值达到1,250万元，为公司数字化转型提供了重要支撑。</textarea>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">披露范围</label>
+                  <input type="text" value="公开披露 - 向全体股东及公众" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" readonly>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">附件</label>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <a href="#" class="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>2023年度数据资产报告.pdf</span>
+                  </a>
+                  <span class="text-gray-400">|</span>
+                  <a href="#" class="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1">
+                    <i class="fas fa-file-excel"></i>
+                    <span>数据资产明细表.xlsx</span>
+                  </a>
+                  <span class="text-gray-400">|</span>
+                  <a href="#" class="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1">
+                    <i class="fas fa-file-powerpoint"></i>
+                    <span>董事会汇报PPT.pptx</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 收益情况 -->
+          <div class="border border-gray-200 rounded-lg p-4">
+            <div class="flex items-center justify-between mb-4">
+              <h4 class="text-md font-semibold text-gray-800">收益情况</h4>
+              <span class="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded">持续运营</span>
+            </div>
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">累计收益</label>
+                  <input type="text" value="¥3,500,000.00" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" readonly>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">本年度收益</label>
+                  <input type="text" value="¥850,000.00" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" readonly>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">上一年度收益</label>
+                  <input type="text" value="¥720,000.00" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" readonly>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">收益方式</label>
+                  <input type="text" value="API调用收费、数据授权使用费" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" readonly>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">投资回报率</label>
+                  <input type="text" value="280%" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" readonly>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">收益增长率</label>
+                  <input type="text" value="18.06%" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" readonly>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">收益说明</label>
+                <textarea rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" readonly>该数据资产自2023年启用以来，已通过API接口对外提供数据服务，累计服务客户120余家，产生直接收益350万元。本年度新增客户38家，API调用量增长25%，收益较去年同期增长18.06%。主要收益来源包括API调用费用（占比65%）、数据授权使用费（占比30%）和定制化数据分析服务费（占比5%）。资产运营状况良好，预计未来三年收益将保持稳定增长。</textarea>
               </div>
             </div>
           </div>
@@ -625,190 +1185,593 @@
         <!-- 授权链路标签页 -->
         <div id="authorization-tab" class="tab-content hidden">
           <div class="mb-4">
-            <button onclick="showAddAuthorizationModal()" class="btn-primary">
-              <i class="fas fa-plus mr-2"></i>添加授权
-            </button>
+            <p class="text-sm text-gray-600">授权链路信息为系统自动生成，不可在此页面修改</p>
           </div>
-          <div class="space-y-4" id="authorizationContainer">
-            <div class="border rounded-lg p-4">
-              <div class="flex items-center justify-between mb-3">
-                <h4 class="font-semibold text-gray-900">AUTH-2024-001</h4>
-                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-active">有效</span>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                <div><strong>被授权方：</strong>业务分析部</div>
-                <div><strong>授权类型：</strong>读取权限</div>
-                <div><strong>有效期：</strong>2024-01-01 至 2024-12-31</div>
-              </div>
-              <div class="mt-3 flex gap-2">
-                <button class="text-blue-600 hover:text-blue-800 text-sm">查看详情</button>
-                <button onclick="removeAuthorization(this)" class="text-red-600 hover:text-red-800 text-sm">撤销授权</button>
-              </div>
-            </div>
-            <div class="border rounded-lg p-4">
-              <div class="flex items-center justify-between mb-3">
-                <h4 class="font-semibold text-gray-900">AUTH-2024-002</h4>
-                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-active">有效</span>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                <div><strong>被授权方：</strong>技术部</div>
-                <div><strong>授权类型：</strong>读写权限</div>
-                <div><strong>有效期：</strong>2024-02-01 至 2024-08-01</div>
-              </div>
-              <div class="mt-3 flex gap-2">
-                <button class="text-blue-600 hover:text-blue-800 text-sm">查看详情</button>
-                <button onclick="removeAuthorization(this)" class="text-red-600 hover:text-red-800 text-sm">撤销授权</button>
-              </div>
+          
+          <div class="border border-gray-200 rounded-lg">
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">授权编号</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">授权方</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">被授权方</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">授权类型</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">有效期</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">状态</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm font-medium text-gray-900">AUTH-2024-001</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">物资公司</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">其他公司</td>
+                    <td class="px-6 py-4">
+                      <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">数据资源持有权</span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-600">2024-01-01 至 2024-12-31</td>
+                    <td class="px-6 py-4">
+                      <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">有效</span>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm font-medium text-gray-900">AUTH-2024-002</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">物资公司</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">其他公司</td>
+                    <td class="px-6 py-4">
+                      <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">数据加工使用权</span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-600">2024-02-01 至 2024-08-01</td>
+                    <td class="px-6 py-4">
+                      <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">有效</span>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm font-medium text-gray-900">AUTH-2024-003</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">物资公司</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">其他公司</td>
+                    <td class="px-6 py-4">
+                      <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">数据产品经营权</span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-600">2024-03-15 至 2025-03-15</td>
+                    <td class="px-6 py-4">
+                      <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">有效</span>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm font-medium text-gray-900">AUTH-2023-015</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">物资公司</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">其他公司</td>
+                    <td class="px-6 py-4">
+                      <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">数据资源持有权</span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-600">2023-06-01 至 2024-01-01</td>
+                    <td class="px-6 py-4">
+                      <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">已过期</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
 
-        <!-- 协议管理标签页 -->
+        <!-- 权属证明信息标签页 -->
         <div id="protocols-tab" class="tab-content hidden">
           <div class="mb-4">
-            <button onclick="showAddProtocolModal()" class="btn-primary">
-              <i class="fas fa-plus mr-2"></i>添加协议
+            <p class="text-sm text-gray-600">管理资产的权属证明文件</p>
+          </div>
+          
+          <!-- 新增权属证明上传区域 -->
+          <div class="mb-6 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
+            <div class="mb-4">
+              <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
+            </div>
+            <div class="mb-4">
+              <p class="text-sm text-gray-600 mb-2">点击选择文件或拖拽文件到此区域</p>
+              <p class="text-xs text-gray-500">支持 PDF、DOC、DOCX 格式，文件大小不超过 10MB</p>
+            </div>
+            <input type="file" id="proofFileUpload" class="hidden" accept=".pdf,.doc,.docx" onchange="handleProofFileSelect(this)">
+            <button onclick="document.getElementById('proofFileUpload').click()" class="btn-primary">
+              <i class="fas fa-upload mr-2"></i>上传权属证明文件
             </button>
           </div>
+          
           <div class="space-y-4" id="protocolsContainer">
             <div class="border rounded-lg p-4">
-              <div class="flex items-center justify-between mb-3">
-                <h4 class="font-semibold text-gray-900">PROT-2024-001</h4>
-                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-active">生效</span>
+              <div class="mb-3">
+                <h4 class="font-semibold text-gray-900">数据共享协议</h4>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                <div><strong>协议名称：</strong>数据共享协议</div>
-                <div><strong>协议类型：</strong>数据共享</div>
-                <div><strong>签署方：</strong>数据管理部</div>
+                <div><strong>上传时间：</strong>2024-01-15</div>
               </div>
               <div class="mt-3 flex gap-2">
-                <button class="text-blue-600 hover:text-blue-800 text-sm">查看详情</button>
-                <button onclick="removeProtocol(this)" class="text-red-600 hover:text-red-800 text-sm">终止协议</button>
+                <button class="text-green-600 hover:text-green-800 text-sm">下载文件</button>
               </div>
             </div>
             <div class="border rounded-lg p-4">
-              <div class="flex items-center justify-between mb-3">
-                <h4 class="font-semibold text-gray-900">PROT-2024-002</h4>
-                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-pending">待审核</span>
+              <div class="mb-3">
+                <h4 class="font-semibold text-gray-900">数据使用授权协议</h4>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                <div><strong>协议名称：</strong>数据使用授权协议</div>
-                <div><strong>协议类型：</strong>使用授权</div>
-                <div><strong>签署方：</strong>业务分析部</div>
+                <div><strong>上传时间：</strong>2024-01-20</div>
               </div>
               <div class="mt-3 flex gap-2">
-                <button class="text-blue-600 hover:text-blue-800 text-sm">查看详情</button>
-                <button onclick="removeProtocol(this)" class="text-red-600 hover:text-red-800 text-sm">终止协议</button>
+                <button class="text-green-600 hover:text-green-800 text-sm">下载文件</button>
               </div>
             </div>
           </div>
         </div>
       </div>
       
-      <div class="flex items-center justify-end gap-3 p-6 border-t">
+      <div class="flex items-center justify-end gap-3 p-4 border-t bg-white flex-shrink-0">
         <button onclick="closeAssetEditModal()" class="btn-secondary">取消</button>
-        <button onclick="saveAssetContent()" class="btn-primary">保存更改</button>
+        <button onclick="saveAssetContent()" class="btn-primary">发起变更申请</button>
       </div>
     </div>
   </div>
 
-  <!-- 添加授权选择模态框 -->
-  <div id="addAuthorizationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4">
-      <div class="flex items-center justify-between p-6 border-b">
-        <h3 class="text-lg font-semibold text-gray-900">选择授权</h3>
-        <button onclick="closeModal('addAuthorizationModal')" class="text-gray-400 hover:text-gray-600">
+  <!-- 授权和协议选择模态框已移除，相关信息为系统自动生成 -->
+
+  <!-- 新增数据集模态框 -->
+  <div id="datasetSelectionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between p-6 border-b sticky top-0 bg-white z-10">
+        <h3 class="text-lg font-semibold text-gray-900">新增数据集</h3>
+        <button onclick="closeModal('datasetSelectionModal')" class="text-gray-400 hover:text-gray-600">
           <i class="fas fa-times"></i>
         </button>
       </div>
+      
       <div class="p-6">
-        <div class="mb-4">
-          <input type="text" placeholder="搜索授权..." class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <div class="border border-gray-200 rounded-lg p-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- 名称 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">名称 *</label>
+              <input type="text" id="new-dataset-name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入数据集名称">
         </div>
-        <div class="space-y-2 max-h-96 overflow-y-auto">
-          <div class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer" onclick="selectAuthorization('AUTH-2024-003')">
-            <div class="flex items-center justify-between">
-              <div>
-                <h4 class="font-semibold text-gray-900">AUTH-2024-003</h4>
-                <p class="text-sm text-gray-600">被授权方：外部合作伙伴 | 授权类型：调用权限 | 有效期：2024-03-01 至 2024-06-01</p>
-              </div>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-pending">待审核</span>
+        
+            <!-- 数据库类型 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">数据库类型 *</label>
+              <select id="new-dataset-db-type" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">请选择数据库类型</option>
+                <option value="MySQL">MySQL</option>
+                <option value="Oracle">Oracle</option>
+                <option value="SQL Server">SQL Server</option>
+                <option value="PostgreSQL">PostgreSQL</option>
+                <option value="MongoDB">MongoDB</option>
+                <option value="Redis">Redis</option>
+                <option value="Elasticsearch">Elasticsearch</option>
+                <option value="HBase">HBase</option>
+                <option value="其他">其他</option>
+              </select>
             </div>
-          </div>
-          <div class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer" onclick="selectAuthorization('AUTH-2024-004')">
-            <div class="flex items-center justify-between">
-              <div>
-                <h4 class="font-semibold text-gray-900">AUTH-2024-004</h4>
-                <p class="text-sm text-gray-600">被授权方：质量部 | 授权类型：读取权限 | 有效期：2024-04-01 至 2024-10-01</p>
-              </div>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-active">有效</span>
+            
+            <!-- 数据结构 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">数据结构 *</label>
+              <select id="new-dataset-structure" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">请选择数据结构</option>
+                <option value="structured">结构化数据</option>
+                <option value="unstructured">非结构化数据</option>
+                <option value="semi-structured">半结构化数据</option>
+              </select>
             </div>
-          </div>
-          <div class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer" onclick="selectAuthorization('AUTH-2024-005')">
-            <div class="flex items-center justify-between">
-              <div>
-                <h4 class="font-semibold text-gray-900">AUTH-2024-005</h4>
-                <p class="text-sm text-gray-600">被授权方：市场部 | 授权类型：读写权限 | 有效期：2024-05-01 至 2024-12-31</p>
-              </div>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-active">有效</span>
+            
+            <!-- 规模 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">规模 *</label>
+              <input type="text" id="new-dataset-scale" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="如：100GB">
+            </div>
+            
+            <!-- 条数 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">条数 *</label>
+              <input type="text" id="new-dataset-count" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="如：100万条">
+            </div>
+            
+            <!-- 频率 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">频率 *</label>
+              <select id="new-dataset-frequency" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">请选择更新频率</option>
+                <option value="实时">实时</option>
+                <option value="每小时">每小时</option>
+                <option value="每日">每日</option>
+                <option value="每周">每周</option>
+                <option value="每月">每月</option>
+                <option value="每季度">每季度</option>
+                <option value="每年">每年</option>
+                <option value="不定期">不定期</option>
+                <option value="其他">其他</option>
+              </select>
+            </div>
+            
+            <!-- 加工性质 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">加工性质 *</label>
+              <select id="new-dataset-processing" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">请选择加工性质</option>
+                <option value="原始数据">原始数据</option>
+                <option value="清洗数据">清洗数据</option>
+                <option value="加工数据">加工数据</option>
+                <option value="聚合数据">聚合数据</option>
+                <option value="衍生数据">衍生数据</option>
+                <option value="其他">其他</option>
+              </select>
+            </div>
+            
+            <!-- 数据来源 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">数据来源 *</label>
+              <input type="text" id="new-dataset-source" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入数据来源">
+            </div>
+            
+            <!-- 详细描述 -->
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-2">详细描述</label>
+              <textarea id="new-dataset-description" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3" placeholder="请描述数据集的内容和用途"></textarea>
             </div>
           </div>
         </div>
       </div>
+      
       <div class="flex items-center justify-end gap-3 p-6 border-t">
-        <button onclick="closeModal('addAuthorizationModal')" class="btn-secondary">取消</button>
+        <button onclick="closeModal('datasetSelectionModal')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">取消</button>
+        <button onclick="confirmAddNewDataset()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">确认添加</button>
       </div>
     </div>
   </div>
 
-  <!-- 添加协议选择模态框 -->
-  <div id="addProtocolModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4">
-      <div class="flex items-center justify-between p-6 border-b">
-        <h3 class="text-lg font-semibold text-gray-900">选择协议</h3>
-        <button onclick="closeModal('addProtocolModal')" class="text-gray-400 hover:text-gray-600">
+  <!-- 选择数据表模态框 -->
+  <div id="tableSelectionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden" style="z-index: 9999;">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto" style="position: relative; z-index: 10000;">
+      <div class="flex items-center justify-between p-6 border-b sticky top-0 bg-white z-10">
+        <h3 class="text-lg font-semibold text-gray-900">选择数据表</h3>
+        <button onclick="closeModal('tableSelectionModal')" class="text-gray-400 hover:text-gray-600">
           <i class="fas fa-times"></i>
-        </button>
-      </div>
+                  </button>
+        </div>
+      
       <div class="p-6">
         <div class="mb-4">
-          <input type="text" placeholder="搜索协议..." class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
+          <input type="text" id="tableSearch" placeholder="搜索表名..." class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+        
         <div class="space-y-2 max-h-96 overflow-y-auto">
-          <div class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer" onclick="selectProtocol('PROT-2024-003')">
-            <div class="flex items-center justify-between">
-              <div>
-                <h4 class="font-semibold text-gray-900">PROT-2024-003</h4>
-                <p class="text-sm text-gray-600">协议名称：数据安全协议 | 协议类型：安全协议 | 签署方：技术部</p>
-              </div>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-pending">待审核</span>
+          <!-- 可选择的表列表 -->
+          <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+            <input type="checkbox" class="table-checkbox mr-3" value="customer_info">
+            <div class="flex-1">
+              <div class="font-medium text-gray-900">客户信息表</div>
+              <div class="text-sm text-gray-500">customer_info - 15个字段</div>
             </div>
-          </div>
-          <div class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer" onclick="selectProtocol('PROT-2024-004')">
-            <div class="flex items-center justify-between">
-              <div>
-                <h4 class="font-semibold text-gray-900">PROT-2024-004</h4>
-                <p class="text-sm text-gray-600">协议名称：数据质量协议 | 协议类型：质量协议 | 签署方：质量部</p>
-              </div>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-draft">草稿</span>
+          </label>
+          
+          <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+            <input type="checkbox" class="table-checkbox mr-3" value="order_details">
+            <div class="flex-1">
+              <div class="font-medium text-gray-900">订单详情表</div>
+              <div class="text-sm text-gray-500">order_details - 20个字段</div>
             </div>
-          </div>
-          <div class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer" onclick="selectProtocol('PROT-2024-005')">
-            <div class="flex items-center justify-between">
-              <div>
-                <h4 class="font-semibold text-gray-900">PROT-2024-005</h4>
-                <p class="text-sm text-gray-600">协议名称：数据交换协议 | 协议类型：数据交换 | 签署方：市场部</p>
-              </div>
-              <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-active">生效</span>
+          </label>
+          
+          <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+            <input type="checkbox" class="table-checkbox mr-3" value="product_info">
+            <div class="flex-1">
+              <div class="font-medium text-gray-900">产品信息表</div>
+              <div class="text-sm text-gray-500">product_info - 12个字段</div>
             </div>
-          </div>
+          </label>
+          
+          <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+            <input type="checkbox" class="table-checkbox mr-3" value="payment_records">
+            <div class="flex-1">
+              <div class="font-medium text-gray-900">支付记录表</div>
+              <div class="text-sm text-gray-500">payment_records - 10个字段</div>
+            </div>
+          </label>
+          
+          <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+            <input type="checkbox" class="table-checkbox mr-3" value="inventory_data">
+            <div class="flex-1">
+              <div class="font-medium text-gray-900">库存数据表</div>
+              <div class="text-sm text-gray-500">inventory_data - 18个字段</div>
+            </div>
+          </label>
         </div>
       </div>
+      
       <div class="flex items-center justify-end gap-3 p-6 border-t">
-        <button onclick="closeModal('addProtocolModal')" class="btn-secondary">取消</button>
+        <button onclick="closeModal('tableSelectionModal')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">取消</button>
+        <button onclick="confirmTableSelection()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">确认添加</button>
       </div>
     </div>
   </div>
+
+  <!-- 完整新增数据集模态框 -->
+  <div id="addCompleteDatasetModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-5xl mx-4 max-h-[90vh] flex flex-col">
+      <div class="flex items-center justify-between p-6 border-b flex-shrink-0 bg-white sticky top-0 z-10">
+        <h3 class="text-lg font-semibold text-gray-900">新增数据集</h3>
+        <button onclick="closeModal('addCompleteDatasetModal')" class="text-gray-400 hover:text-gray-600">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="p-6 overflow-y-auto flex-1">
+        <!-- 数据集基本信息 -->
+        <div class="border border-gray-200 rounded-lg p-4 mb-4">
+          <h4 class="text-md font-semibold text-gray-800 mb-4">数据集基本信息</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- 名称 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">名称 *</label>
+              <input type="text" id="complete-dataset-name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入数据集名称">
+            </div>
+            
+            <!-- 数据库类型 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">数据库类型 *</label>
+              <select id="complete-dataset-db-type" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">请选择数据库类型</option>
+                <option value="MySQL">MySQL</option>
+                <option value="Oracle">Oracle</option>
+                <option value="SQL Server">SQL Server</option>
+                <option value="PostgreSQL">PostgreSQL</option>
+                <option value="MongoDB">MongoDB</option>
+                <option value="Redis">Redis</option>
+                <option value="Elasticsearch">Elasticsearch</option>
+                <option value="HBase">HBase</option>
+                <option value="其他">其他</option>
+              </select>
+            </div>
+            
+            <!-- 数据结构 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">数据结构 *</label>
+              <select id="complete-dataset-structure" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">请选择数据结构</option>
+                <option value="structured">结构化数据</option>
+                <option value="unstructured">非结构化数据</option>
+                <option value="semi-structured">半结构化数据</option>
+              </select>
+            </div>
+            
+            <!-- 规模 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">规模 *</label>
+              <input type="text" id="complete-dataset-scale" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="如：100GB">
+            </div>
+            
+            <!-- 条数 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">条数 *</label>
+              <input type="text" id="complete-dataset-count" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="如：100万条">
+            </div>
+            
+            <!-- 频率 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">频率 *</label>
+              <select id="complete-dataset-frequency" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">请选择更新频率</option>
+                <option value="实时">实时</option>
+                <option value="每小时">每小时</option>
+                <option value="每日">每日</option>
+                <option value="每周">每周</option>
+                <option value="每月">每月</option>
+                <option value="每季度">每季度</option>
+                <option value="每年">每年</option>
+                <option value="不定期">不定期</option>
+                <option value="其他">其他</option>
+              </select>
+            </div>
+            
+            <!-- 加工性质 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">加工性质 *</label>
+              <select id="complete-dataset-processing" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">请选择加工性质</option>
+                <option value="原始数据">原始数据</option>
+                <option value="清洗数据">清洗数据</option>
+                <option value="加工数据">加工数据</option>
+                <option value="聚合数据">聚合数据</option>
+                <option value="衍生数据">衍生数据</option>
+                <option value="其他">其他</option>
+              </select>
+            </div>
+            
+            <!-- 数据来源 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">数据来源 *</label>
+              <input type="text" id="complete-dataset-source" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入数据来源">
+            </div>
+            
+            <!-- 详细描述 -->
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-2">详细描述</label>
+              <textarea id="complete-dataset-description" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3" placeholder="请描述数据集的内容和用途"></textarea>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 选择数据表 -->
+        <div class="border border-gray-200 rounded-lg p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="text-md font-semibold text-gray-800">选择数据表</h4>
+            <button type="button" onclick="openTableSelectorInDatasetModal()" class="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">
+              <i class="fas fa-plus mr-1"></i>选择数据表
+            </button>
+          </div>
+          
+          <!-- 已选择的数据表列表 -->
+          <div id="complete-dataset-selected-tables" class="space-y-2 min-h-[100px]">
+            <div class="text-sm text-gray-500 text-center py-4">暂未选择数据表，请点击上方按钮选择</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-end gap-3 p-6 border-t flex-shrink-0">
+        <button onclick="closeModal('addCompleteDatasetModal')" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">取消</button>
+        <button onclick="confirmAddCompleteDataset()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">确认添加</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 资产处置弹窗 -->
+  <div id="disposalModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden px-4 py-8">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] flex flex-col disposal-modal">
+      <div class="flex items-center justify-between p-3 border-b bg-white flex-shrink-0">
+        <h3 class="text-lg font-semibold text-gray-900">资产处置申请 - <span id="disposalAssetName">采购专题分析数据集</span></h3>
+        <button onclick="closeDisposalModal()" class="text-gray-400 hover:text-gray-600">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="p-4 overflow-y-auto flex-1">
+        <div class="space-y-4">
+          <!-- 资产基本信息 -->
+          <div class="bg-gray-50 p-3 rounded-lg">
+            <div class="grid grid-cols-4 gap-3 text-sm">
+              <div>
+                <span class="text-gray-600">资产编号：</span>
+                <span id="disposalAssetId" class="font-medium">ASSET-2024-001</span>
+              </div>
+              <div>
+                <span class="text-gray-600">资产名称：</span>
+                <span id="disposalAssetNameValue" class="font-medium">采购专题分析数据集</span>
+              </div>
+              <div>
+                <span class="text-gray-600">资产类型：</span>
+                <span id="disposalAssetType" class="font-medium">结构化数据</span>
+              </div>
+              <div>
+                <span class="text-gray-600">数据大小：</span>
+                <span id="disposalAssetSize" class="font-medium">2.5GB</span>
+              </div>
+              <div>
+                <span class="text-gray-600">项目编码：</span>
+                <span id="disposalProjectCode" class="font-medium">PRJ-2024-001</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 处置信息 -->
+          <div>
+            <div class="space-y-3">
+              <div class="grid grid-cols-2 gap-3">
+              <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">处置方式 <span class="text-red-500">*</span></label>
+                  <select id="disposalMethod" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" onchange="handleDisposalMethodChange()">
+                  <option value="">请选择处置方式</option>
+                  <option value="listing">挂牌转让</option>
+                  <option value="free_transfer">无偿划转</option>
+                  <option value="private_agreement">非公开协议转让</option>
+                  <option value="scrap">直接报废</option>
+                </select>
+              </div>
+              
+              <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">处置原因 <span class="text-red-500">*</span></label>
+                  <select id="disposalReason" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                  <option value="">请选择处置原因</option>
+                  <option value="obsolete">技术过时</option>
+                  <option value="redundant">数据冗余</option>
+                  <option value="compliance">合规要求</option>
+                  <option value="cost">成本考虑</option>
+                  <option value="security">安全风险</option>
+                  <option value="business">业务调整</option>
+                  <option value="other">其他原因</option>
+                </select>
+              </div>
+              </div>
+
+              <!-- 对价字段(条件显示) -->
+              <div id="considerationField" class="hidden">
+                <label class="block text-sm font-medium text-gray-700 mb-1">对价 <span class="text-red-500">*</span></label>
+                <div class="flex items-center gap-2">
+                  <input type="number" id="considerationAmount" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" placeholder="请输入对价金额" min="0" step="0.01">
+                  <span class="text-sm text-gray-600 whitespace-nowrap">万元</span>
+              </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">预计处置日期 <span class="text-red-500">*</span></label>
+                  <input type="date" id="disposalDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">处置负责人</label>
+                  <input type="text" id="disposalManager" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" placeholder="请输入负责人姓名">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">处置说明 <span class="text-red-500">*</span></label>
+                <textarea id="disposalDescription" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm" rows="2" placeholder="请详细说明处置原因和处置计划"></textarea>
+              </div>
+
+              <!-- 附件上传 -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  <i class="fas fa-paperclip mr-1"></i>附件上传
+                  <span class="text-xs text-gray-500 ml-2">(如线下会审批过，可上传会议纪要和会议结果)</span>
+                  </label>
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-400 transition-colors">
+                  <div class="flex items-center justify-center">
+                    <label for="disposalAttachments" class="flex flex-col items-center cursor-pointer">
+                      <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                      <span class="text-sm text-gray-600 mb-1">点击上传文件</span>
+                      <span class="text-xs text-gray-400">支持 PDF、Word、Excel、图片等格式</span>
+                      <input type="file" id="disposalAttachments" class="hidden" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" onchange="handleFileUpload(event)">
+                  </label>
+              </div>
+
+                  <!-- 已上传文件列表 -->
+                  <div id="uploadedFilesList" class="mt-3 space-y-2 hidden">
+                    <div class="text-xs font-medium text-gray-700 mb-2">已上传文件：</div>
+                    <div id="uploadedFilesContent"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 底部按钮区域 -->
+      <div class="flex items-center justify-end space-x-3 p-4 border-t bg-white flex-shrink-0">
+        <button onclick="closeDisposalModal()" class="btn-secondary px-4 py-2">取消</button>
+            <button onclick="submitDisposalApplication()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors">
+          <i class="fas fa-paper-plane mr-1"></i>提交处置申请
+            </button>
+      </div>
+    </div>
+  </div>
+
+
+  <style>
+    /* 自定义滚动条样式 */
+    .disposal-modal::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .disposal-modal::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
+    
+    .disposal-modal::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    
+    .disposal-modal::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
 
   <script>
     // 搜索功能
@@ -834,13 +1797,19 @@
     
     // 编辑资产内容
     function editAssetContent(assetId) {
-      document.getElementById('assetEditModal').classList.remove('hidden');
+      const modal = document.getElementById('assetEditModal');
+      modal.classList.remove('hidden');
+      modal.style.display = 'block';
       document.getElementById('editAssetName').textContent = getAssetNameById(assetId);
+      // 滚动到顶部
+      modal.scrollTop = 0;
     }
     
     // 关闭资产编辑模态框
     function closeAssetEditModal() {
-      document.getElementById('assetEditModal').classList.add('hidden');
+      const modal = document.getElementById('assetEditModal');
+      modal.classList.add('hidden');
+      modal.style.display = 'none';
     }
     
     // 切换标签页
@@ -862,53 +1831,167 @@
       // 激活选中的标签页按钮
       event.target.classList.add('active', 'border-blue-500', 'text-blue-600');
       event.target.classList.remove('border-transparent', 'text-gray-500');
+      
+      // 特殊处理：如果是血缘关系标签页，确保图表正确显示
+      if (tabName === 'lineage') {
+        // 可以在这里添加血缘关系图的初始化逻辑
+        console.log('血缘关系标签页已激活');
+      }
     }
     
-    // 添加属性
-    function addAttribute() {
-      const attributesContainer = document.querySelector('#attributes-tab .space-y-4');
-      const newAttribute = document.createElement('div');
-      newAttribute.className = 'flex items-center gap-4 p-4 border rounded-lg';
-      newAttribute.innerHTML = `
-        <div class="flex-1">
-          <div class="flex items-center gap-4">
-            <input type="text" placeholder="属性名称" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <input type="text" placeholder="属性值" class="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          </div>
-        </div>
-        <button onclick="removeAttribute(this)" class="text-red-600 hover:text-red-800">
-          <i class="fas fa-trash"></i>
-        </button>
+    // 权属子标签页切换
+    function switchOwnershipSubTab(subTab) {
+      // 更新子标签按钮样式
+      const subtabs = document.querySelectorAll('.ownership-subtab');
+      subtabs.forEach(t => {
+        t.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+        t.classList.add('text-gray-500');
+      });
+      
+      const activeSubtab = document.getElementById('ownership-subtab-' + subTab);
+      activeSubtab.classList.remove('text-gray-500');
+      activeSubtab.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+      
+      // 切换子内容显示
+      const subcontents = document.querySelectorAll('.ownership-subcontent');
+      subcontents.forEach(c => c.classList.add('hidden'));
+      
+      const activeSubcontent = document.getElementById('ownership-content-' + subTab);
+      activeSubcontent.classList.remove('hidden');
+    }
+    
+    // 当前选中的属性
+    let selectedAttributeCategory = '';
+    let selectedAttributeName = '';
+    
+    // 切换树状下拉菜单显示/隐藏
+    function toggleAttributeDropdown() {
+      const menu = document.getElementById('attributeDropdownMenu');
+      menu.classList.toggle('hidden');
+    }
+    
+    // 点击页面其他地方关闭下拉菜单
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('attributeDropdownMenu');
+      const button = document.getElementById('attributeDropdownBtn');
+      if (dropdown && button && !dropdown.contains(event.target) && !button.contains(event.target)) {
+        dropdown.classList.add('hidden');
+      }
+    });
+    
+    // 切换属性分类的展开/收起
+    function toggleAttributeCategory(category) {
+      const categoryDiv = document.getElementById(`${category}-attributes`);
+      const arrow = document.getElementById(`${category}-arrow`);
+      
+      categoryDiv.classList.toggle('hidden');
+      
+      if (categoryDiv.classList.contains('hidden')) {
+        arrow.classList.remove('fa-chevron-down');
+        arrow.classList.add('fa-chevron-right');
+      } else {
+        arrow.classList.remove('fa-chevron-right');
+        arrow.classList.add('fa-chevron-down');
+      }
+    }
+    
+    // 选择属性
+    function selectAttribute(category, attributeName) {
+      selectedAttributeCategory = category;
+      selectedAttributeName = attributeName;
+      
+      // 更新按钮文本
+      document.getElementById('selectedAttributeText').textContent = `${category} / ${attributeName}`;
+      document.getElementById('selectedAttributeText').classList.remove('text-gray-500');
+      document.getElementById('selectedAttributeText').classList.add('text-gray-900');
+      
+      // 关闭下拉菜单
+      document.getElementById('attributeDropdownMenu').classList.add('hidden');
+      
+      // 聚焦到值输入框
+      document.getElementById('attributeValueInput').focus();
+    }
+    
+    // 添加新属性
+    function addNewAttribute() {
+      const attributeValue = document.getElementById('attributeValueInput').value.trim();
+      
+      if (!selectedAttributeName) {
+        alert('请先选择属性');
+        return;
+      }
+      
+      if (!attributeValue) {
+        alert('请输入属性值');
+        return;
+      }
+      
+      // 添加到表格
+      const tbody = document.getElementById('addedAttributesList');
+      const newRow = document.createElement('tr');
+      newRow.innerHTML = `
+        <td class="px-4 py-3 text-sm text-gray-900">${selectedAttributeCategory}</td>
+        <td class="px-4 py-3 text-sm text-gray-900">${selectedAttributeName}</td>
+        <td class="px-4 py-3 text-sm text-gray-600">${attributeValue}</td>
+        <td class="px-4 py-3 text-sm">
+          <button onclick="removeAddedAttribute(this)" class="text-red-600 hover:text-red-800">
+            <i class="fas fa-trash mr-1"></i>删除
+          </button>
+        </td>
       `;
-      attributesContainer.appendChild(newAttribute);
+      
+      tbody.appendChild(newRow);
+      
+      // 清空输入
+      selectedAttributeCategory = '';
+      selectedAttributeName = '';
+      document.getElementById('selectedAttributeText').textContent = '请选择属性';
+      document.getElementById('selectedAttributeText').classList.add('text-gray-500');
+      document.getElementById('selectedAttributeText').classList.remove('text-gray-900');
+      document.getElementById('attributeValueInput').value = '';
     }
     
-    // 删除属性
-    function removeAttribute(button) {
-      button.closest('.flex.items-center.gap-4').remove();
+    // 删除已添加的属性
+    function removeAddedAttribute(button) {
+      if (confirm('确定要删除这个属性吗？')) {
+        button.closest('tr').remove();
+      }
     }
     
     // 添加标签
     function addTag() {
-      const newTagInput = document.getElementById('newTag');
-      const tagName = newTagInput.value.trim();
+      const newTagSelect = document.getElementById('newTag');
+      const tagName = newTagSelect.value;
       
-      if (tagName) {
-        const tagsContainer = document.getElementById('tagsContainer');
-        const colors = ['blue', 'green', 'purple', 'pink', 'indigo', 'teal', 'red', 'orange', 'yellow'];
-        const randomColor = colors[Math.floor(Math.random() * colors.length)];
-        
-        const newTag = document.createElement('span');
-        newTag.className = `bg-${randomColor}-100 text-${randomColor}-800 px-3 py-1 rounded-full text-sm flex items-center gap-2`;
-        newTag.innerHTML = `
-          ${tagName}
-          <button onclick="removeTag(this)" class="text-${randomColor}-600 hover:text-${randomColor}-800">
-            <i class="fas fa-times"></i>
-          </button>
-        `;
-        tagsContainer.appendChild(newTag);
-        newTagInput.value = '';
+      if (!tagName) {
+        alert('请选择标签');
+        return;
       }
+      
+      // 根据标签类型决定添加到哪个容器
+      let container;
+      if (['用户分析', '行为分析', '用户画像', '财务数据', '营销数据', '订单数据'].includes(tagName)) {
+        container = document.getElementById('businessTags');
+      } else if (['结构化数据', '实时处理', 'API接口', '数据仓库', '数据湖', '机器学习', '数据挖掘', '商业智能'].includes(tagName)) {
+        container = document.getElementById('technicalTags');
+      } else {
+        container = document.getElementById('securityTags');
+      }
+      
+      const colors = ['blue', 'green', 'purple', 'pink', 'indigo', 'teal', 'red', 'orange', 'yellow'];
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      
+      const newTag = document.createElement('span');
+      newTag.className = `bg-${randomColor}-100 text-${randomColor}-800 px-3 py-1 rounded-full text-sm flex items-center gap-2`;
+      newTag.innerHTML = `
+        ${tagName}
+        <button onclick="removeTag(this)" class="text-${randomColor}-600 hover:text-${randomColor}-800">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+      
+      container.appendChild(newTag);
+      newTagSelect.value = '';
     }
     
     // 删除标签
@@ -955,186 +2038,11 @@
       }
     }
     
-    // 添加权属信息
-    function addOwnership() {
-      const ownershipContainer = document.getElementById('ownershipContainer');
-      const ownershipCount = ownershipContainer.children.length + 1;
-      
-      const newOwnership = document.createElement('div');
-      newOwnership.className = 'border rounded-lg p-4';
-      newOwnership.innerHTML = `
-        <div class="flex items-center justify-between mb-3">
-          <h4 class="font-semibold text-gray-900">权属信息 #${ownershipCount}</h4>
-          <button onclick="removeOwnership(this)" class="text-red-600 hover:text-red-800">
-            <i class="fas fa-trash"></i>
-          </button>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">权属类型</label>
-            <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="owned">自有资产</option>
-              <option value="licensed">授权使用</option>
-              <option value="shared">共享资产</option>
-              <option value="disputed">争议资产</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">权属方</label>
-            <input type="text" placeholder="请输入权属方" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">负责人</label>
-            <input type="text" placeholder="请输入负责人" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">联系方式</label>
-            <input type="text" placeholder="请输入联系方式" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          </div>
-          <div class="md:col-span-2">
-            <label class="block text-sm font-medium text-gray-700 mb-2">权属说明</label>
-            <textarea rows="3" placeholder="请输入权属说明" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-          </div>
-        </div>
-      `;
-      ownershipContainer.appendChild(newOwnership);
-    }
+    // 权属信息为系统自动生成，不可在此页面修改
+    // 相关功能已移除
     
-    // 删除权属信息
-    function removeOwnership(button) {
-      if (confirm('确认删除该权属信息？')) {
-        button.closest('.border.rounded-lg.p-4').remove();
-      }
-    }
-    
-    // 显示添加授权模态框
-    function showAddAuthorizationModal() {
-      document.getElementById('addAuthorizationModal').classList.remove('hidden');
-    }
-    
-    // 显示添加协议模态框
-    function showAddProtocolModal() {
-      document.getElementById('addProtocolModal').classList.remove('hidden');
-    }
-    
-    // 选择授权
-    function selectAuthorization(authId) {
-      const authData = {
-        'AUTH-2024-003': {
-          id: 'AUTH-2024-003',
-          name: '外部合作伙伴授权',
-          target: '外部合作伙伴',
-          type: '调用权限',
-          period: '2024-03-01 至 2024-06-01',
-          status: 'pending'
-        },
-        'AUTH-2024-004': {
-          id: 'AUTH-2024-004',
-          name: '质量部授权',
-          target: '质量部',
-          type: '读取权限',
-          period: '2024-04-01 至 2024-10-01',
-          status: 'active'
-        },
-        'AUTH-2024-005': {
-          id: 'AUTH-2024-005',
-          name: '市场部授权',
-          target: '市场部',
-          type: '读写权限',
-          period: '2024-05-01 至 2024-12-31',
-          status: 'active'
-        }
-      };
-      
-      const auth = authData[authId];
-      if (auth) {
-        const authorizationContainer = document.getElementById('authorizationContainer');
-        const newAuth = document.createElement('div');
-        newAuth.className = 'border rounded-lg p-4';
-        newAuth.innerHTML = `
-          <div class="flex items-center justify-between mb-3">
-            <h4 class="font-semibold text-gray-900">${auth.id}</h4>
-            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-${auth.status}">${auth.status === 'active' ? '有效' : '待审核'}</span>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-            <div><strong>被授权方：</strong>${auth.target}</div>
-            <div><strong>授权类型：</strong>${auth.type}</div>
-            <div><strong>有效期：</strong>${auth.period}</div>
-          </div>
-          <div class="mt-3 flex gap-2">
-            <button class="text-blue-600 hover:text-blue-800 text-sm">查看详情</button>
-            <button onclick="removeAuthorization(this)" class="text-red-600 hover:text-red-800 text-sm">撤销授权</button>
-          </div>
-        `;
-        authorizationContainer.appendChild(newAuth);
-        closeModal('addAuthorizationModal');
-      }
-    }
-    
-    // 选择协议
-    function selectProtocol(protocolId) {
-      const protocolData = {
-        'PROT-2024-003': {
-          id: 'PROT-2024-003',
-          name: '数据安全协议',
-          type: '安全协议',
-          signer: '技术部',
-          status: 'pending'
-        },
-        'PROT-2024-004': {
-          id: 'PROT-2024-004',
-          name: '数据质量协议',
-          type: '质量协议',
-          signer: '质量部',
-          status: 'draft'
-        },
-        'PROT-2024-005': {
-          id: 'PROT-2024-005',
-          name: '数据交换协议',
-          type: '数据交换',
-          signer: '市场部',
-          status: 'active'
-        }
-      };
-      
-      const protocol = protocolData[protocolId];
-      if (protocol) {
-        const protocolsContainer = document.getElementById('protocolsContainer');
-        const newProtocol = document.createElement('div');
-        newProtocol.className = 'border rounded-lg p-4';
-        newProtocol.innerHTML = `
-          <div class="flex items-center justify-between mb-3">
-            <h4 class="font-semibold text-gray-900">${protocol.id}</h4>
-            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-${protocol.status}">${protocol.status === 'active' ? '生效' : protocol.status === 'pending' ? '待审核' : '草稿'}</span>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-            <div><strong>协议名称：</strong>${protocol.name}</div>
-            <div><strong>协议类型：</strong>${protocol.type}</div>
-            <div><strong>签署方：</strong>${protocol.signer}</div>
-          </div>
-          <div class="mt-3 flex gap-2">
-            <button class="text-blue-600 hover:text-blue-800 text-sm">查看详情</button>
-            <button onclick="removeProtocol(this)" class="text-red-600 hover:text-red-800 text-sm">终止协议</button>
-          </div>
-        `;
-        protocolsContainer.appendChild(newProtocol);
-        closeModal('addProtocolModal');
-      }
-    }
-    
-    // 删除授权
-    function removeAuthorization(button) {
-      if (confirm('确认撤销该授权？')) {
-        button.closest('.border.rounded-lg.p-4').remove();
-      }
-    }
-    
-    // 删除协议
-    function removeProtocol(button) {
-      if (confirm('确认终止该协议？')) {
-        button.closest('.border.rounded-lg.p-4').remove();
-      }
-    }
+    // 授权链路信息为系统自动生成，不可在此页面修改
+    // 相关功能已移除
     
     // 关闭模态框
     function closeModal(modalId) {
@@ -1143,56 +2051,59 @@
     
     // 保存资产内容
     function saveAssetContent() {
-      alert('资产内容保存成功！');
+      alert('资产内容变更流程已发起！');
       closeAssetEditModal();
     }
     
     // 根据资产ID获取资产名称
     function getAssetNameById(assetId) {
       const assetNames = {
-        'ASSET-2024-001': '用户行为数据',
-        'ASSET-2024-002': '财务报表数据',
-        'ASSET-2024-003': 'API接口数据',
-        'ASSET-2024-004': '客户数据',
-        'ASSET-2024-005': '产品数据',
-        'ASSET-2024-006': '日志数据',
-        'ASSET-2024-007': '市场数据',
-        'ASSET-2024-008': '质量数据'
+        'ASSET-2024-001': '采购专题分析数据集',
+        'ASSET-2024-002': '供应商信用评价与合规性分析数据集',
+        'ASSET-2024-003': '成交分析数据集'
       };
       return assetNames[assetId] || '未知资产';
     }
     
-    // 页面加载完成后的初始化
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('资产内容管理页面加载完成');
-      
-      // 确保主体内容区域初始状态适配侧边栏
-      const main = document.querySelector('main');
-      main.style.marginLeft = '240px';
-      main.style.maxWidth = 'calc(100% - 240px)';
-      
-      // 展开数据资产开发管理模块并高亮显示
-      const developmentSubmenu = document.getElementById('development-submenu');
-      const developmentArrow = document.getElementById('development-arrow');
-      if (developmentSubmenu && developmentArrow) {
-        developmentSubmenu.classList.remove('hidden');
-        developmentArrow.style.transform = 'rotate(180deg)';
-      }
-      
-      // 搜索框回车键搜索
-      document.getElementById('assetSearch').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-          searchAssets();
+          // 页面加载完成后的初始化
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('资产内容管理页面加载完成');
+        
+        // 确保主体内容区域初始状态适配侧边栏
+        const main = document.querySelector('main');
+        main.style.marginLeft = '240px';
+        main.style.maxWidth = 'calc(100% - 240px)';
+        
+        // 展开数据资产开发管理模块并高亮显示
+        const developmentSubmenu = document.getElementById('development-submenu');
+        const developmentArrow = document.getElementById('development-arrow');
+        if (developmentSubmenu && developmentArrow) {
+          developmentSubmenu.classList.remove('hidden');
+          developmentArrow.style.transform = 'rotate(180deg)';
+        }
+        
+        // 搜索框回车键搜索
+        document.getElementById('assetSearch').addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            searchAssets();
+          }
+        });
+        
+        // 标签输入框回车键添加标签
+        document.getElementById('newTag').addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            addTag();
+          }
+        });
+        
+        // 数据集搜索功能
+        const datasetSearchInput = document.getElementById('datasetSearch');
+        if (datasetSearchInput) {
+          datasetSearchInput.addEventListener('input', function() {
+            searchDatasets(this.value);
+          });
         }
       });
-      
-      // 标签输入框回车键添加标签
-      document.getElementById('newTag').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-          addTag();
-        }
-      });
-    });
     
     // 用户下拉菜单切换
     function toggleUserDropdown() {
@@ -1219,7 +2130,887 @@
         arrow.style.transform = 'rotate(0deg)';
       }
     });
+    
+    // 显示数据集选择模态框
+    function showDatasetSelectionModal() {
+      // 清空表单
+      document.getElementById('new-dataset-name').value = '';
+      document.getElementById('new-dataset-db-type').value = '';
+      document.getElementById('new-dataset-structure').value = '';
+      document.getElementById('new-dataset-scale').value = '';
+      document.getElementById('new-dataset-count').value = '';
+      document.getElementById('new-dataset-frequency').value = '';
+      document.getElementById('new-dataset-processing').value = '';
+      document.getElementById('new-dataset-source').value = '';
+      document.getElementById('new-dataset-description').value = '';
+      
+      document.getElementById('datasetSelectionModal').classList.remove('hidden');
+    }
+    
+    // 确认添加新数据集
+    function confirmAddNewDataset() {
+      // 获取表单数据
+      const name = document.getElementById('new-dataset-name').value.trim();
+      const dbType = document.getElementById('new-dataset-db-type').value;
+      const structure = document.getElementById('new-dataset-structure').value;
+      const scale = document.getElementById('new-dataset-scale').value.trim();
+      const count = document.getElementById('new-dataset-count').value.trim();
+      const frequency = document.getElementById('new-dataset-frequency').value;
+      const processing = document.getElementById('new-dataset-processing').value;
+      const source = document.getElementById('new-dataset-source').value.trim();
+      const description = document.getElementById('new-dataset-description').value.trim();
+      
+      // 验证必填字段
+      if (!name) {
+        alert('请输入数据集名称');
+        return;
+      }
+      if (!dbType) {
+        alert('请选择数据库类型');
+        return;
+      }
+      if (!structure) {
+        alert('请选择数据结构');
+        return;
+      }
+      if (!scale) {
+        alert('请输入规模');
+        return;
+      }
+      if (!count) {
+        alert('请输入条数');
+        return;
+      }
+      if (!frequency) {
+        alert('请选择更新频率');
+        return;
+      }
+      if (!processing) {
+        alert('请选择加工性质');
+        return;
+      }
+      if (!source) {
+        alert('请输入数据来源');
+        return;
+      }
+      
+      // 添加到数据集列表
+      const selectedDatasetsContainer = document.getElementById('selectedDatasets');
+      const newDataset = document.createElement('div');
+      newDataset.className = 'bg-gray-50 rounded-lg p-4 border border-gray-200';
+      
+      newDataset.innerHTML = `
+        <div class="flex items-center justify-between mb-3">
+          <h4 class="text-md font-medium text-gray-900">${name}</h4>
+          <button onclick="removeDataset(this)" class="text-red-500 hover:text-red-700 text-sm">
+            <i class="fas fa-trash mr-1"></i>删除
+          </button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+          <div>
+            <span class="text-gray-600">数据库类型：</span>
+            <span class="text-gray-900">${dbType}</span>
+          </div>
+          <div>
+            <span class="text-gray-600">数据结构：</span>
+            <span class="text-gray-900">${structure}</span>
+          </div>
+          <div>
+            <span class="text-gray-600">规模：</span>
+            <span class="text-gray-900">${scale}</span>
+          </div>
+          <div>
+            <span class="text-gray-600">条数：</span>
+            <span class="text-gray-900">${count}</span>
+          </div>
+          <div>
+            <span class="text-gray-600">更新频率：</span>
+            <span class="text-gray-900">${frequency}</span>
+          </div>
+          <div>
+            <span class="text-gray-600">加工性质：</span>
+            <span class="text-gray-900">${processing}</span>
+          </div>
+          <div>
+            <span class="text-gray-600">数据来源：</span>
+            <span class="text-gray-900">${source}</span>
+          </div>
+          ${description ? `
+          <div class="md:col-span-2">
+            <span class="text-gray-600">详细描述：</span>
+            <span class="text-gray-900">${description}</span>
+          </div>
+          ` : ''}
+        </div>
+      `;
+      
+      selectedDatasetsContainer.appendChild(newDataset);
+      
+      // 关闭模态框
+      closeModal('datasetSelectionModal');
+      
+      // 提示成功
+      alert('数据集添加成功！');
+    }
+    
+    // 删除数据集
+    function removeDataset(button) {
+      if (confirm('确认删除此数据集吗？')) {
+        button.closest('.bg-gray-50').remove();
+      }
+    }
+    
+    // 切换数据集树形展开/折叠
+    function toggleDatasetTree(icon) {
+      const datasetItem = icon.closest('.dataset-tree-item');
+      const details = datasetItem.querySelector('.dataset-details');
+      
+      if (details.style.display === 'none') {
+        details.style.display = 'block';
+        icon.classList.remove('fa-chevron-right');
+        icon.classList.add('fa-chevron-down');
+      } else {
+        details.style.display = 'none';
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-right');
+      }
+    }
+    
+    // 删除整个数据集
+    function deleteDataset(button) {
+      if (confirm('确认删除此数据集吗？删除后将无法恢复。')) {
+        button.closest('.dataset-tree-item').remove();
+      }
+    }
+    
+    // 删除数据表
+    function deleteTable(button) {
+      if (confirm('确认删除此数据表吗？')) {
+        button.closest('.flex.items-center').remove();
+      }
+    }
+    
+    // 显示选择数据表模态框
+    let currentDatasetForTable = null;
+    function showTableSelectionModal(button) {
+      currentDatasetForTable = button.closest('.dataset-details');
+      // 清空之前的选择
+      document.querySelectorAll('.table-checkbox').forEach(cb => cb.checked = false);
+      document.getElementById('tableSelectionModal').classList.remove('hidden');
+    }
+    
+    // 确认添加数据表
+    // 显示完整新增数据集模态框
+    function showAddCompleteDatasetModal() {
+      // 清空所有表单字段
+      document.getElementById('complete-dataset-name').value = '';
+      document.getElementById('complete-dataset-db-type').value = '';
+      document.getElementById('complete-dataset-structure').value = '';
+      document.getElementById('complete-dataset-scale').value = '';
+      document.getElementById('complete-dataset-count').value = '';
+      document.getElementById('complete-dataset-frequency').value = '';
+      document.getElementById('complete-dataset-processing').value = '';
+      document.getElementById('complete-dataset-source').value = '';
+      document.getElementById('complete-dataset-description').value = '';
+      
+      // 清空已选择的数据表
+      document.getElementById('complete-dataset-selected-tables').innerHTML = '<div class="text-sm text-gray-500 text-center py-4">暂未选择数据表，请点击上方按钮选择</div>';
+      
+      document.getElementById('addCompleteDatasetModal').classList.remove('hidden');
+    }
+    
+    // 在新增数据集弹窗中打开表选择器
+    let isSelectingForNewDataset = false;
+    function openTableSelectorInDatasetModal() {
+      isSelectingForNewDataset = true;
+      // 清空之前的选择
+      document.querySelectorAll('.table-checkbox').forEach(cb => cb.checked = false);
+      document.getElementById('tableSelectionModal').classList.remove('hidden');
+    }
+    
+    // 修改确认表选择功能，支持两种模式
+    function confirmTableSelection() {
+      const selectedTables = document.querySelectorAll('.table-checkbox:checked');
+      
+      if (selectedTables.length === 0) {
+        alert('请至少选择一个数据表');
+        return;
+      }
+      
+      if (isSelectingForNewDataset) {
+        // 为新增数据集选择表
+        const tableContainer = document.getElementById('complete-dataset-selected-tables');
+        tableContainer.innerHTML = ''; // 清空提示信息
+        
+        selectedTables.forEach(checkbox => {
+          const label = checkbox.closest('label');
+          const tableName = label.querySelector('.font-medium').textContent;
+          const tableCode = checkbox.value;
+          
+          const tableItem = document.createElement('div');
+          tableItem.className = 'flex items-center justify-between p-2 bg-gray-50 rounded hover:bg-gray-100';
+          tableItem.innerHTML = `
+            <div class="flex items-center gap-2">
+              <i class="fas fa-table text-green-500 text-sm"></i>
+              <span class="text-sm text-gray-900">${tableName}</span>
+              <span class="text-xs text-gray-500">(${tableCode})</span>
+            </div>
+            <button onclick="removeTableFromNewDataset(this)" class="text-red-600 hover:text-red-800 text-xs">
+              <i class="fas fa-times"></i>
+            </button>
+          `;
+          
+          tableContainer.appendChild(tableItem);
+        });
+        
+        isSelectingForNewDataset = false;
+      } else {
+        // 为现有数据集添加表
+        if (!currentDatasetForTable) {
+          alert('未找到目标数据集');
+          return;
+        }
+        
+        const tableContainer = currentDatasetForTable.querySelector('.space-y-2.ml-6');
+        
+        selectedTables.forEach(checkbox => {
+          const label = checkbox.closest('label');
+          const tableName = label.querySelector('.font-medium').textContent;
+          const tableCode = checkbox.value;
+          
+          const tableItem = document.createElement('div');
+          tableItem.className = 'flex items-center justify-between p-2 bg-gray-50 rounded hover:bg-gray-100';
+          tableItem.innerHTML = `
+            <div class="flex items-center gap-2">
+              <i class="fas fa-table text-green-500 text-sm"></i>
+              <span class="text-sm text-gray-900">${tableName}</span>
+              <span class="text-xs text-gray-500">(${tableCode})</span>
+            </div>
+            <button onclick="deleteTable(this)" class="text-red-600 hover:text-red-800 text-xs">
+              <i class="fas fa-times"></i>
+            </button>
+          `;
+          
+          tableContainer.appendChild(tableItem);
+        });
+        
+        currentDatasetForTable = null;
+      }
+      
+      // 关闭模态框
+      closeModal('tableSelectionModal');
+      alert('数据表添加成功！');
+    }
+    
+    // 从新增数据集中移除表
+    function removeTableFromNewDataset(button) {
+      button.closest('.flex.items-center').remove();
+      
+      // 如果没有表了，显示提示信息
+      const container = document.getElementById('complete-dataset-selected-tables');
+      if (container.children.length === 0) {
+        container.innerHTML = '<div class="text-sm text-gray-500 text-center py-4">暂未选择数据表，请点击上方按钮选择</div>';
+      }
+    }
+    
+    // 确认添加完整数据集
+    function confirmAddCompleteDataset() {
+      // 获取表单数据
+      const name = document.getElementById('complete-dataset-name').value.trim();
+      const dbType = document.getElementById('complete-dataset-db-type').value;
+      const structure = document.getElementById('complete-dataset-structure').value;
+      const scale = document.getElementById('complete-dataset-scale').value.trim();
+      const count = document.getElementById('complete-dataset-count').value.trim();
+      const frequency = document.getElementById('complete-dataset-frequency').value;
+      const processing = document.getElementById('complete-dataset-processing').value;
+      const source = document.getElementById('complete-dataset-source').value.trim();
+      const description = document.getElementById('complete-dataset-description').value.trim();
+      
+      // 验证必填字段
+      if (!name) {
+        alert('请输入数据集名称');
+        return;
+      }
+      if (!dbType) {
+        alert('请选择数据库类型');
+        return;
+      }
+      if (!structure) {
+        alert('请选择数据结构');
+        return;
+      }
+      if (!scale) {
+        alert('请输入规模');
+        return;
+      }
+      if (!count) {
+        alert('请输入条数');
+        return;
+      }
+      if (!frequency) {
+        alert('请选择更新频率');
+        return;
+      }
+      if (!processing) {
+        alert('请选择加工性质');
+        return;
+      }
+      if (!source) {
+        alert('请输入数据来源');
+        return;
+      }
+      
+      // 获取选择的数据表
+      const selectedTablesContainer = document.getElementById('complete-dataset-selected-tables');
+      const tableItems = selectedTablesContainer.querySelectorAll('.flex.items-center.justify-between');
+      
+      if (tableItems.length === 0) {
+        if (!confirm('您还未选择任何数据表，确定继续添加数据集吗？')) {
+          return;
+        }
+      }
+      
+      // 创建新的数据集树节点
+      const datasetsContainer = document.getElementById('selectedDatasets').querySelector('.border.border-gray-200.rounded-lg');
+      const newDatasetItem = document.createElement('div');
+      newDatasetItem.className = 'dataset-tree-item border-t border-gray-200';
+      
+      // 构建数据表HTML
+      let tablesHtml = '';
+      tableItems.forEach(item => {
+        const tableName = item.querySelector('.text-sm.text-gray-900').textContent;
+        const tableCode = item.querySelector('.text-xs.text-gray-500').textContent.replace(/[()]/g, '');
+        tablesHtml += `
+          <div class="flex items-center justify-between p-2 bg-gray-50 rounded hover:bg-gray-100">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-table text-green-500 text-sm"></i>
+              <span class="text-sm text-gray-900">${tableName}</span>
+              <span class="text-xs text-gray-500">(${tableCode})</span>
+            </div>
+            <button onclick="deleteTable(this)" class="text-red-600 hover:text-red-800 text-xs">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        `;
+      });
+      
+      newDatasetItem.innerHTML = `
+        <div class="flex items-center justify-between p-3 bg-gray-50">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-chevron-down text-gray-500 cursor-pointer tree-toggle" onclick="toggleDatasetTree(this)"></i>
+            <i class="fas fa-database text-blue-500"></i>
+            <span class="font-medium text-gray-900">${name}</span>
+          </div>
+          <button onclick="deleteDataset(this)" class="text-red-600 hover:text-red-800 text-sm">
+            <i class="fas fa-trash mr-1"></i>删除数据集
+          </button>
+        </div>
+        
+        <div class="dataset-details p-4 bg-white">
+          <div class="grid grid-cols-2 gap-3 text-sm mb-4">
+            <div><span class="text-gray-600">数据库类型：</span><span class="text-gray-900">${dbType}</span></div>
+            <div><span class="text-gray-600">数据结构：</span><span class="text-gray-900">${structure}</span></div>
+            <div><span class="text-gray-600">规模：</span><span class="text-gray-900">${scale}</span></div>
+            <div><span class="text-gray-600">条数：</span><span class="text-gray-900">${count}</span></div>
+            <div><span class="text-gray-600">更新频率：</span><span class="text-gray-900">${frequency}</span></div>
+            <div><span class="text-gray-600">加工性质：</span><span class="text-gray-900">${processing}</span></div>
+            <div><span class="text-gray-600">数据来源：</span><span class="text-gray-900">${source}</span></div>
+            ${description ? `<div class="col-span-2"><span class="text-gray-600">详细描述：</span><span class="text-gray-900">${description}</span></div>` : ''}
+          </div>
+          
+          <div class="border-t border-gray-200 pt-3">
+            <div class="flex items-center justify-between mb-2">
+              <h5 class="text-sm font-medium text-gray-700">数据表</h5>
+            </div>
+            <div class="space-y-2 ml-6">
+              ${tablesHtml || '<div class="text-sm text-gray-500 text-center py-2">暂无数据表</div>'}
+            </div>
+            <div class="mt-3 ml-6">
+              <button onclick="showTableSelectionModal(this)" class="text-blue-600 hover:text-blue-800 text-sm">
+                <i class="fas fa-plus mr-1"></i>新增数据表
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      datasetsContainer.appendChild(newDatasetItem);
+      
+      // 关闭模态框
+      closeModal('addCompleteDatasetModal');
+      
+      alert('数据集添加成功！');
+    }
+    
+    // 全选/取消全选数据集（保留以兼容旧代码）
+    function toggleAllDatasets(checkbox) {
+      const datasetCheckboxes = document.querySelectorAll('.dataset-checkbox');
+      datasetCheckboxes.forEach(cb => {
+        cb.checked = checkbox.checked;
+      });
+    }
+    
+    // 确认数据集选择（保留以兼容旧代码）
+    function confirmDatasetSelection() {
+      const selectedCheckboxes = document.querySelectorAll('.dataset-checkbox:checked');
+      const selectedDatasetsContainer = document.getElementById('selectedDatasets');
+      
+      selectedCheckboxes.forEach(checkbox => {
+        const datasetName = checkbox.getAttribute('data-name');
+        const datasetType = checkbox.getAttribute('data-type');
+        const tableCount = checkbox.getAttribute('data-tables');
+        
+        // 检查是否已经存在
+        const existingDataset = selectedDatasetsContainer.querySelector(`[data-name="${datasetName}"]`);
+        if (!existingDataset) {
+          // 创建新的数据集项
+          const newDataset = document.createElement('div');
+          newDataset.className = 'bg-gray-50 rounded-lg p-4';
+          newDataset.setAttribute('data-name', datasetName);
+          
+          // 根据数据集类型设置不同的颜色
+          let typeColor = 'bg-blue-100 text-blue-800';
+          if (datasetType === '分析数据集') {
+            typeColor = 'bg-green-100 text-green-800';
+          } else if (datasetType === '行为数据集') {
+            typeColor = 'bg-purple-100 text-purple-800';
+          } else if (datasetType === '目录数据集') {
+            typeColor = 'bg-yellow-100 text-yellow-800';
+          } else if (datasetType === '客户数据集') {
+            typeColor = 'bg-indigo-100 text-indigo-800';
+          } else if (datasetType === '财务数据集') {
+            typeColor = 'bg-red-100 text-red-800';
+          }
+          
+          newDataset.innerHTML = `
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-md font-medium text-gray-900">${datasetName}</h3>
+              <div class="flex items-center gap-2">
+                <span class="inline-block ${typeColor} text-xs px-2 py-1 rounded">${tableCount}张表</span>
+                <button onclick="removeDataset(this)" class="text-red-600 hover:text-red-800">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-4 text-sm">
+              <div class="bg-white rounded p-3">
+                <div class="font-medium text-gray-900 mb-1">示例表1</div>
+                <div class="text-gray-500 text-xs">example_table_1</div>
+                <div class="text-blue-600 text-xs mt-1">5个字段</div>
+              </div>
+              <div class="bg-white rounded p-3">
+                <div class="font-medium text-gray-900 mb-1">示例表2</div>
+                <div class="text-gray-500 text-xs">example_table_2</div>
+                <div class="text-blue-600 text-xs mt-1">3个字段</div>
+              </div>
+            </div>
+            <div class="mt-3">
+              <button onclick="addTableToDataset(this)" class="text-blue-600 hover:text-blue-800 text-sm mr-2">添加表</button>
+            </div>
+          `;
+          
+          selectedDatasetsContainer.appendChild(newDataset);
+        }
+      });
+      
+      // 关闭模态框
+      closeModal('datasetSelectionModal');
+      
+      // 重置所有复选框
+      document.getElementById('selectAllDatasets').checked = false;
+      document.querySelectorAll('.dataset-checkbox').forEach(cb => {
+        cb.checked = false;
+      });
+    }
+    
+    // 添加数据集（保留原有功能作为备用）
+    function addDataset() {
+      const datasetsContainer = document.querySelector('#dataset-tab .space-y-4');
+      const newDataset = document.createElement('div');
+      newDataset.className = 'bg-gray-50 rounded-lg p-4';
+      newDataset.innerHTML = `
+        <div class="flex items-center justify-between mb-3">
+          <input type="text" placeholder="数据集名称" class="text-md font-medium text-gray-900 border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">0张表</span>
+        </div>
+        <div class="grid grid-cols-3 gap-4 text-sm">
+          <div class="bg-white rounded p-3">
+            <input type="text" placeholder="表名" class="font-medium text-gray-900 mb-1 w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" placeholder="表代码" class="text-gray-500 text-xs w-full border border-gray-300 rounded px-1 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <div class="text-blue-600 text-xs mt-1">0个字段</div>
+          </div>
+        </div>
+        <div class="mt-3">
+          <button onclick="addTableToDataset(this)" class="text-blue-600 hover:text-blue-800 text-sm mr-2">添加表</button>
+          <button onclick="removeDataset(this)" class="text-red-600 hover:text-red-800 text-sm">删除数据集</button>
+        </div>
+      `;
+      datasetsContainer.appendChild(newDataset);
+    }
+    
+    // 添加表到数据集
+    function addTableToDataset(button) {
+      const dataset = button.closest('.bg-gray-50.rounded-lg.p-4');
+      const tablesGrid = dataset.querySelector('.grid');
+      const newTable = document.createElement('div');
+      newTable.className = 'bg-white rounded p-3';
+      newTable.innerHTML = `
+        <input type="text" placeholder="表名" class="font-medium text-gray-900 mb-1 w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <input type="text" placeholder="表代码" class="text-gray-500 text-xs w-full border border-gray-300 rounded px-1 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <div class="text-blue-600 text-xs mt-1">0个字段</div>
+        <button onclick="removeTable(this)" class="text-red-600 hover:text-red-800 text-xs mt-1">删除</button>
+      `;
+      tablesGrid.appendChild(newTable);
+      
+      // 更新表数量
+      const tableCount = tablesGrid.children.length;
+      const countSpan = dataset.querySelector('.bg-blue-100, .bg-green-100');
+      if (countSpan) {
+        countSpan.textContent = tableCount + '张表';
+      }
+    }
+    
+    // 删除数据集
+    function removeDataset(button) {
+      if (confirm('确认删除该数据集？')) {
+        button.closest('.bg-gray-50.rounded-lg.p-4').remove();
+      }
+    }
+    
+    // 删除表
+    function removeTable(button) {
+      const table = button.closest('.bg-white.rounded.p-3');
+      const dataset = table.closest('.bg-gray-50.rounded-lg.p-4');
+      table.remove();
+      
+      // 更新表数量
+      const tablesGrid = dataset.querySelector('.grid');
+      const tableCount = tablesGrid.children.length;
+      const countSpan = dataset.querySelector('.bg-blue-100, .bg-green-100');
+      if (countSpan) {
+        countSpan.textContent = tableCount + '张表';
+      }
+    }
+    
+    // 血缘关系信息为系统自动生成，不可在此页面修改
+    // 相关功能已移除
+    
+    // 数据集搜索功能
+    function searchDatasets(searchTerm) {
+      const rows = document.querySelectorAll('#datasetTableBody tr');
+      const searchLower = searchTerm.toLowerCase();
+      
+      rows.forEach(row => {
+        const datasetName = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+        const datasetType = row.querySelector('td:nth-child(4) span').textContent.toLowerCase();
+        
+        if (datasetName.includes(searchLower) || datasetType.includes(searchLower)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+    
+    // 显示表详情
+    function showTableDetails(tableCode, tableName) {
+      // 这里可以添加表详情的显示逻辑
+      alert(`显示表详情：${tableName} (${tableCode})`);
+    }
+
+    // 显示处置弹窗
+    function showDisposalModal(assetId) {
+      // 获取资产数据
+      const assetData = getAssetDataById(assetId);
+      if (assetData) {
+        // 填充资产基本信息
+        document.getElementById('disposalAssetName').textContent = assetData.name;
+        document.getElementById('disposalAssetId').textContent = assetData.id;
+        document.getElementById('disposalAssetNameValue').textContent = assetData.name;
+        document.getElementById('disposalAssetType').textContent = assetData.type;
+        document.getElementById('disposalAssetSize').textContent = assetData.size;
+        
+        // 清空表单
+        clearDisposalForm();
+        
+        // 设置默认日期为今天
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('disposalDate').value = today;
+        
+        // 显示弹窗
+        document.getElementById('disposalModal').classList.remove('hidden');
+      }
+    }
+
+    // 关闭处置弹窗
+    function closeDisposalModal() {
+      document.getElementById('disposalModal').classList.add('hidden');
+    }
+    
+    // 处理处置方式变化
+    function handleDisposalMethodChange() {
+      const disposalMethod = document.getElementById('disposalMethod').value;
+      const considerationField = document.getElementById('considerationField');
+      const considerationAmount = document.getElementById('considerationAmount');
+      
+      // 如果选择了挂牌转让或非公开协议转让，显示对价字段
+      if (disposalMethod === 'listing' || disposalMethod === 'private_agreement') {
+        considerationField.classList.remove('hidden');
+        considerationAmount.required = true;
+      } else {
+        considerationField.classList.add('hidden');
+        considerationAmount.required = false;
+        considerationAmount.value = '';
+      }
+    }
+
+    // 清空处置表单
+    function clearDisposalForm() {
+      document.getElementById('disposalMethod').value = '';
+      document.getElementById('disposalReason').value = '';
+      document.getElementById('disposalDescription').value = '';
+      document.getElementById('disposalManager').value = '';
+      document.getElementById('disposalDate').value = '';
+      document.getElementById('considerationAmount').value = '';
+      document.getElementById('considerationField').classList.add('hidden');
+      document.getElementById('disposalAttachments').value = '';
+      document.getElementById('uploadedFilesList').classList.add('hidden');
+      document.getElementById('uploadedFilesContent').innerHTML = '';
+      uploadedFiles = [];
+    }
+
+    // 存储已上传的文件
+    let uploadedFiles = [];
+
+    // 处理文件上传
+    function handleFileUpload(event) {
+      const files = event.target.files;
+      if (files.length === 0) return;
+
+      const uploadedFilesContent = document.getElementById('uploadedFilesContent');
+      const uploadedFilesList = document.getElementById('uploadedFilesList');
+
+      Array.from(files).forEach(file => {
+        // 检查文件大小（限制为10MB）
+        if (file.size > 10 * 1024 * 1024) {
+          alert(`文件 "${file.name}" 超过10MB限制，请选择较小的文件。`);
+          return;
+        }
+
+        // 添加到已上传文件列表
+        uploadedFiles.push(file);
+
+        // 创建文件显示元素
+        const fileItem = document.createElement('div');
+        fileItem.className = 'flex items-center justify-between bg-gray-50 px-3 py-2 rounded border border-gray-200';
+        
+        const fileIcon = getFileIcon(file.name);
+        const fileSize = formatFileSize(file.size);
+        
+        fileItem.innerHTML = `
+          <div class="flex items-center gap-2 flex-1">
+            <i class="${fileIcon} text-blue-600"></i>
+            <span class="text-sm text-gray-700 truncate">${file.name}</span>
+            <span class="text-xs text-gray-400">(${fileSize})</span>
+          </div>
+          <button type="button" onclick="removeFile('${file.name}')" class="text-red-500 hover:text-red-700 ml-2">
+            <i class="fas fa-times"></i>
+          </button>
+        `;
+        
+        uploadedFilesContent.appendChild(fileItem);
+      });
+
+      // 显示文件列表
+      if (uploadedFiles.length > 0) {
+        uploadedFilesList.classList.remove('hidden');
+      }
+    }
+
+    // 删除已上传的文件
+    function removeFile(fileName) {
+      uploadedFiles = uploadedFiles.filter(file => file.name !== fileName);
+      
+      // 重新渲染文件列表
+      const uploadedFilesContent = document.getElementById('uploadedFilesContent');
+      uploadedFilesContent.innerHTML = '';
+      
+      uploadedFiles.forEach(file => {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'flex items-center justify-between bg-gray-50 px-3 py-2 rounded border border-gray-200';
+        
+        const fileIcon = getFileIcon(file.name);
+        const fileSize = formatFileSize(file.size);
+        
+        fileItem.innerHTML = `
+          <div class="flex items-center gap-2 flex-1">
+            <i class="${fileIcon} text-blue-600"></i>
+            <span class="text-sm text-gray-700 truncate">${file.name}</span>
+            <span class="text-xs text-gray-400">(${fileSize})</span>
+          </div>
+          <button type="button" onclick="removeFile('${file.name}')" class="text-red-500 hover:text-red-700 ml-2">
+            <i class="fas fa-times"></i>
+          </button>
+        `;
+        
+        uploadedFilesContent.appendChild(fileItem);
+      });
+
+      // 如果没有文件了，隐藏列表
+      if (uploadedFiles.length === 0) {
+        document.getElementById('uploadedFilesList').classList.add('hidden');
+      }
+    }
+
+    // 根据文件扩展名获取图标
+    function getFileIcon(fileName) {
+      const ext = fileName.split('.').pop().toLowerCase();
+      const iconMap = {
+        'pdf': 'fas fa-file-pdf',
+        'doc': 'fas fa-file-word',
+        'docx': 'fas fa-file-word',
+        'xls': 'fas fa-file-excel',
+        'xlsx': 'fas fa-file-excel',
+        'jpg': 'fas fa-file-image',
+        'jpeg': 'fas fa-file-image',
+        'png': 'fas fa-file-image',
+        'gif': 'fas fa-file-image'
+      };
+      return iconMap[ext] || 'fas fa-file';
+    }
+
+    // 格式化文件大小
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    }
+
+    // 提交处置申请
+    function submitDisposalApplication() {
+      const method = document.getElementById('disposalMethod').value;
+      const reason = document.getElementById('disposalReason').value;
+      const description = document.getElementById('disposalDescription').value;
+      const disposalDate = document.getElementById('disposalDate').value;
+      const manager = document.getElementById('disposalManager').value;
+      const considerationAmount = document.getElementById('considerationAmount').value;
+
+      // 验证必填字段
+      if (!method || !reason || !description || !disposalDate) {
+        alert('请填写所有必填字段！');
+        return;
+      }
+      
+      // 如果选择了挂牌转让或非公开协议转让，验证对价字段
+      if ((method === 'listing' || method === 'private_agreement') && !considerationAmount) {
+        alert('请填写对价金额！');
+        return;
+      }
+      
+      // 收集附件信息
+      const attachments = uploadedFiles.map(file => ({
+        name: file.name,
+        size: file.size,
+        type: file.type
+      }));
+
+      // 收集表单数据
+      const disposalData = {
+        assetId: document.getElementById('disposalAssetId').textContent,
+        assetName: document.getElementById('disposalAssetNameValue').textContent,
+        method: method,
+        reason: reason,
+        description: description,
+        disposalDate: disposalDate,
+        manager: manager,
+        considerationAmount: considerationAmount || null,
+        attachments: attachments,
+        submitDate: new Date().toISOString().split('T')[0]
+      };
+
+      // 这里可以添加实际的提交逻辑
+      console.log('处置申请数据:', disposalData);
+      
+      // 显示成功消息
+      const attachmentText = attachments.length > 0 ? `\n附件数量：${attachments.length}个` : '';
+      alert(`处置申请已提交！${attachmentText}\n申请编号：DIS-${Date.now()}`);
+      
+      // 关闭弹窗
+      closeDisposalModal();
+    }
+
+    // 根据资产ID获取资产数据
+    function getAssetDataById(assetId) {
+      const assetMap = {
+        'ASSET-2024-001': {
+          id: 'ASSET-2024-001',
+          name: '采购专题分析数据集',
+          type: '结构化数据',
+          size: '2.5GB',
+          updateDate: '2024-01-15'
+        },
+        'ASSET-2024-002': {
+          id: 'ASSET-2024-002',
+          name: '供应商信用评价与合规性分析数据集',
+          type: '结构化数据',
+          size: '1.8GB',
+          updateDate: '2024-01-10'
+        },
+        'ASSET-2024-003': {
+          id: 'ASSET-2024-003',
+          name: '商城成交数据分析集',
+          type: '结构化数据',
+          size: '500MB',
+          updateDate: '2024-01-08'
+        }
+      };
+      return assetMap[assetId];
+    }
+
+    // 处理权属证明文件选择
+    function handleProofFileSelect(input) {
+      const file = input.files[0];
+      if (file) {
+        // 检查文件类型
+        const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        if (!allowedTypes.includes(file.type)) {
+          alert('请选择 PDF、DOC 或 DOCX 格式的文件');
+          input.value = '';
+          return;
+        }
+        
+        // 检查文件大小 (10MB)
+        if (file.size > 10 * 1024 * 1024) {
+          alert('文件大小不能超过 10MB');
+          input.value = '';
+          return;
+        }
+        
+        // 模拟上传过程
+        alert('权属证明文件上传成功！');
+        
+        // 清空文件输入
+        input.value = '';
+        
+        // 这里可以添加实际的上传逻辑
+        console.log('上传权属证明文件:', {
+          fileName: file.name,
+          fileSize: file.size,
+          fileType: file.type
+        });
+      }
+    }
   </script>
 </body>
 </html> 
+
+
+
+
+
+
+
+
 

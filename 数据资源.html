@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>数据资源 - 数据资产管理平台</title>
+  <title>数据资源 - 数据资产管理系统</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -17,6 +17,12 @@
       backdrop-filter: blur(10px);
       border-radius: 1rem; 
       box-shadow: 0 4px 20px rgba(37, 99, 235, 0.15);
+      transition: all 0.3s ease;
+    }
+    
+    .content-card:hover {
+      box-shadow: 0 8px 30px rgba(37, 99, 235, 0.2);
+      transform: translateY(-2px);
     }
     .tab-item {
       cursor: pointer;
@@ -47,11 +53,11 @@
       transform: rotate(90deg);
     }
     .resource-card {
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: all 0.3s ease;
     }
     .resource-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     }
     .btn-primary {
       background: #2563eb;
@@ -134,19 +140,19 @@
   <!-- 顶部主导航栏 -->
   <header class="bg-gradient-to-r from-red-900 via-red-800 to-red-900 shadow flex items-center justify-between px-10 h-16 sticky top-0 z-20">
     <div class="flex items-center space-x-4">
-      <img src="https://img1.imgtp.com/2023/07/21/0Qw6Qk4n.png" alt="LOGO" class="h-10 w-10 rounded-full border-2 border-red-400 shadow bg-white object-contain">
-      <span class="text-xl font-bold text-white tracking-wide whitespace-nowrap">数据资产管理平台</span>
+      <div class="h-10 w-10 rounded-full border-2 border-red-400 shadow bg-white flex items-center justify-center">
+          <svg class="h-6 w-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+      <span class="text-xl font-bold text-white tracking-wide whitespace-nowrap">数据资产管理系统</span>
     </div>
     <nav class="flex-1 flex items-center justify-center space-x-8">
-      <a href="首页.html" class="text-red-100 hover:text-red-400 font-medium">首页</a>
-      <a href="数据资产.html" class="text-red-100 hover:text-red-400 font-medium">资产运营管理</a>
-      <a href="数据来源管理.html" class="text-red-100 hover:text-red-400 font-medium bg-red-700 px-3 py-1 rounded">资源盘点登记</a>
-      <a href="权属信息管理.html" class="text-red-100 hover:text-red-400 font-medium">资产确权与管理</a>
-      <a href="资产开发管理.html" class="text-red-100 hover:text-red-400 font-medium">资产开发管理</a>
-      <a href="#" class="text-red-100 hover:text-red-400 font-medium">资产会计核算</a>
-      <a href="API目录管理.html" class="text-red-100 hover:text-red-400 font-medium">API管理</a>
     </nav>
     <div class="flex items-center space-x-4">
+      <a href="首页.html" class="text-red-100 hover:text-red-400 font-medium px-3 py-1 rounded border border-red-400 hover:bg-red-700 transition">
+        <i class="fas fa-home mr-2"></i>返回首页
+      </a>
       <div class="relative" id="user-dropdown">
         <div class="flex items-center space-x-2 cursor-pointer hover:bg-red-700 px-2 py-1 rounded-lg transition" onclick="toggleUserDropdown()">
           <img src="https://i.pravatar.cc/32?img=3" class="rounded-full w-8 h-8 border-2 border-red-200" alt="用户头像">
@@ -154,7 +160,7 @@
           <i class="fas fa-chevron-down text-xs text-red-300 transition-transform" id="dropdown-arrow"></i>
         </div>
         <div id="user-dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 hidden z-50">
-          <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+          <a href="个人中心.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
             <i class="fas fa-user-circle mr-3 text-red-500"></i>
             个人中心
           </a>
@@ -178,23 +184,6 @@
       <span class="text-lg font-bold text-red-100">平台导航</span>
     </div>
     <ul class="mt-4 space-y-2 px-4">
-      <!-- 首页 -->
-      <li><a href="首页.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100"><i class="fas fa-home"></i> 首页</a></li>
-      
-      <!-- 资产运营管理 -->
-      <li>
-        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('operation')">
-          <div class="flex items-center gap-3">
-            <i class="fas fa-chart-line"></i>
-            <span>资产运营管理</span>
-          </div>
-          <i class="fas fa-chevron-down text-xs transition-transform" id="operation-arrow"></i>
-        </div>
-        <ul id="operation-submenu" class="ml-6 mt-2 space-y-1 hidden">
-          <li><a href="数据资产.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据资产</a></li>
-          <li><a href="数据看板.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-chart-bar"></i> 数据看板</a></li>
-        </ul>
-      </li>
       
       <!-- 资源盘点登记 -->
       <li>
@@ -213,6 +202,7 @@
           <li><a href="资产标签管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-tag"></i> 资产标签管理</a></li>
           <li><a href="资产目录管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-sitemap"></i> 资产目录管理</a></li>
           <li><a href="数据分类管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据分类管理</a></li>
+          <li><a href="数据分级管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-layer-group"></i> 数据分级管理</a></li>
         </ul>
       </li>
       
@@ -226,10 +216,10 @@
           <i class="fas fa-chevron-down text-xs transition-transform" id="rights-arrow"></i>
         </div>
         <ul id="rights-submenu" class="ml-6 mt-2 space-y-1 hidden">
-          <li><a href="权属信息管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-user-shield"></i> 权属信息管理</a></li>
-          <li><a href="授权链路管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-link"></i> 授权链路管理</a></li>
+          <li><a href="内部申请记录.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-user-shield"></i> 内部申请记录</a></li>
+          <li><a href="授权链路记录.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-link"></i> 授权链路记录</a></li>
           
-          <li><a href="协议管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 协议管理</a></li>
+          <li><a href="权属证明记录.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-certificate"></i> 权属证明记录</a></li>
         </ul>
       </li>
       
@@ -244,40 +234,24 @@
         </div>
         <ul id="development-submenu" class="ml-6 mt-2 space-y-1 hidden">
           <li><a href="资产开发管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 资产开发管理</a></li>
-          <li><a href="流程监控管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 流程监控管理</a></li>
           <li><a href="资产内容管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 资产内容管理</a></li>
         </ul>
       </li>
       
       <!-- 资产会计核算 -->
-      <li>
-        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('accounting')">
-          <div class="flex items-center gap-3">
-            <i class="fas fa-calculator"></i>
-            <span>资产会计核算</span>
-          </div>
-          <i class="fas fa-chevron-down text-xs transition-transform" id="accounting-arrow"></i>
-        </div>
-        <ul id="accounting-submenu" class="ml-6 mt-2 space-y-1 hidden">
-          <li><a href="资产会计计量.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-calculator"></i> 资产会计计量</a></li>
-          <li><a href="资产披露.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-file-alt"></i> 资产披露</a></li>
-          <li><a href="资产应用.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-chart-bar"></i> 资产应用</a></li>
-        </ul>
-      </li>
+            <li>
+                <a href="资产会计核算.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100">
+                    <i class="fas fa-calculator"></i>
+                    <span>资产会计核算</span>
+                </a>
+            </li>
       
       <!-- API管理 -->
       <li>
-        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('api')">
-          <div class="flex items-center gap-3">
-            <i class="fas fa-plug"></i>
-            <span>API管理</span>
-          </div>
-          <i class="fas fa-chevron-down text-xs transition-transform" id="api-arrow"></i>
-        </div>
-        <ul id="api-submenu" class="ml-6 mt-2 space-y-1 hidden">
-          <li><a href="API目录管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-sitemap"></i> API目录管理</a></li>
-          <li><a href="API管理页面.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> API管理</a></li>
-        </ul>
+        <a href="API管理页面.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100">
+          <i class="fas fa-plug"></i>
+          <span>API管理</span>
+        </a>
       </li>
     </ul>
   </aside>
@@ -286,358 +260,290 @@
   <button id="sidebar-toggle" onclick="toggleSidebar()" class="fixed top-20 left-64 z-40 bg-black bg-opacity-50 backdrop-blur-sm text-white rounded-full p-2 shadow-lg hover:bg-black hover:bg-opacity-70 focus:outline-none transition"><i class="fas fa-chevron-left"></i></button>
   
   <!-- 主体内容区 -->
-  <main class="flex-1 w-full flex gap-4 py-6 px-6 ml-60">
-    <!-- 页面标题 -->
-    <div class="mb-8">
+     <main class="flex-1 w-full py-8 px-8 ml-60">
 
 
-    <!-- 数据来源页签 -->
-    <div class="content-card p-4 mb-4">
-              <div class="border-b border-gray-200 mb-4">
-        <nav class="flex space-x-8">
-          <div class="tab-item active py-2 px-1" onclick="switchTab('zhglxt')">
-            <span class="text-lg">智慧管理系统</span>
-            <div class="text-sm text-gray-500 mt-1">12个资源</div>
-          </div>
-          <div class="tab-item py-2 px-1" onclick="switchTab('znpsxt')">
-            <span class="text-lg">智能评审系统</span>
-            <div class="text-sm text-gray-500 mt-1">8个资源</div>
-          </div>
-          <div class="tab-item py-2 px-1" onclick="switchTab('llxt')">
-            <span class="text-lg">绿链系统</span>
-            <div class="text-sm text-gray-500 mt-1">15个资源</div>
-          </div>
-        </nav>
-      </div>
-
-      <!-- 主要内容区域 -->
-      <div class="flex gap-6">
-        <!-- 左侧目录树 -->
-        <div class="w-72 content-card p-4 h-fit">
-          <div class="mb-4">
-            <h3 class="text-lg font-bold text-gray-800 mb-4">目录结构</h3>
-            <div class="flex items-center space-x-2 mb-4">
-              <input type="text" placeholder="搜索目录" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <button class="btn-primary px-3 py-2">
-                <i class="fas fa-search"></i>
-              </button>
-            </div>
-          </div>
-          
-          <div class="space-y-2">
-            <div class="tree-item active flex items-center justify-between p-3 rounded-lg" onclick="selectTreeItem('all')">
-              <div class="flex items-center space-x-2">
-                <i class="fas fa-chevron-right tree-arrow rotated"></i>
-                <span>全部资源</span>
+     <!-- 数据来源选择 -->
+     <div class="content-card p-6 mb-8">
+       <div class="flex items-center justify-between mb-4">
+         <h2 class="text-xl font-semibold text-gray-800">数据来源筛选</h2>
+         <div class="flex items-center space-x-4">
+           <span class="text-sm text-gray-500">当前选择：</span>
+           <span class="text-sm font-medium text-blue-600" id="currentSource">智慧管理系统1</span>
+         </div>
+       </div>
+       <div class="max-w-md">
+         <label class="block text-sm font-medium text-gray-700 mb-3">选择数据来源系统</label>
+         <div class="relative">
+           <select id="dataSourceSelect" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white cursor-pointer shadow-sm" onchange="handleDataSourceChange()">
+             <option value="zhglxt1" selected>智慧管理系统1 (12个资源)</option>
+             <option value="zhglxt2">智慧管理系统2 (8个资源)</option>
+             <option value="znpsxt">智能评审系统 (15个资源)</option>
+           </select>
+           <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+             <i class="fas fa-chevron-down text-gray-400"></i>
               </div>
-              <span class="text-sm text-gray-500">35</span>
-            </div>
-            
-            <div class="tree-item flex items-center justify-between p-3 rounded-lg" onclick="selectTreeItem('database')">
-              <div class="flex items-center space-x-2">
-                <i class="fas fa-chevron-right tree-arrow"></i>
-                <span>数据库</span>
-              </div>
-              <span class="text-sm text-gray-500">12</span>
-            </div>
-            
-            <div class="tree-item flex items-center justify-between p-3 rounded-lg" onclick="selectTreeItem('table')">
-              <div class="flex items-center space-x-2">
-                <i class="fas fa-chevron-right tree-arrow"></i>
-                <span>数据表</span>
-              </div>
-              <span class="text-sm text-gray-500">18</span>
-            </div>
-            
-            <div class="tree-item flex items-center justify-between p-3 rounded-lg" onclick="selectTreeItem('view')">
-              <div class="flex items-center space-x-2">
-                <i class="fas fa-chevron-right tree-arrow"></i>
-                <span>视图</span>
-              </div>
-              <span class="text-sm text-gray-500">5</span>
-            </div>
-            
-            <div class="tree-item flex items-center justify-between p-3 rounded-lg" onclick="selectTreeItem('procedure')">
-              <div class="flex items-center space-x-2">
-                <i class="fas fa-chevron-right tree-arrow"></i>
-                <span>存储过程</span>
-              </div>
-              <span class="text-sm text-gray-500">8</span>
             </div>
           </div>
         </div>
 
-        <!-- 右侧资源卡片 -->
-        <div class="flex-1">
+     <!-- 主要内容区域 -->
+     <div class="w-full">
+          
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-xl font-bold text-gray-800">元数据资源</h3>
             <div class="flex items-center space-x-4">
-              <select class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option>全部类型</option>
-                <option>数据表</option>
-                <option>视图</option>
-                <option>存储过程</option>
-              </select>
+              <button onclick="window.location.href='分类分级管理.html'" class="btn-primary">
+                <i class="fas fa-layer-group mr-2"></i>分类分级管理
+              </button>
             </div>
           </div>
 
           <!-- 资源卡片网格 -->
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             <!-- 资源卡片1 -->
-                          <div class="resource-card bg-white rounded-xl p-5 shadow-lg border border-gray-100 cursor-pointer" onclick="window.location.href='资源详情.html'">
-                              <div class="flex items-center justify-between mb-3">
-                  <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <i class="fas fa-table text-blue-600"></i>
+            <div class="resource-card bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer" onclick="window.location.href='资源详情.html'">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
+                  <i class="fas fa-table text-white text-xl"></i>
                     </div>
-                    <div>
-                      <h4 class="font-semibold text-gray-800">用户信息表</h4>
-                      <p class="text-sm text-gray-500">user_info</p>
-                    </div>
-                  </div>
-                  <span class="scan-status status-success">已扫描</span>
-                </div>
-              
-              <div class="space-y-2 mb-3">
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">数据源:</span>
-                  <span class="font-semibold">智慧管理系统</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">记录数:</span>
-                  <span class="font-semibold">1,234,567</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">字段数:</span>
-                  <span class="font-semibold">25</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">更新时间:</span>
-                  <span class="text-gray-500">2024-01-15 10:30</span>
+                <div class="flex flex-col items-end space-y-2">
+                  <span class="scan-status status-success text-xs">已扫描</span>
                 </div>
               </div>
               
-              <div class="flex items-center justify-between">
-                <div class="flex space-x-2">
-                  <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">数据表</span>
-                  <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded">结构化</span>
+              <div class="mb-4">
+                <h4 class="font-bold text-gray-800 text-lg mb-1">用户信息表</h4>
+                <p class="text-sm text-gray-500 font-mono">user_info</p>
                 </div>
-                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium whitespace-nowrap" onclick="event.stopPropagation(); window.location.href='资源详情.html'">查看详情</button>
+              
+              <div class="space-y-3 mb-4">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500 flex items-center">
+                    <i class="fas fa-database text-gray-400 mr-2"></i>
+                    数据来源
+                  </span>
+                  <span class="font-semibold text-gray-700">智慧管理系统</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500 flex items-center">
+                    <i class="fas fa-columns text-gray-400 mr-2"></i>
+                    字段数
+                  </span>
+                  <span class="font-semibold text-gray-700">25</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500 flex items-center">
+                    <i class="fas fa-clock text-gray-400 mr-2"></i>
+                    更新时间
+                  </span>
+                  <span class="font-semibold text-gray-700">2024-01-15 10:30</span>
+                </div>
               </div>
             </div>
 
             <!-- 资源卡片2 -->
-            <div class="resource-card bg-white rounded-xl p-5 shadow-lg border border-gray-100">
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center space-x-3">
-                  <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-eye text-green-600"></i>
+            <div class="resource-card bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer" onclick="window.location.href='资源详情.html'">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center shadow-md">
+                  <i class="fas fa-eye text-white text-xl"></i>
                   </div>
-                  <div>
-                    <h4 class="font-semibold text-gray-800">用户统计视图</h4>
-                    <p class="text-sm text-gray-500">user_stats_view</p>
-                  </div>
-                </div>
-                <span class="scan-status status-success">已扫描</span>
-              </div>
-              
-              <div class="space-y-2 mb-4">
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">数据源:</span>
-                  <span class="font-semibold">智慧管理系统</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">记录数:</span>
-                  <span class="font-semibold">89,456</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">字段数:</span>
-                  <span class="font-semibold">12</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">更新时间:</span>
-                  <span class="text-gray-500">2024-01-15 09:15</span>
+                <div class="flex flex-col items-end space-y-2">
+                  <span class="scan-status status-success text-xs">已扫描</span>
                 </div>
               </div>
               
-              <div class="flex items-center justify-between">
-                <div class="flex space-x-2">
-                  <span class="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">视图</span>
-                  <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded">结构化</span>
+              <div class="mb-4">
+                <h4 class="font-bold text-gray-800 text-lg mb-1">用户统计视图</h4>
+                <p class="text-sm text-gray-500 font-mono">user_stats_view</p>
+              </div>
+              
+              <div class="space-y-3 mb-4">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500 flex items-center">
+                    <i class="fas fa-database text-gray-400 mr-2"></i>
+                    数据来源
+                  </span>
+                  <span class="font-semibold text-gray-700">智慧管理系统</span>
                 </div>
-                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium whitespace-nowrap">查看详情</button>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500 flex items-center">
+                    <i class="fas fa-columns text-gray-400 mr-2"></i>
+                    字段数
+                  </span>
+                  <span class="font-semibold text-gray-700">12</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500 flex items-center">
+                    <i class="fas fa-clock text-gray-400 mr-2"></i>
+                    更新时间
+                  </span>
+                  <span class="font-semibold text-gray-700">2024-01-15 09:15</span>
+                </div>
               </div>
             </div>
 
             <!-- 资源卡片3 -->
-            <div class="resource-card bg-white rounded-xl p-5 shadow-lg border border-gray-100">
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center space-x-3">
-                  <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-cogs text-orange-600"></i>
+            <div class="resource-card bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer" onclick="window.location.href='资源详情.html'">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-md">
+                  <i class="fas fa-cogs text-orange-50 text-xl"></i>
                   </div>
-                  <div>
-                    <h4 class="font-semibold text-gray-800">数据清理存储过程</h4>
-                    <p class="text-sm text-gray-500">clean_data_proc</p>
-                  </div>
-                </div>
-                <span class="scan-status status-success">已扫描</span>
-              </div>
-              
-              <div class="space-y-2 mb-4">
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">数据源:</span>
-                  <span class="font-semibold">智慧管理系统</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">参数数:</span>
-                  <span class="font-semibold">5</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">返回类型:</span>
-                  <span class="font-semibold">INT</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">更新时间:</span>
-                  <span class="text-gray-500">2024-01-14 16:45</span>
+                <div class="flex flex-col items-end space-y-2">
+                  <span class="scan-status status-success text-xs">已扫描</span>
                 </div>
               </div>
               
-              <div class="flex items-center justify-between">
-                <div class="flex space-x-2">
-                  <span class="inline-block bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">存储过程</span>
-                  <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded">结构化</span>
+              <div class="mb-4">
+                <h4 class="font-bold text-gray-800 text-lg mb-1">数据清理存储过程</h4>
+                <p class="text-sm text-gray-500 font-mono">clean_data_proc</p>
+              </div>
+              
+              <div class="space-y-3 mb-4">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500 flex items-center">
+                    <i class="fas fa-database text-gray-400 mr-2"></i>
+                    数据来源
+                  </span>
+                  <span class="font-semibold text-gray-700">智慧管理系统</span>
                 </div>
-                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium whitespace-nowrap">查看详情</button>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500 flex items-center">
+                    <i class="fas fa-columns text-gray-400 mr-2"></i>
+                    字段数
+                  </span>
+                  <span class="font-semibold text-gray-700">5</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500 flex items-center">
+                    <i class="fas fa-clock text-gray-400 mr-2"></i>
+                    更新时间
+                  </span>
+                  <span class="font-semibold text-gray-700">2024-01-14 16:45</span>
+                </div>
               </div>
             </div>
 
             <!-- 资源卡片4 -->
-            <div class="resource-card bg-white rounded-xl p-5 shadow-lg border border-gray-100">
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center space-x-3">
-                  <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-table text-blue-600"></i>
+            <div class="resource-card bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer" onclick="window.location.href='资源详情.html'">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
+                  <i class="fas fa-table text-white text-xl"></i>
                   </div>
-                  <div>
-                    <h4 class="font-semibold text-gray-800">系统配置表</h4>
-                    <p class="text-sm text-gray-500">system_config</p>
-                  </div>
-                </div>
-                <span class="scan-status status-success">已扫描</span>
-              </div>
-              
-              <div class="space-y-2 mb-4">
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">数据源:</span>
-                  <span class="font-semibold">智慧管理系统</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">记录数:</span>
-                  <span class="font-semibold">2,345</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">字段数:</span>
-                  <span class="font-semibold">8</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">更新时间:</span>
-                  <span class="text-gray-500">2024-01-15 08:20</span>
+                <div class="flex flex-col items-end space-y-2">
+                  <span class="scan-status status-success text-xs">已扫描</span>
                 </div>
               </div>
               
-              <div class="flex items-center justify-between">
-                <div class="flex space-x-2">
-                  <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">数据表</span>
-                  <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded">结构化</span>
+              <div class="mb-4">
+                <h4 class="font-bold text-gray-800 text-lg mb-1">系统配置表</h4>
+                <p class="text-sm text-gray-500 font-mono">system_config</p>
+              </div>
+              
+              <div class="space-y-3 mb-4">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500 flex items-center">
+                    <i class="fas fa-database text-gray-400 mr-2"></i>
+                    数据来源
+                  </span>
+                  <span class="font-semibold text-gray-700">智慧管理系统</span>
                 </div>
-                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium whitespace-nowrap">查看详情</button>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500 flex items-center">
+                    <i class="fas fa-columns text-gray-400 mr-2"></i>
+                    字段数
+                  </span>
+                  <span class="font-semibold text-gray-700">8</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500 flex items-center">
+                    <i class="fas fa-clock text-gray-400 mr-2"></i>
+                    更新时间
+                  </span>
+                  <span class="font-semibold text-gray-700">2024-01-15 08:20</span>
+                </div>
               </div>
             </div>
 
             <!-- 资源卡片5 -->
-            <div class="resource-card bg-white rounded-xl p-5 shadow-lg border border-gray-100">
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center space-x-3">
-                  <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-table text-blue-600"></i>
+            <div class="resource-card bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer" onclick="window.location.href='资源详情.html'">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
+                  <i class="fas fa-table text-white text-xl"></i>
                   </div>
-                  <div>
-                    <h4 class="font-semibold text-gray-800">操作日志表</h4>
-                    <p class="text-sm text-gray-500">operation_log</p>
-                  </div>
-                </div>
-                <span class="scan-status status-success">已扫描</span>
-              </div>
-              
-              <div class="space-y-2 mb-4">
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">数据源:</span>
-                  <span class="font-semibold">智慧管理系统</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">记录数:</span>
-                  <span class="font-semibold">5,678,901</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">字段数:</span>
-                  <span class="font-semibold">15</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">更新时间:</span>
-                  <span class="text-gray-500">2024-01-15 11:45</span>
+                <div class="flex flex-col items-end space-y-2">
+                  <span class="scan-status status-success text-xs">已扫描</span>
                 </div>
               </div>
               
-              <div class="flex items-center justify-between">
-                <div class="flex space-x-2">
-                  <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">数据表</span>
-                  <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded">结构化</span>
+              <div class="mb-4">
+                <h4 class="font-bold text-gray-800 text-lg mb-1">操作日志表</h4>
+                <p class="text-sm text-gray-500 font-mono">operation_log</p>
+              </div>
+              
+              <div class="space-y-3 mb-4">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500 flex items-center">
+                    <i class="fas fa-database text-gray-400 mr-2"></i>
+                    数据来源
+                  </span>
+                  <span class="font-semibold text-gray-700">智慧管理系统</span>
                 </div>
-                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium whitespace-nowrap">查看详情</button>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500 flex items-center">
+                    <i class="fas fa-columns text-gray-400 mr-2"></i>
+                    字段数
+                  </span>
+                  <span class="font-semibold text-gray-700">15</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500 flex items-center">
+                    <i class="fas fa-clock text-gray-400 mr-2"></i>
+                    更新时间
+                  </span>
+                  <span class="font-semibold text-gray-700">2024-01-15 11:45</span>
+                </div>
               </div>
             </div>
 
             <!-- 资源卡片6 -->
-            <div class="resource-card bg-white rounded-xl p-5 shadow-lg border border-gray-100">
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center space-x-3">
-                  <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-eye text-purple-600"></i>
+            <div class="resource-card bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer" onclick="window.location.href='资源详情.html'">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
+                  <i class="fas fa-eye text-white text-xl"></i>
                   </div>
-                  <div>
-                    <h4 class="font-semibold text-gray-800">业务统计视图</h4>
-                    <p class="text-sm text-gray-500">business_stats_view</p>
-                  </div>
-                </div>
-                <span class="scan-status status-success">已扫描</span>
-              </div>
-              
-              <div class="space-y-2 mb-4">
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">数据源:</span>
-                  <span class="font-semibold">智慧管理系统</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">记录数:</span>
-                  <span class="font-semibold">156,789</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">字段数:</span>
-                  <span class="font-semibold">18</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">更新时间:</span>
-                  <span class="text-gray-500">2024-01-15 14:20</span>
+                <div class="flex flex-col items-end space-y-2">
+                  <span class="scan-status status-success text-xs">已扫描</span>
                 </div>
               </div>
               
-              <div class="flex items-center justify-between">
-                <div class="flex space-x-2">
-                  <span class="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">视图</span>
-                  <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded">结构化</span>
+              <div class="mb-4">
+                <h4 class="font-bold text-gray-800 text-lg mb-1">业务统计视图</h4>
+                <p class="text-sm text-gray-500 font-mono">business_stats_view</p>
+              </div>
+              
+              <div class="space-y-3 mb-4">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500 flex items-center">
+                    <i class="fas fa-database text-gray-400 mr-2"></i>
+                    数据来源
+                  </span>
+                  <span class="font-semibold text-gray-700">智慧管理系统</span>
                 </div>
-                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium whitespace-nowrap">查看详情</button>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500 flex items-center">
+                    <i class="fas fa-columns text-gray-400 mr-2"></i>
+                    字段数
+                  </span>
+                  <span class="font-semibold text-gray-700">18</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-gray-500 flex items-center">
+                    <i class="fas fa-clock text-gray-400 mr-2"></i>
+                    更新时间
+                  </span>
+                  <span class="font-semibold text-gray-700">2024-01-15 14:20</span>
+                </div>
               </div>
             </div>
           </div>
@@ -700,32 +606,21 @@
       }
     }
     
-    // 切换数据来源页签
-    function switchTab(tabId) {
-      // 移除所有页签的active类
-      document.querySelectorAll('.tab-item').forEach(tab => {
-        tab.classList.remove('active');
-      });
-      
-      // 为选中的页签添加active类
-      event.currentTarget.classList.add('active');
-      
-      console.log('切换到页签:', tabId);
-      // 这里可以添加实际的页签切换逻辑
-    }
-    
-    // 选择目录树项目
-    function selectTreeItem(itemId) {
-      // 移除所有树项目的active类
-      document.querySelectorAll('.tree-item').forEach(item => {
-        item.classList.remove('active');
-      });
-      
-      // 为选中的项目添加active类
-      event.currentTarget.classList.add('active');
-      
-      console.log('选择目录项目:', itemId);
-      // 这里可以添加实际的目录筛选逻辑
+         // 处理数据来源选择变化
+     function handleDataSourceChange() {
+       const select = document.getElementById('dataSourceSelect');
+       const selectedValue = select.value;
+       const selectedText = select.options[select.selectedIndex].text;
+       
+       // 更新当前选择显示
+       const currentSourceElement = document.getElementById('currentSource');
+       if (currentSourceElement) {
+         currentSourceElement.textContent = selectedText.split(' (')[0];
+       }
+       
+       console.log('选择数据来源:', selectedValue, selectedText);
+       // 这里可以添加实际的数据源切换逻辑
+       // 例如：更新资源列表、重新加载数据等
     }
     
     // 页面加载完成后的初始化
@@ -766,4 +661,12 @@
   </script>
 </body>
 </html> 
+
+
+
+
+
+
+
+
 

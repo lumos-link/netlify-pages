@@ -1,0 +1,2182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>资产会计核算 - 数据资产管理系统</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .content-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-secondary {
+      background: white;
+      color: #6b7280;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border: 1px solid #d1d5db;
+      cursor: pointer;
+    }
+    
+    .btn-secondary:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
+    }
+    
+    .table-row:hover {
+      background-color: #f8fafc;
+    }
+    
+    .status-active {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+    
+    .status-inactive {
+      background-color: #fef2f2;
+      color: #dc2626;
+    }
+    
+    .status-pending {
+      background-color: #fef3c7;
+      color: #d97706;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 5% auto;
+      padding: 0;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .modal-footer {
+      padding: 1.5rem;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+
+    .close {
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: #000;
+    }
+
+    /* 侧边栏隐藏样式 */
+    .hidden {
+      transform: translateX(-100%);
+    }
+
+    /* 侧边栏过渡动画 */
+    #sidebar {
+      transition: transform 0.3s ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- 顶部主导航栏 -->
+  <header class="bg-gradient-to-r from-red-900 via-red-800 to-red-900 shadow flex items-center justify-between px-10 h-16 sticky top-0 z-20">
+    <div class="flex items-center space-x-4">
+      <div class="h-10 w-10 rounded-full border-2 border-red-400 shadow bg-white flex items-center justify-center">
+          <svg class="h-6 w-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+      <span class="text-xl font-bold text-white tracking-wide whitespace-nowrap">数据资产管理系统</span>
+    </div>
+    <nav class="flex-1 flex items-center justify-center space-x-8">
+    </nav>
+    <div class="flex items-center space-x-4">
+      <a href="首页.html" class="text-red-100 hover:text-red-400 font-medium px-3 py-1 rounded border border-red-400 hover:bg-red-700 transition">
+        <i class="fas fa-home mr-2"></i>返回首页
+      </a>
+      <div class="relative" id="user-dropdown">
+        <div class="flex items-center space-x-2 cursor-pointer hover:bg-red-700 px-2 py-1 rounded-lg transition" onclick="toggleUserDropdown()">
+          <img src="https://i.pravatar.cc/32?img=3" class="rounded-full w-8 h-8 border-2 border-red-200" alt="用户头像">
+          <span class="text-red-100 text-sm">张财务</span>
+          <i class="fas fa-chevron-down text-xs text-red-300 transition-transform" id="dropdown-arrow"></i>
+        </div>
+        <div id="user-dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 hidden z-50">
+          <a href="个人中心.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+            <i class="fas fa-user-circle mr-3 text-red-500"></i>
+            个人中心
+          </a>
+          <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+            <i class="fas fa-cog mr-3 text-red-500"></i>
+            系统管理
+          </a>
+          <div class="border-t border-gray-200 my-1"></div>
+          <a href="#" class="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 transition">
+            <i class="fas fa-sign-out-alt mr-3"></i>
+            退出
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 可收起平台导航栏 -->
+  <aside id="sidebar" class="fixed top-16 left-0 w-60 z-30 transition-transform duration-300">
+    <!-- 红色导航区域 -->
+    <div class="bg-gradient-to-b from-red-900 to-red-800 border-r border-red-700 shadow-xl">
+      <div class="flex items-center justify-between px-4 py-3 border-b border-white border-opacity-20">
+        <span class="text-lg font-bold text-red-100">平台导航</span>
+      </div>
+      <ul class="mt-4 space-y-2 px-4 pb-4">
+        <!-- 资源盘点登记 -->
+        <li>
+          <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('inventory')">
+            <div class="flex items-center gap-3">
+              <i class="fas fa-clipboard-list"></i>
+              <span>资源盘点登记</span>
+            </div>
+            <i class="fas fa-chevron-down text-xs transition-transform" id="inventory-arrow"></i>
+          </div>
+          <ul id="inventory-submenu" class="ml-6 mt-2 space-y-1 hidden">
+            <li><a href="数据来源管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据来源管理</a></li>
+            <li><a href="数据资源扫描.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据资源扫描</a></li>
+            <li><a href="数据资源.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据资源盘点</a></li>
+            <li><a href="资产属性管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 资产属性管理</a></li>
+            <li><a href="资产标签管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-tag"></i> 资产标签管理</a></li>
+            <li><a href="资产目录管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-sitemap"></i> 资产目录管理</a></li>
+          <li><a href="数据分类管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据分类管理</a></li>
+          <li><a href="数据分级管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-layer-group"></i> 数据分级管理</a></li>
+        </ul>
+        </li>
+        
+        <!-- 资产确权与管理 -->
+        <li>
+          <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('rights')">
+            <div class="flex items-center gap-3">
+              <i class="fas fa-gavel"></i>
+              <span>资产确权与管理</span>
+            </div>
+            <i class="fas fa-chevron-down text-xs transition-transform" id="rights-arrow"></i>
+          </div>
+          <ul id="rights-submenu" class="ml-6 mt-2 space-y-1 hidden">
+            <li><a href="内部申请记录.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-user-shield"></i> 内部申请记录</a></li>
+          <li><a href="授权链路记录.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-link"></i> 授权链路记录</a></li>
+          <li><a href="权属转移记录.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-exchange-alt"></i> 权属转移记录</a></li>
+          <li><a href="权属证明记录.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-certificate"></i> 权属证明记录</a></li>
+          </ul>
+        </li>
+        
+        <!-- 资产开发管理 -->
+        <li>
+          <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('development')">
+            <div class="flex items-center gap-3">
+              <i class="fas fa-code"></i>
+              <span>资产开发管理</span>
+            </div>
+            <i class="fas fa-chevron-down text-xs transition-transform" id="development-arrow"></i>
+          </div>
+          <ul id="development-submenu" class="ml-6 mt-2 space-y-1 hidden">
+            <li><a href="资产开发管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 资产开发管理</a></li>
+            <li><a href="资产内容管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 资产内容管理</a></li>
+          </ul>
+        </li>
+        
+        <!-- 资产会计核算 -->
+        <li>
+          <a href="资产会计核算.html" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-red-700 text-white">
+            <i class="fas fa-calculator"></i>
+            <span>资产会计核算</span>
+          </a>
+        </li>
+        
+      <!-- API管理 -->
+      <li>
+        <a href="API管理页面.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100">
+          <i class="fas fa-plug"></i>
+          <span>API管理</span>
+        </a>
+      </li>
+      </ul>
+    </div>
+    
+    <!-- 白色底部区域 -->
+    <div class="bg-white border-r border-gray-200 flex-1"></div>
+  </aside>
+
+  <!-- 展开按钮 -->
+  <button id="sidebar-toggle" onclick="toggleSidebar()" class="fixed top-20 left-64 z-40 bg-black bg-opacity-50 backdrop-blur-sm text-white rounded-full p-2 shadow-lg hover:bg-black hover:bg-opacity-70 focus:outline-none transition">
+    <i class="fas fa-chevron-left"></i>
+  </button>
+
+  <!-- 主体内容区 -->
+  <main class="relative z-10 max-w-7xl mx-auto px-6 py-8 transition-all duration-300 ml-60 bg-gray-50" id="mainContent">
+    <!-- 标签页导航 -->
+    <div class="content-card mb-6">
+      <div class="flex border-b border-gray-200">
+        <button onclick="switchTab('bookValue')" id="bookValueTab" class="px-6 py-3 text-sm font-medium text-blue-600 border-b-2 border-blue-600 focus:outline-none">
+          <i class="fas fa-book mr-2"></i>账面情况
+        </button>
+        <button onclick="switchTab('revenue')" id="revenueTab" class="px-6 py-3 text-sm font-medium text-gray-600 hover:text-gray-800 focus:outline-none">
+          <i class="fas fa-chart-line mr-2"></i>收益情况
+        </button>
+      </div>
+    </div>
+
+    <!-- 账面情况标签页内容 -->
+    <div id="bookValueContent">
+      <!-- 筛选和搜索栏 -->
+      <div class="content-card p-6 mb-6">
+        <div class="flex items-end gap-4">
+          <!-- 财务状态筛选 -->
+          <div class="w-48">
+            <label class="block text-sm font-medium text-gray-700 mb-2">财务状态</label>
+            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">全部状态</option>
+              <option value="active">正常</option>
+              <option value="disposed">已处置</option>
+            </select>
+          </div>
+          
+          <!-- 搜索框 -->
+          <div class="flex-1">
+            <label class="block text-sm font-medium text-gray-700 mb-2">搜索</label>
+            <input type="text" placeholder="搜索资产名称、编号或描述..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          
+          <!-- 操作按钮 -->
+          <div class="flex gap-3">
+            <button class="btn-primary">
+              <i class="fas fa-search mr-2"></i>查询
+            </button>
+            <button class="btn-secondary">
+              <i class="fas fa-times mr-2"></i>清空
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 资产列表表格 -->
+      <div class="content-card p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-gray-800">资产列表</h2>
+        <div class="text-sm text-gray-600">
+          共 <span class="font-semibold text-blue-600">156</span> 项资产
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">资产名称</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">资产类型</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">财务状态</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">原值</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">累计摊销</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">现值</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">是否披露</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <!-- 资产行1 -->
+            <tr class="table-row">
+              <td class="px-6 py-4">
+                <div>
+                  <div class="text-sm font-medium text-gray-900">采购专题分析数据集</div>
+                  <div class="text-sm text-gray-500">资产编号: ZC001</div>
+                  <div class="text-sm text-gray-500">数据资产</div>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">无形资产</span>
+              </td>
+              <td class="px-6 py-4">
+                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-active">正常</span>
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-900">¥500,000</td>
+              <td class="px-6 py-4 text-sm text-gray-900">¥150,000</td>
+              <td class="px-6 py-4 text-sm text-gray-900">¥350,000</td>
+              <td class="px-6 py-4">
+                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">已披露</span>
+              </td>
+              <td class="px-6 py-4 text-sm font-medium">
+                <div class="flex space-x-2">
+                  <button onclick="viewAssetDetail('ZC001')" class="text-blue-600 hover:text-blue-900">详情</button>
+                  <button onclick="showImpairmentModal('ZC001')" class="text-orange-600 hover:text-orange-900">减值</button>
+                  <button onclick="showDisclosureModal('ZC001')" class="text-purple-600 hover:text-purple-900">披露</button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- 资产行2 -->
+            <tr class="table-row">
+              <td class="px-6 py-4">
+                <div>
+                  <div class="text-sm font-medium text-gray-900">供应商信用评价与合规性分析数据集</div>
+                  <div class="text-sm text-gray-500">资产编号: ZC002</div>
+                  <div class="text-sm text-gray-500">数据资产</div>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">存货</span>
+              </td>
+              <td class="px-6 py-4">
+                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-active">正常</span>
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-900">¥800,000</td>
+              <td class="px-6 py-4 text-sm text-gray-900">¥240,000</td>
+              <td class="px-6 py-4 text-sm text-gray-900">¥560,000</td>
+              <td class="px-6 py-4">
+                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">未披露</span>
+              </td>
+              <td class="px-6 py-4 text-sm font-medium">
+                <div class="flex space-x-2">
+                  <button onclick="viewAssetDetail('ZC002')" class="text-blue-600 hover:text-blue-900">详情</button>
+                  <button onclick="showPriceDeclineModal('ZC002')" class="text-orange-600 hover:text-orange-900">跌价</button>
+                  <button onclick="showPriceReversalModal('ZC002')" class="text-emerald-600 hover:text-emerald-900">转回</button>
+                  <button onclick="showDisclosureModal('ZC002')" class="text-purple-600 hover:text-purple-900">披露</button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- 资产行3 -->
+            <tr class="table-row">
+              <td class="px-6 py-4">
+                <div>
+                  <div class="text-sm font-medium text-gray-900">财务分析软件</div>
+                  <div class="text-sm text-gray-500">资产编号: ZC003</div>
+                  <div class="text-sm text-gray-500">软件资产</div>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">无形资产</span>
+              </td>
+              <td class="px-6 py-4">
+                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-active">正常</span>
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-900">¥300,000</td>
+              <td class="px-6 py-4 text-sm text-gray-900">¥120,000</td>
+              <td class="px-6 py-4 text-sm text-gray-900">¥180,000</td>
+              <td class="px-6 py-4">
+                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">已披露</span>
+              </td>
+              <td class="px-6 py-4 text-sm font-medium">
+                <div class="flex space-x-2">
+                  <button onclick="viewAssetDetail('ZC003')" class="text-blue-600 hover:text-blue-900">详情</button>
+                  <button onclick="showImpairmentModal('ZC003')" class="text-orange-600 hover:text-orange-900">减值</button>
+                  <button onclick="showDisclosureModal('ZC003')" class="text-purple-600 hover:text-purple-900">披露</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 分页 -->
+      <div class="flex items-center justify-between mt-6">
+        <div class="text-sm text-gray-700">
+          显示第 1 到 10 条，共 156 条记录
+        </div>
+        <div class="flex space-x-2">
+          <button class="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50">上一页</button>
+          <button class="px-3 py-2 text-sm bg-blue-600 text-white border border-blue-600 rounded-lg">1</button>
+          <button class="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50">2</button>
+          <button class="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50">3</button>
+          <button class="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50">下一页</button>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- 收益情况标签页内容 -->
+    <div id="revenueContent" class="hidden">
+      <!-- 筛选和搜索栏 -->
+      <div class="content-card p-6 mb-6">
+        <div class="flex items-end gap-4">
+          <!-- 财务状态筛选 -->
+          <div class="w-48">
+            <label class="block text-sm font-medium text-gray-700 mb-2">财务状态</label>
+            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">全部状态</option>
+              <option value="active">正常</option>
+              <option value="disposed">已处置</option>
+            </select>
+          </div>
+          
+          <!-- 搜索框 -->
+          <div class="flex-1">
+            <label class="block text-sm font-medium text-gray-700 mb-2">搜索</label>
+            <input type="text" placeholder="搜索资产名称、编号或描述..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          
+          <!-- 操作按钮 -->
+          <div class="flex gap-3">
+            <button class="btn-primary">
+              <i class="fas fa-search mr-2"></i>查询
+            </button>
+            <button class="btn-secondary">
+              <i class="fas fa-times mr-2"></i>清空
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 收益列表表格 -->
+      <div class="content-card p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-bold text-gray-800">资产收益列表</h2>
+          <div class="text-sm text-gray-600">
+            共 <span class="font-semibold text-blue-600">156</span> 项资产
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="min-w-full">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">资产名称</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">财务状态</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">服务收益</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">交易收益</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">合计</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <!-- 收益行1 -->
+              <tr class="table-row">
+                <td class="px-6 py-4">
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">采购专题分析数据集</div>
+                    <div class="text-sm text-gray-500">资产编号: ZC001</div>
+                    <div class="text-sm text-gray-500">数据资产</div>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-active">正常</span>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-900">¥120,000</td>
+                <td class="px-6 py-4 text-sm text-gray-900">¥80,000</td>
+                <td class="px-6 py-4 text-sm font-semibold text-green-600">¥200,000</td>
+                <td class="px-6 py-4 text-sm font-medium">
+                  <button onclick="viewRevenueDetail('ZC001')" class="text-blue-600 hover:text-blue-900">详情</button>
+                </td>
+              </tr>
+
+              <!-- 收益行2 -->
+              <tr class="table-row">
+                <td class="px-6 py-4">
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">供应商信用评价与合规性分析数据集</div>
+                    <div class="text-sm text-gray-500">资产编号: ZC002</div>
+                    <div class="text-sm text-gray-500">数据资产</div>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-active">正常</span>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-900">¥95,000</td>
+                <td class="px-6 py-4 text-sm text-gray-900">¥45,000</td>
+                <td class="px-6 py-4 text-sm font-semibold text-green-600">¥140,000</td>
+                <td class="px-6 py-4 text-sm font-medium">
+                  <button onclick="viewRevenueDetail('ZC002')" class="text-blue-600 hover:text-blue-900">详情</button>
+                </td>
+              </tr>
+
+              <!-- 收益行3 -->
+              <tr class="table-row">
+                <td class="px-6 py-4">
+                  <div>
+                    <div class="text-sm font-medium text-gray-900">财务分析软件</div>
+                    <div class="text-sm text-gray-500">资产编号: ZC003</div>
+                    <div class="text-sm text-gray-500">软件资产</div>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-active">正常</span>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-900">¥180,000</td>
+                <td class="px-6 py-4 text-sm text-gray-900">¥0</td>
+                <td class="px-6 py-4 text-sm font-semibold text-green-600">¥180,000</td>
+                <td class="px-6 py-4 text-sm font-medium">
+                  <button onclick="viewRevenueDetail('ZC003')" class="text-blue-600 hover:text-blue-900">详情</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 分页 -->
+        <div class="flex items-center justify-between mt-6">
+          <div class="text-sm text-gray-700">
+            显示第 1 到 10 条，共 156 条记录
+          </div>
+          <div class="flex space-x-2">
+            <button class="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50">上一页</button>
+            <button class="px-3 py-2 text-sm bg-blue-600 text-white border border-blue-600 rounded-lg">1</button>
+            <button class="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50">2</button>
+            <button class="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50">3</button>
+            <button class="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50">下一页</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 收益详情弹窗 -->
+  <div id="revenueDetailModal" class="modal">
+    <div class="modal-content" style="max-width: 900px;">
+      <div class="modal-header">
+        <h3 class="text-lg font-semibold text-gray-900">资产收益详情</h3>
+        <span class="close" onclick="closeModal('revenueDetailModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <!-- 基本信息 -->
+        <div class="bg-gray-50 p-4 rounded-lg mb-6">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">资产编号</label>
+              <div class="text-sm text-gray-900" id="revenueDetailAssetId">-</div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">资产名称</label>
+              <div class="text-sm text-gray-900" id="revenueDetailAssetName">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 收益汇总 -->
+        <div class="grid grid-cols-3 gap-4 mb-6">
+          <div class="bg-blue-50 p-4 rounded-lg">
+            <div class="text-sm text-gray-600 mb-1">服务收益</div>
+            <div class="text-xl font-bold text-blue-600" id="revenueDetailServiceTotal">¥0</div>
+          </div>
+          <div class="bg-green-50 p-4 rounded-lg">
+            <div class="text-sm text-gray-600 mb-1">交易收益</div>
+            <div class="text-xl font-bold text-green-600" id="revenueDetailTransactionTotal">¥0</div>
+          </div>
+          <div class="bg-purple-50 p-4 rounded-lg">
+            <div class="text-sm text-gray-600 mb-1">合计</div>
+            <div class="text-xl font-bold text-purple-600" id="revenueDetailGrandTotal">¥0</div>
+          </div>
+        </div>
+
+        <!-- 收益记录表格 -->
+        <div>
+          <h4 class="text-sm font-medium text-gray-900 mb-3">收益记录</h4>
+          <div class="overflow-x-auto">
+            <table class="min-w-full">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">日期</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">收益类型</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">金额</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">来源</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">说明</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200" id="revenueRecordsTableBody">
+                <!-- 动态生成 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeModal('revenueDetailModal')" class="btn-secondary">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 摊销弹窗 -->
+  <div id="depreciationModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="text-lg font-semibold text-gray-900">资产摊销管理</h3>
+        <span class="close" onclick="closeModal('depreciationModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">资产编号</label>
+            <input type="text" id="depreciationAssetId" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">资产名称</label>
+            <input type="text" id="depreciationAssetName" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">原值</label>
+              <input type="text" id="depreciationOriginalValue" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">累计摊销</label>
+              <input type="text" id="depreciationAccumulatedValue" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">摊销方法 <span class="text-red-500">*</span></label>
+            <select id="depreciationMethod" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <option value="">请选择摊销方法</option>
+              <option value="straight">直线法</option>
+              <option value="declining">余额递减法</option>
+              <option value="sum">年数总和法</option>
+              <option value="units">工作量法</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">摊销年限 <span class="text-red-500">*</span></label>
+              <input type="number" id="depreciationYears" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="请输入年限" min="1" max="50">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">残值率 (%)</label>
+              <input type="number" id="depreciationResidualRate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="请输入残值率" min="0" max="100" step="0.1">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">摊销说明</label>
+            <textarea id="depreciationDescription" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" rows="3" placeholder="请输入摊销说明"></textarea>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('depreciationModal')">取消</button>
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors" onclick="confirmDepreciation()">发起摊销申请</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 存货跌价弹窗 -->
+  <div id="priceDeclineModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="text-lg font-semibold text-gray-900">存货跌价准备管理</h3>
+        <span class="close" onclick="closeModal('priceDeclineModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="priceDeclineForm" class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">资产名称</label>
+              <input type="text" id="priceDeclineAssetName" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">资产编号</label>
+              <input type="text" id="priceDeclineAssetCode" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">账面余额</label>
+              <input type="text" id="priceDeclineBookBalance" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">已计提跌价准备</label>
+              <input type="text" id="priceDeclineExisting" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">现有账面价值</label>
+              <input type="text" id="priceDeclineBookValue" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">跌价准备金额 <span class="text-red-500">*</span></label>
+              <input type="number" id="priceDeclineAmount" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="请输入金额" min="0" step="0.01" required>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">跌价说明 <span class="text-red-500">*</span></label>
+            <textarea id="priceDeclineDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="请输入跌价说明（如：市场价格下跌、滞销、毁损等原因）" required></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">上传附件（审批文件） <span class="text-red-500">*</span></label>
+            <input type="file" id="priceDeclineAttachment" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" required>
+            <p class="text-sm text-gray-500 mt-1">支持PDF、Word、Excel、图片等格式，可多选</p>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('priceDeclineModal')">取消</button>
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors" onclick="confirmPriceDecline()">计提跌价准备</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 存货跌价转回弹窗 -->
+  <div id="priceReversalModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="text-lg font-semibold text-gray-900">存货跌价准备转回</h3>
+        <span class="close" onclick="closeModal('priceReversalModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="priceReversalForm" class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">资产名称</label>
+              <input type="text" id="priceReversalAssetName" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">资产编号</label>
+              <input type="text" id="priceReversalAssetCode" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">已计提跌价历史</label>
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <table class="min-w-full">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">选择</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">计提日期</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">计提金额</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">已转回</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">可转回</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">说明</th>
+                  </tr>
+                </thead>
+                <tbody id="priceReversalHistoryTbody" class="bg-white divide-y divide-gray-200">
+                  <!-- 动态生成 -->
+                </tbody>
+              </table>
+            </div>
+            <p class="text-xs text-gray-500 mt-2">选择一条历史记录进行转回操作</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">转回金额 <span class="text-red-500">*</span></label>
+              <input type="number" id="priceReversalAmount" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="请输入不超过可转回金额的数值" min="0" step="0.01">
+              <p id="priceReversalAmountHint" class="text-xs text-gray-500 mt-1">可转回金额：-</p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">当前已计提跌价准备</label>
+              <input type="text" id="priceReversalExisting" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">转回说明 <span class="text-red-500">*</span></label>
+            <textarea id="priceReversalDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="请输入转回原因（如市场回升、滞销改善、毁损修复等）"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">上传附件（审批/佐证） <span class="text-red-500">*</span></label>
+            <input type="file" id="priceReversalAttachment" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
+            <p class="text-sm text-gray-500 mt-1">支持PDF、Word、Excel、图片等格式，可多选</p>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('priceReversalModal')">取消</button>
+        <button class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition-colors" onclick="confirmPriceReversal()">确认转回</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 减值弹窗 -->
+  <div id="impairmentModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="text-lg font-semibold text-gray-900">资产减值管理</h3>
+        <span class="close" onclick="closeModal('impairmentModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">资产编号</label>
+            <input type="text" id="impairmentAssetId" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">资产名称</label>
+            <input type="text" id="impairmentAssetName" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">原值</label>
+              <input type="text" id="impairmentOriginalValue" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">累计摊销</label>
+              <input type="text" id="impairmentAccumulatedValue" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">减值原因 <span class="text-red-500">*</span></label>
+            <select id="impairmentReason" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <option value="">请选择减值原因</option>
+              <option value="market">市场价格下跌</option>
+              <option value="technology">技术过时</option>
+              <option value="business">业务环境变化</option>
+              <option value="regulation">法规政策变化</option>
+              <option value="competition">竞争加剧</option>
+              <option value="demand">需求下降</option>
+              <option value="other">其他原因</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">现有账面价值</label>
+              <input type="number" id="impairmentRecoverableAmount" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="请输入现有账面价值" min="0">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">减值金额 <span class="text-red-500">*</span></label>
+              <input type="number" id="impairmentAmount" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="请输入减值金额" min="0" step="0.01">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">减值说明 <span class="text-red-500">*</span></label>
+            <textarea id="impairmentDescription" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" rows="3" placeholder="请输入减值说明"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">评估日期</label>
+            <input type="date" id="impairmentAssessmentDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">上传附件（审批文件） <span class="text-red-500">*</span></label>
+            <input type="file" id="impairmentAttachment" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" required>
+            <p class="text-sm text-gray-500 mt-1">支持PDF、Word、Excel、图片等格式，可多选</p>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('impairmentModal')">取消</button>
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors" onclick="confirmImpairment()">发起减值</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 披露弹窗 -->
+  <div id="disclosureModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="text-lg font-semibold text-gray-900">财务披露管理</h3>
+        <span class="close" onclick="closeModal('disclosureModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">资产编号</label>
+            <input type="text" id="disclosureAssetId" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">资产名称</label>
+            <input type="text" id="disclosureAssetName" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">披露类型 <span class="text-red-500">*</span></label>
+              <select id="disclosureType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="">请选择披露类型</option>
+                <option value="annual">年度报告</option>
+                <option value="quarterly">季度报告</option>
+                <option value="interim">中期报告</option>
+                <option value="special">专项披露</option>
+                <option value="risk">风险提示</option>
+                <option value="change">重大变更</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">披露日期 <span class="text-red-500">*</span></label>
+              <input type="date" id="disclosureDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">披露标题 <span class="text-red-500">*</span></label>
+            <input type="text" id="disclosureTitle" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="请输入披露标题">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">披露内容 <span class="text-red-500">*</span></label>
+            <textarea id="disclosureContent" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" rows="4" placeholder="请输入披露内容"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">披露范围</label>
+            <select id="disclosureScope" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <option value="internal">内部披露</option>
+              <option value="external">外部披露</option>
+              <option value="regulatory">监管披露</option>
+              <option value="public">公开披露</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">上传附件 <span class="text-red-500">*</span></label>
+            <input type="file" id="disclosureAttachment" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" required>
+            <p class="text-sm text-gray-500 mt-1">支持PDF、Word、Excel、图片等格式，可多选</p>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('disclosureModal')">取消</button>
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors" onclick="confirmDisclosure()">发起披露</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 自动校验规则配置弹窗 -->
+  <div id="validationRulesModal" class="modal">
+    <div class="modal-content max-w-5xl">
+      <div class="modal-header">
+        <h3 class="text-lg font-semibold text-gray-900">自动校验规则配置</h3>
+        <span class="close" onclick="closeModal('validationRulesModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <!-- 规则类型选择 -->
+        <div class="mb-6">
+          <h4 class="text-md font-semibold text-gray-800 mb-3 border-b pb-2">校验规则类型</h4>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="border border-gray-200 rounded-lg p-4 hover:border-blue-300 cursor-pointer transition-colors" onclick="selectRuleType('depreciation')">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-chart-line text-blue-600"></i>
+                </div>
+                <div>
+                  <h5 class="font-medium text-gray-900">摊销校验</h5>
+                  <p class="text-sm text-gray-500">自动校验摊销计算规则</p>
+                </div>
+              </div>
+            </div>
+            <div class="border border-gray-200 rounded-lg p-4 hover:border-orange-300 cursor-pointer transition-colors" onclick="selectRuleType('impairment')">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-exclamation-triangle text-orange-600"></i>
+                </div>
+                <div>
+                  <h5 class="font-medium text-gray-900">减值校验</h5>
+                  <p class="text-sm text-gray-500">自动校验减值测试规则</p>
+                </div>
+              </div>
+            </div>
+            <div class="border border-gray-200 rounded-lg p-4 hover:border-green-300 cursor-pointer transition-colors" onclick="selectRuleType('disclosure')">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-file-alt text-green-600"></i>
+                </div>
+                <div>
+                  <h5 class="font-medium text-gray-900">披露校验</h5>
+                  <p class="text-sm text-gray-500">自动校验披露要求规则</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 摊销校验规则配置 -->
+        <div id="depreciationRules" class="rule-config hidden">
+          <h4 class="text-md font-semibold text-gray-800 mb-3 border-b pb-2">摊销校验规则</h4>
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">默认摊销方法</label>
+                <select id="defaultDepreciationMethod" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <option value="straight">直线法</option>
+                  <option value="declining">余额递减法</option>
+                  <option value="sum">年数总和法</option>
+                  <option value="units">工作量法</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">默认摊销年限（年）</label>
+                <input type="number" id="defaultDepreciationYears" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value="5" min="1" max="50">
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">默认残值率（%）</label>
+                <input type="number" id="defaultResidualRate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value="5" min="0" max="100" step="0.1">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">自动摊销频率</label>
+                <select id="depreciationFrequency" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <option value="monthly">每月</option>
+                  <option value="quarterly">每季度</option>
+                  <option value="annually">每年</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">摊销校验规则</label>
+              <div class="space-y-2">
+                <label class="flex items-center">
+                  <input type="checkbox" id="checkDepreciationCalculation" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">校验摊销计算准确性</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" id="checkDepreciationTiming" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">校验摊销时间节点</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" id="checkDepreciationMethod" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">校验摊销方法适用性</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 减值校验规则配置 -->
+        <div id="impairmentRules" class="rule-config hidden">
+          <h4 class="text-md font-semibold text-gray-800 mb-3 border-b pb-2">减值校验规则</h4>
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">减值测试频率</label>
+                <select id="impairmentTestFrequency" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <option value="quarterly">每季度</option>
+                  <option value="semi-annually">每半年</option>
+                  <option value="annually">每年</option>
+                  <option value="triggered">触发时</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">减值阈值（%）</label>
+                <input type="number" id="impairmentThreshold" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value="10" min="0" max="100" step="0.1">
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">减值触发条件</label>
+              <div class="space-y-2">
+                <label class="flex items-center">
+                  <input type="checkbox" id="triggerMarketDecline" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">市场价格显著下跌</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" id="triggerTechnologyObsolescence" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">技术过时或淘汰</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" id="triggerBusinessChange" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">业务环境重大变化</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" id="triggerRegulationChange" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">法规政策变化</span>
+                </label>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">减值校验规则</label>
+              <div class="space-y-2">
+                <label class="flex items-center">
+                  <input type="checkbox" id="checkRecoverableAmount" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">校验可收回金额计算</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" id="checkImpairmentAmount" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">校验减值金额合理性</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" id="checkImpairmentReversal" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">校验减值转回条件</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 披露校验规则配置 -->
+        <div id="disclosureRules" class="rule-config hidden">
+          <h4 class="text-md font-semibold text-gray-800 mb-3 border-b pb-2">披露校验规则</h4>
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">披露频率</label>
+                <select id="disclosureFrequency" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <option value="quarterly">每季度</option>
+                  <option value="semi-annually">每半年</option>
+                  <option value="annually">每年</option>
+                  <option value="as-needed">按需披露</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">披露阈值（万元）</label>
+                <input type="number" id="disclosureThreshold" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" value="100" min="0" step="0.1">
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">强制披露条件</label>
+              <div class="space-y-2">
+                <label class="flex items-center">
+                  <input type="checkbox" id="discloseSignificantImpairment" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">重大减值损失</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" id="discloseMethodChange" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">摊销方法变更</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" id="discloseAssetDisposal" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">资产处置</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" id="discloseRegulatoryRequirement" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">监管要求</span>
+                </label>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">披露内容校验</label>
+              <div class="space-y-2">
+                <label class="flex items-center">
+                  <input type="checkbox" id="checkDisclosureCompleteness" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">校验披露内容完整性</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" id="checkDisclosureAccuracy" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">校验披露数据准确性</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" id="checkDisclosureTimeliness" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">校验披露及时性</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 通用设置 -->
+        <div class="mt-6 pt-6 border-t border-gray-200">
+          <h4 class="text-md font-semibold text-gray-800 mb-3">通用设置</h4>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">自动校验开关</label>
+              <div class="flex items-center space-x-4">
+                <label class="flex items-center">
+                  <input type="radio" name="autoValidation" value="enabled" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">启用</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="radio" name="autoValidation" value="disabled" class="mr-2">
+                  <span class="text-sm text-gray-700">禁用</span>
+                </label>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">校验结果通知</label>
+              <div class="space-y-2">
+                <label class="flex items-center">
+                  <input type="checkbox" id="notifyOnError" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">校验失败时通知</span>
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" id="notifyOnWarning" class="mr-2" checked>
+                  <span class="text-sm text-gray-700">校验警告时通知</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('validationRulesModal')">取消</button>
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors" onclick="saveValidationRules()">保存配置</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 资产详情弹窗 -->
+  <div id="assetDetailModal" class="modal">
+    <div class="modal-content max-w-4xl">
+      <div class="modal-header">
+        <h3 class="text-lg font-semibold text-gray-900">资产详细信息</h3>
+        <span class="close" onclick="closeModal('assetDetailModal')">&times;</span>
+      </div>
+      <div class="modal-body">
+        <!-- 基本信息 -->
+        <div class="mb-6">
+          <h4 class="text-md font-semibold text-gray-800 mb-3 border-b pb-2">基本信息</h4>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">资产编号</label>
+              <input type="text" id="detailAssetId" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">资产名称</label>
+              <input type="text" id="detailAssetName" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mt-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">资产类型</label>
+              <input type="text" id="detailAssetType" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">财务状态</label>
+              <input type="text" id="detailFinancialStatus" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mt-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">原值</label>
+              <input type="text" id="detailOriginalValue" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">累计摊销</label>
+              <input type="text" id="detailAccumulatedDepreciation" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+          <div class="grid grid-cols-2 gap-4 mt-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">减值准备</label>
+              <input type="text" id="detailImpairmentReserve" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">当前净值</label>
+              <input type="text" id="detailCurrentValue" class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50" readonly>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- 操作流程记录 -->
+        <div class="mb-6">
+          <h4 class="text-md font-semibold text-gray-800 mb-3 border-b pb-2">操作流程记录</h4>
+          <div class="space-y-4" id="detailOperationHistory">
+            <!-- 操作流程记录将通过JavaScript动态填充 -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('assetDetailModal')">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+
+    // 用户下拉菜单切换
+    function toggleUserDropdown() {
+      const dropdownMenu = document.getElementById('user-dropdown-menu');
+      const dropdownArrow = document.getElementById('dropdown-arrow');
+      
+      dropdownMenu.classList.toggle('hidden');
+      dropdownArrow.style.transform = dropdownMenu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+
+    // 点击外部关闭用户下拉菜单
+    document.addEventListener('click', function(event) {
+      const userDropdown = document.getElementById('user-dropdown');
+      const dropdownMenu = document.getElementById('user-dropdown-menu');
+      
+      if (!userDropdown.contains(event.target)) {
+        dropdownMenu.classList.add('hidden');
+        document.getElementById('dropdown-arrow').style.transform = 'rotate(0deg)';
+      }
+    });
+
+    // 侧边栏切换
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const mainContent = document.getElementById('mainContent');
+      const toggleBtn = document.getElementById('sidebar-toggle');
+      const toggleIcon = toggleBtn.querySelector('i');
+      
+      sidebar.classList.toggle('hidden');
+      
+      if (sidebar.classList.contains('hidden')) {
+        // 侧边栏收起状态
+        toggleBtn.style.left = '0.5rem';
+        toggleIcon.className = 'fas fa-bars';
+        if (mainContent) {
+          mainContent.style.marginLeft = '0';
+          mainContent.style.maxWidth = '100%';
+        }
+      } else {
+        // 侧边栏展开状态
+        toggleBtn.style.left = '16rem';
+        toggleIcon.className = 'fas fa-chevron-left';
+        if (mainContent) {
+          mainContent.style.marginLeft = '240px';
+          mainContent.style.maxWidth = 'calc(100% - 240px)';
+        }
+      }
+    }
+
+    // 子菜单切换
+    function toggleSubMenu(menuId) {
+      const submenu = document.getElementById(menuId + '-submenu');
+      const arrow = document.getElementById(menuId + '-arrow');
+      
+      // 关闭其他所有子菜单
+      const allSubmenus = document.querySelectorAll('[id$="-submenu"]');
+      const allArrows = document.querySelectorAll('[id$="-arrow"]');
+      
+      allSubmenus.forEach(menu => {
+        if (menu.id !== menuId + '-submenu') {
+          menu.classList.add('hidden');
+        }
+      });
+      
+      allArrows.forEach(arrow => {
+        if (arrow.id !== menuId + '-arrow') {
+          arrow.style.transform = 'rotate(0deg)';
+        }
+      });
+      
+      // 切换当前子菜单
+      submenu.classList.toggle('hidden');
+      arrow.style.transform = submenu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+
+    // 查看资产详情
+    function viewAssetDetail(assetId) {
+      // 获取资产数据
+      const assetData = getAssetData(assetId);
+      if (assetData) {
+        // 填充基本信息
+        document.getElementById('detailAssetId').value = assetData.id;
+        document.getElementById('detailAssetName').value = assetData.name;
+        document.getElementById('detailAssetType').value = assetData.assetType || assetData.type;
+        document.getElementById('detailFinancialStatus').value = assetData.status;
+        document.getElementById('detailOriginalValue').value = formatCurrency(assetData.originalValue);
+        document.getElementById('detailAccumulatedDepreciation').value = formatCurrency(assetData.accumulatedDepreciation);
+        document.getElementById('detailImpairmentReserve').value = formatCurrency(assetData.impairmentReserve);
+        
+        // 计算当前净值（原值 - 累计摊销 - 减值准备）
+        const currentValue = assetData.originalValue - assetData.accumulatedDepreciation - assetData.impairmentReserve;
+        document.getElementById('detailCurrentValue').value = formatCurrency(currentValue);
+        
+        
+        // 填充操作历史与审批流程
+        fillOperationHistory(assetId);
+        
+        // 显示弹窗
+        document.getElementById('assetDetailModal').style.display = 'block';
+      }
+    }
+
+    // 显示摊销弹窗
+    function showDepreciationModal(assetId) {
+      const assetData = getAssetData(assetId);
+      if (assetData) {
+        // 设置弹窗标题
+        const modalTitle = document.querySelector('#depreciationModal .modal-header h3');
+        if (modalTitle) {
+          modalTitle.textContent = '资产摊销管理';
+        }
+        
+        // 更新标签文本
+        updateDepreciationModalLabels(true);
+        
+        // 填充摊销弹窗
+        const assetIdInput = document.getElementById('depreciationAssetId');
+        const assetNameInput = document.getElementById('depreciationAssetName');
+        const originalValueInput = document.getElementById('depreciationOriginalValue');
+        const accumulatedValueInput = document.getElementById('depreciationAccumulatedValue');
+        
+        if (assetIdInput) assetIdInput.value = assetData.id;
+        if (assetNameInput) assetNameInput.value = assetData.name;
+        if (originalValueInput) originalValueInput.value = formatCurrency(assetData.originalValue);
+        if (accumulatedValueInput) accumulatedValueInput.value = formatCurrency(assetData.accumulatedDepreciation);
+        
+        // 设置默认值
+        const methodSelect = document.getElementById('depreciationMethod');
+        const yearsInput = document.getElementById('depreciationYears');
+        const residualRateInput = document.getElementById('depreciationResidualRate');
+        const descriptionInput = document.getElementById('depreciationDescription');
+        
+        if (methodSelect) methodSelect.value = 'straight';
+        if (yearsInput) yearsInput.value = '5';
+        if (residualRateInput) residualRateInput.value = '5';
+        if (descriptionInput) descriptionInput.value = '';
+        
+        // 显示弹窗
+        const modal = document.getElementById('depreciationModal');
+        if (modal) {
+          modal.style.display = 'block';
+        }
+      }
+    }
+    
+    // 更新摊销弹窗标签
+    function updateDepreciationModalLabels(isIntangibleAsset) {
+      // 由于HTML中的标签已经是正确的摊销相关文本，这里只需要确保方法选择框正确
+      const methodSelect = document.getElementById('depreciationMethod');
+      if (methodSelect) {
+        methodSelect.innerHTML = `
+          <option value="">请选择摊销方法</option>
+          <option value="straight">直线法</option>
+          <option value="declining">余额递减法</option>
+          <option value="sum">年数总和法</option>
+          <option value="units">工作量法</option>
+        `;
+      }
+    }
+
+    // 显示跌价弹窗
+    window.showPriceDeclineModal = function(assetId) {
+      const assetData = getAssetData(assetId);
+      if (assetData) {
+        // 计算账面价值（原值 - 累计摊销 - 已计提跌价准备）
+        const bookValue = assetData.originalValue - assetData.accumulatedDepreciation - (assetData.impairmentReserve || 0);
+        
+        // 填充跌价弹窗
+        document.getElementById('priceDeclineAssetName').value = assetData.name;
+        document.getElementById('priceDeclineAssetCode').value = assetData.id;
+        document.getElementById('priceDeclineBookBalance').value = formatCurrency(assetData.originalValue);
+        document.getElementById('priceDeclineExisting').value = formatCurrency(assetData.impairmentReserve || 0);
+        document.getElementById('priceDeclineBookValue').value = formatCurrency(bookValue);
+        
+        // 清空输入字段
+        document.getElementById('priceDeclineAmount').value = '';
+        document.getElementById('priceDeclineDescription').value = '';
+        
+        // 显示弹窗
+        document.getElementById('priceDeclineModal').style.display = 'block';
+      }
+    }
+
+    // 显示跌价转回弹窗
+    window.showPriceReversalModal = function(assetId) {
+      const assetData = getAssetData(assetId);
+      if (!assetData) return;
+
+      // 基本信息
+      document.getElementById('priceReversalAssetName').value = assetData.name;
+      document.getElementById('priceReversalAssetCode').value = assetData.id;
+      document.getElementById('priceReversalExisting').value = formatCurrency(assetData.impairmentReserve || 0);
+
+      // 历史数据渲染
+      const history = getPriceDeclineHistory(assetId);
+      const tbody = document.getElementById('priceReversalHistoryTbody');
+      tbody.innerHTML = history.map((h, idx) => {
+        const selectable = h.remainingAmount > 0;
+        return `
+          <tr>
+            <td class="px-4 py-2 text-sm">
+              <input type="radio" name="priceReversalSelect" value="${h.id}" ${selectable ? '' : 'disabled'} onclick="onSelectReversalHistory('${h.id}')">
+            </td>
+            <td class="px-4 py-2 text-sm text-gray-900">${h.date}</td>
+            <td class="px-4 py-2 text-sm text-gray-900">¥${h.amount.toLocaleString('zh-CN')}</td>
+            <td class="px-4 py-2 text-sm text-gray-900">¥${h.reversedAmount.toLocaleString('zh-CN')}</td>
+            <td class="px-4 py-2 text-sm font-medium ${h.remainingAmount>0?'text-emerald-600':'text-gray-400'}">¥${h.remainingAmount.toLocaleString('zh-CN')}</td>
+            <td class="px-4 py-2 text-sm text-gray-500">${h.reason || '-'}</td>
+          </tr>
+        `;
+      }).join('');
+
+      // 重置表单
+      document.getElementById('priceReversalAmount').value = '';
+      document.getElementById('priceReversalAmountHint').textContent = '可转回金额：-';
+      document.getElementById('priceReversalDescription').value = '';
+      document.getElementById('priceReversalAttachment').value = '';
+
+      // 默认选中第一条可转回记录并自动带出金额
+      const firstSelectable = history.find(h => h.remainingAmount > 0);
+      if (firstSelectable) {
+        const radio = document.querySelector(`input[name="priceReversalSelect"][value="${firstSelectable.id}"]`);
+        if (radio) { radio.checked = true; }
+        onSelectReversalHistory(firstSelectable.id);
+      }
+
+      // 打开弹窗
+      document.getElementById('priceReversalModal').style.display = 'block';
+    }
+
+    // 选中某条历史记录时联动可转回金额提示
+    window.onSelectReversalHistory = function(recordId) {
+      const assetId = document.getElementById('priceReversalAssetCode').value;
+      const history = getPriceDeclineHistory(assetId) || [];
+      const record = history.find(h => h.id === recordId);
+      const hint = document.getElementById('priceReversalAmountHint');
+      if (record) {
+        hint.textContent = `可转回金额：¥${record.remainingAmount.toLocaleString('zh-CN')}`;
+        const amountInput = document.getElementById('priceReversalAmount');
+        amountInput.max = record.remainingAmount;
+        // 自动带出可转回金额
+        amountInput.value = record.remainingAmount;
+      }
+    }
+
+    // 确认转回
+    window.confirmPriceReversal = function() {
+      const assetId = document.getElementById('priceReversalAssetCode').value;
+      const selected = document.querySelector('input[name="priceReversalSelect"]:checked');
+      const amountStr = document.getElementById('priceReversalAmount').value;
+      const desc = document.getElementById('priceReversalDescription').value;
+      const files = document.getElementById('priceReversalAttachment').files;
+
+      if (!selected) { alert('请选择一条跌价历史进行转回！'); return; }
+      if (!amountStr) { alert('请填写转回金额！'); return; }
+      const amount = parseFloat(amountStr);
+      if (isNaN(amount) || amount <= 0) { alert('转回金额必须大于0！'); return; }
+      const history = getPriceDeclineHistory(assetId) || [];
+      const record = history.find(h => h.id === selected.value);
+      if (!record) { alert('选择的历史记录无效！'); return; }
+      if (amount > record.remainingAmount) { alert('转回金额不能超过可转回金额！'); return; }
+      if (!desc || desc.trim() === '') { alert('请填写转回说明！'); return; }
+      if (!files || files.length === 0) { alert('请上传附件！'); return; }
+
+      console.log('存货跌价转回：', { assetId, recordId: record.id, amount, desc, attachmentCount: files.length });
+      alert('跌价准备已成功转回！');
+      closeModal('priceReversalModal');
+    }
+
+    // 模拟获取存货跌价计提历史（用于转回）
+    function getPriceDeclineHistory(assetId) {
+      const map = {
+        'ZC002': [
+          { id: 'PD-20240120-01', date: '2024-01-20', amount: 80000, reversedAmount: 0, remainingAmount: 80000, reason: '市场价格下跌' },
+          { id: 'PD-20240315-02', date: '2024-03-15', amount: 20000, reversedAmount: 5000, remainingAmount: 15000, reason: '滞销' }
+        ]
+      };
+      return map[assetId] || [];
+    }
+
+    function confirmPriceDecline() {
+      const amount = document.getElementById('priceDeclineAmount').value;
+      const description = document.getElementById('priceDeclineDescription').value;
+      const attachment = document.getElementById('priceDeclineAttachment').files;
+      
+      // 验证必填字段
+      if (!amount) {
+        alert('请填写跌价准备金额！');
+        return;
+      }
+      
+      if (parseFloat(amount) <= 0) {
+        alert('跌价准备金额必须大于0！');
+        return;
+      }
+      
+      if (!description || description.trim() === '') {
+        alert('请填写跌价说明！');
+        return;
+      }
+      
+      if (!attachment || attachment.length === 0) {
+        alert('请上传审批文件！');
+        return;
+      }
+      
+      // 这里添加实际的跌价处理逻辑
+      console.log('存货跌价准备信息:', {
+        amount,
+        description,
+        attachmentCount: attachment.length
+      });
+      
+      alert('存货跌价准备已成功计提！');
+      closeModal('priceDeclineModal');
+    }
+
+    function showImpairmentModal(assetId) {
+      const assetData = getAssetData(assetId);
+      if (assetData) {
+        // 填充减值弹窗
+        document.getElementById('impairmentAssetId').value = assetData.id;
+        document.getElementById('impairmentAssetName').value = assetData.name;
+        document.getElementById('impairmentOriginalValue').value = formatCurrency(assetData.originalValue);
+        document.getElementById('impairmentAccumulatedValue').value = formatCurrency(assetData.accumulatedDepreciation);
+        
+        // 清空输入字段
+        document.getElementById('impairmentRecoverableAmount').value = '';
+        document.getElementById('impairmentReason').value = '';
+        document.getElementById('impairmentAmount').value = '';
+        document.getElementById('impairmentDescription').value = '';
+        document.getElementById('impairmentAssessmentDate').value = '';
+        
+        // 设置默认日期为今天
+        document.getElementById('impairmentAssessmentDate').value = new Date().toISOString().split('T')[0];
+        
+        // 显示弹窗
+        document.getElementById('impairmentModal').style.display = 'block';
+      }
+    }
+
+    // 显示披露弹窗
+    function showDisclosureModal(assetId) {
+      const assetData = getAssetData(assetId);
+      if (assetData) {
+        // 填充披露弹窗
+        document.getElementById('disclosureAssetId').value = assetData.id;
+        document.getElementById('disclosureAssetName').value = assetData.name;
+        
+        // 清空输入字段
+        document.getElementById('disclosureType').value = '';
+        document.getElementById('disclosureDate').value = '';
+        document.getElementById('disclosureTitle').value = '';
+        document.getElementById('disclosureContent').value = '';
+        document.getElementById('disclosureScope').value = 'internal';
+        
+        // 设置默认日期为今天
+        document.getElementById('disclosureDate').value = new Date().toISOString().split('T')[0];
+        
+        // 显示弹窗
+        document.getElementById('disclosureModal').style.display = 'block';
+        
+
+      }
+    }
+
+
+    // 关闭弹窗
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+      // 清理事件监听器
+      cleanupEventListeners(modalId);
+    }
+
+    // 清理事件监听器
+    function cleanupEventListeners(modalId) {
+
+    }
+
+    // 获取资产数据
+    function getAssetData(assetId) {
+      const assetMap = {
+        'ZC001': {
+          id: 'ZC001',
+          name: '采购专题分析数据集',
+          type: '数据资产',
+          assetType: '无形资产',
+          category: 'purchase',
+          status: '正常',
+          originalValue: 500000,
+          currentValue: 350000,
+          accumulatedDepreciation: 150000,
+          impairmentReserve: 0,
+          createDate: '2023-01-15',
+          department: '信息技术部',
+          manager: '张经理',
+          location: '数据中心A区'
+        },
+        'ZC002': {
+          id: 'ZC002',
+          name: '供应商信用评价与合规性分析数据集',
+          type: '数据资产',
+          assetType: '存货',
+          category: 'supplier',
+          status: '已减值',
+          originalValue: 800000,
+          currentValue: 480000,
+          accumulatedDepreciation: 240000,
+          impairmentReserve: 80000,
+          createDate: '2022-08-20',
+          department: '市场部',
+          manager: '李经理',
+          location: '数据中心B区'
+        },
+        'ZC003': {
+          id: 'ZC003',
+          name: '财务分析软件',
+          type: '软件资产',
+          assetType: '无形资产',
+          category: 'internal-assets',
+          status: '摊销中',
+          originalValue: 300000,
+          currentValue: 180000,
+          accumulatedDepreciation: 120000,
+          impairmentReserve: 0,
+          createDate: '2023-03-10',
+          department: '财务部',
+          manager: '王经理',
+          location: '财务系统服务器'
+        }
+      };
+      return assetMap[assetId];
+    }
+
+    // 获取操作历史数据
+    function getOperationHistory(assetId) {
+      const historyMap = {
+        'ZC001': [
+          { date: '2024-01-15', operation: '年度摊销', operator: '自动', status: '已完成', amount: '¥50,000' },
+          { date: '2023-12-15', operation: '年度摊销', operator: '自动', status: '已完成', amount: '¥50,000' },
+          { date: '2023-11-15', operation: '年度摊销', operator: '自动', status: '已完成', amount: '¥50,000' },
+          { date: '2023-10-15', operation: '减值', operator: '财务人员A', status: '已完成', amount: '¥5,000' },
+          { date: '2023-09-15', operation: '年度摊销', operator: '自动', status: '已完成', amount: '¥50,000' },
+          { date: '2023-08-15', operation: '资产披露', operator: '财务人员A', status: '已完成', amount: '¥0' },
+          { date: '2023-07-15', operation: '年度摊销', operator: '自动', status: '已完成', amount: '¥50,000' }
+        ],
+        'ZC002': [
+          { date: '2024-01-20', operation: '减值', operator: '财务人员A', status: '已完成', amount: '¥80,000' },
+          { date: '2023-12-20', operation: '年度摊销', operator: '自动', status: '已完成', amount: '¥60,000' },
+          { date: '2023-11-20', operation: '增资', operator: '财务人员A', status: '已完成', amount: '¥2,000' },
+          { date: '2023-10-20', operation: '年度摊销', operator: '自动', status: '已完成', amount: '¥60,000' },
+          { date: '2023-09-20', operation: '资产披露', operator: '财务人员A', status: '已完成', amount: '¥0' },
+          { date: '2023-08-20', operation: '年度摊销', operator: '自动', status: '已完成', amount: '¥60,000' }
+        ],
+        'ZC003': [
+          { date: '2024-01-10', operation: '年度摊销', operator: '自动', status: '已完成', amount: '¥30,000' },
+          { date: '2023-12-10', operation: '年度摊销', operator: '自动', status: '已完成', amount: '¥30,000' },
+          { date: '2023-11-10', operation: '年度摊销', operator: '自动', status: '已完成', amount: '¥30,000' },
+          { date: '2023-10-10', operation: '增资', operator: '财务人员A', status: '已完成', amount: '¥8,000' },
+          { date: '2023-09-10', operation: '年度摊销', operator: '自动', status: '已完成', amount: '¥30,000' },
+          { date: '2023-08-10', operation: '年度摊销', operator: '自动', status: '已完成', amount: '¥30,000' },
+          { date: '2023-07-10', operation: '年度摊销', operator: '自动', status: '已完成', amount: '¥30,000' },
+          { date: '2023-06-10', operation: '年度摊销', operator: '自动', status: '已完成', amount: '¥30,000' },
+          { date: '2023-05-10', operation: '资产披露', operator: '财务人员A', status: '已完成', amount: '¥0' },
+          { date: '2023-04-10', operation: '年度摊销', operator: '自动', status: '已完成', amount: '¥30,000' }
+        ]
+      };
+      return historyMap[assetId] || [];
+    }
+
+
+
+    // 填充操作历史记录
+    function fillOperationHistory(assetId) {
+      const history = getOperationHistory(assetId);
+      const container = document.getElementById('detailOperationHistory');
+      
+      if (history.length === 0) {
+        container.innerHTML = '<div class="text-gray-500 text-center py-4">暂无操作记录</div>';
+        return;
+      }
+      
+      // 按时间排序（最新的在前面）
+      const sortedHistory = history.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      // 获取操作类型图标和颜色
+      function getOperationTypeStyle(operation) {
+        if (operation.includes('摊销')) {
+          return { icon: '📊', color: 'bg-blue-500', textColor: 'text-blue-600' };
+        } else if (operation.includes('减值')) {
+          return { icon: '⚠️', color: 'bg-orange-500', textColor: 'text-orange-600' };
+        } else if (operation.includes('披露')) {
+          return { icon: '📋', color: 'bg-purple-500', textColor: 'text-purple-600' };
+        } else if (operation.includes('增资')) {
+          return { icon: '💰', color: 'bg-indigo-500', textColor: 'text-indigo-600' };
+        } else {
+          return { icon: '📝', color: 'bg-gray-500', textColor: 'text-gray-600' };
+        }
+      }
+      
+      // 创建可滚动的操作记录容器
+      let html = `
+        <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div class="px-4 py-3 border-b border-gray-200 bg-gray-50">
+            <h3 class="text-sm font-medium text-gray-900">操作记录 (共${sortedHistory.length}条)</h3>
+          </div>
+          <div class="max-h-96 overflow-y-auto">
+            <div class="divide-y divide-gray-200">
+      `;
+      
+      sortedHistory.forEach((item, index) => {
+        const typeStyle = getOperationTypeStyle(item.operation);
+        
+        html += `
+          <div class="px-4 py-3 bg-white hover:bg-gray-50 transition-colors">
+            <div class="flex items-start justify-between">
+              <div class="flex-1">
+                <div class="flex items-center space-x-3">
+                  <div class="w-8 h-8 rounded-full ${typeStyle.color} text-white flex items-center justify-center text-sm">
+                    ${typeStyle.icon}
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <h4 class="text-sm font-medium text-gray-900">${item.operation}</h4>
+                      <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-600">
+                        ${item.status}
+                      </span>
+                    </div>
+                    <div class="mt-1 text-sm text-gray-500">
+                      <span>${item.date}</span>
+                      <span class="mx-2">•</span>
+                      <span>操作人: ${item.operator}</span>
+                      ${item.amount ? `<span class="mx-2">•</span><span>金额: ${item.amount}</span>` : ''}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      
+      html += `
+            </div>
+          </div>
+        </div>
+      `;
+      
+      container.innerHTML = html;
+    }
+
+
+
+    // 格式化货币
+    function formatCurrency(amount) {
+      return '¥' + amount.toLocaleString('zh-CN');
+    }
+
+    // 获取财务状态值
+    function getFinancialStatusValue(status) {
+      const statusMap = {
+        '正常': 'normal',
+        '摊销中': 'amortizing',
+        '已减值': 'impaired',
+        '已处置': 'disposed'
+      };
+      return statusMap[status] || 'normal';
+    }
+
+
+
+
+
+
+
+
+
+    // 发起摊销申请
+    function confirmDepreciation() {
+      const method = document.getElementById('depreciationMethod').value;
+      const years = document.getElementById('depreciationYears').value;
+      const description = document.getElementById('depreciationDescription').value;
+      const assetId = document.getElementById('depreciationAssetId').value;
+      const assetData = getAssetData(assetId);
+
+      if (!method || !years) {
+        alert('请填写必填字段！');
+        return;
+      }
+
+      // 这里可以添加实际的摊销申请处理逻辑
+      alert('摊销申请已提交！');
+      closeModal('depreciationModal');
+    }
+
+    // 发起减值申请
+    function confirmImpairment() {
+      const reason = document.getElementById('impairmentReason').value;
+      const amount = document.getElementById('impairmentAmount').value;
+      const description = document.getElementById('impairmentDescription').value;
+
+      if (!reason || !amount || !description) {
+        alert('请填写必填字段！');
+        return;
+      }
+
+      // 这里可以添加实际的减值申请处理逻辑
+      alert('减值申请已提交！');
+      closeModal('impairmentModal');
+    }
+
+    // 发起披露申请
+    function confirmDisclosure() {
+      const type = document.getElementById('disclosureType').value;
+      const date = document.getElementById('disclosureDate').value;
+      const title = document.getElementById('disclosureTitle').value;
+      const content = document.getElementById('disclosureContent').value;
+
+      if (!type || !date || !title || !content) {
+        alert('请填写必填字段！');
+        return;
+      }
+
+      // 这里可以添加实际的披露申请处理逻辑
+      alert('披露申请已提交！');
+      closeModal('disclosureModal');
+    }
+
+    // 导出资产详情
+    function exportAssetDetail() {
+      const assetId = document.getElementById('detailAssetId').value;
+      const assetName = document.getElementById('detailAssetName').value;
+      
+      // 这里可以添加实际的导出逻辑
+      alert(`正在导出 ${assetName}(${assetId}) 的详细信息...`);
+    }
+
+    // 点击弹窗外部关闭弹窗
+    window.onclick = function(event) {
+      const modals = document.querySelectorAll('.modal');
+      modals.forEach(modal => {
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+    }
+
+    // 切换标签页
+    function switchTab(tabName) {
+      // 隐藏所有内容
+      document.getElementById('bookValueContent').classList.add('hidden');
+      document.getElementById('revenueContent').classList.add('hidden');
+      
+      // 重置所有标签样式
+      document.getElementById('bookValueTab').className = 'px-6 py-3 text-sm font-medium text-gray-600 hover:text-gray-800 focus:outline-none';
+      document.getElementById('revenueTab').className = 'px-6 py-3 text-sm font-medium text-gray-600 hover:text-gray-800 focus:outline-none';
+      
+      // 显示选中的内容并设置标签样式
+      if (tabName === 'bookValue') {
+        document.getElementById('bookValueContent').classList.remove('hidden');
+        document.getElementById('bookValueTab').className = 'px-6 py-3 text-sm font-medium text-blue-600 border-b-2 border-blue-600 focus:outline-none';
+      } else if (tabName === 'revenue') {
+        document.getElementById('revenueContent').classList.remove('hidden');
+        document.getElementById('revenueTab').className = 'px-6 py-3 text-sm font-medium text-blue-600 border-b-2 border-blue-600 focus:outline-none';
+      }
+    }
+
+    // 查看收益详情
+    function viewRevenueDetail(assetId) {
+      // 模拟收益记录数据
+      const revenueRecords = {
+        'ZC001': [
+          { date: '2024-10', type: '服务收益', amount: 35000, source: 'API调用服务', description: '提供数据分析API服务' },
+          { date: '2024-09', type: '交易收益', amount: 50000, source: '数据授权', description: '授权第三方使用数据' },
+          { date: '2024-08', type: '服务收益', amount: 40000, source: 'API调用服务', description: '提供数据分析API服务' },
+          { date: '2024-07', type: '服务收益', amount: 45000, source: 'API调用服务', description: '提供数据分析API服务' },
+          { date: '2024-06', type: '交易收益', amount: 30000, source: '数据交易', description: '数据集交易收入' }
+        ],
+        'ZC002': [
+          { date: '2024-10', type: '服务收益', amount: 30000, source: 'API调用服务', description: '提供信用评价服务' },
+          { date: '2024-09', type: '交易收益', amount: 25000, source: '数据授权', description: '授权使用供应商数据' },
+          { date: '2024-08', type: '服务收益', amount: 35000, source: 'API调用服务', description: '提供信用评价服务' },
+          { date: '2024-07', type: '服务收益', amount: 30000, source: 'API调用服务', description: '提供信用评价服务' },
+          { date: '2024-06', type: '交易收益', amount: 20000, source: '数据交易', description: '数据集交易收入' }
+        ],
+        'ZC003': [
+          { date: '2024-10', type: '服务收益', amount: 45000, source: '软件授权', description: '软件使用许可费' },
+          { date: '2024-09', type: '服务收益', amount: 45000, source: '软件授权', description: '软件使用许可费' },
+          { date: '2024-08', type: '服务收益', amount: 45000, source: '软件授权', description: '软件使用许可费' },
+          { date: '2024-07', type: '服务收益', amount: 45000, source: '软件授权', description: '软件使用许可费' }
+        ]
+      };
+      
+      const records = revenueRecords[assetId] || [];
+      const assetData = getAssetData(assetId);
+      
+      // 计算总收益
+      let serviceTotal = 0;
+      let transactionTotal = 0;
+      records.forEach(record => {
+        if (record.type === '服务收益') {
+          serviceTotal += record.amount;
+        } else if (record.type === '交易收益') {
+          transactionTotal += record.amount;
+        }
+      });
+      
+      // 填充弹窗内容
+      document.getElementById('revenueDetailAssetId').textContent = assetId;
+      document.getElementById('revenueDetailAssetName').textContent = assetData.name;
+      document.getElementById('revenueDetailServiceTotal').textContent = `¥${serviceTotal.toLocaleString()}`;
+      document.getElementById('revenueDetailTransactionTotal').textContent = `¥${transactionTotal.toLocaleString()}`;
+      document.getElementById('revenueDetailGrandTotal').textContent = `¥${(serviceTotal + transactionTotal).toLocaleString()}`;
+      
+      // 生成收益记录表格
+      const tbody = document.getElementById('revenueRecordsTableBody');
+      tbody.innerHTML = records.map(record => `
+        <tr class="table-row">
+          <td class="px-6 py-4 text-sm text-gray-900">${record.date}</td>
+          <td class="px-6 py-4">
+            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${record.type === '服务收益' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">
+              ${record.type}
+            </span>
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-900">¥${record.amount.toLocaleString()}</td>
+          <td class="px-6 py-4 text-sm text-gray-900">${record.source}</td>
+          <td class="px-6 py-4 text-sm text-gray-500">${record.description}</td>
+        </tr>
+      `).join('');
+      
+      // 显示弹窗
+      document.getElementById('revenueDetailModal').style.display = 'block';
+    }
+
+    // 页面加载完成后初始化侧边栏状态
+    document.addEventListener('DOMContentLoaded', function() {
+      // 确保侧边栏初始状态为展开
+      const sidebar = document.getElementById('sidebar');
+      const mainContent = document.getElementById('mainContent');
+      const toggleBtn = document.getElementById('sidebar-toggle');
+      
+      if (sidebar && mainContent && toggleBtn) {
+        // 设置初始状态为展开
+        sidebar.classList.remove('hidden');
+        toggleBtn.style.left = '16rem';
+        mainContent.style.marginLeft = '240px';
+        mainContent.style.maxWidth = 'calc(100% - 240px)';
+      }
+    });
+
+    // 显示自动校验规则配置弹窗
+    function showValidationRulesModal() {
+      // 默认显示摊销校验规则
+      selectRuleType('depreciation');
+      document.getElementById('validationRulesModal').style.display = 'block';
+    }
+
+    // 选择校验规则类型
+    function selectRuleType(ruleType) {
+      // 隐藏所有规则配置区域
+      const allRuleConfigs = document.querySelectorAll('.rule-config');
+      allRuleConfigs.forEach(config => {
+        config.classList.add('hidden');
+      });
+
+      // 显示选中的规则配置区域
+      const selectedConfig = document.getElementById(ruleType + 'Rules');
+      if (selectedConfig) {
+        selectedConfig.classList.remove('hidden');
+      }
+
+      // 更新规则类型选择器的视觉状态
+      const ruleCards = document.querySelectorAll('.rule-config').forEach(config => {
+        const card = config.closest('.border');
+        if (card) {
+          card.classList.remove('border-blue-300', 'border-orange-300', 'border-green-300', 'bg-blue-50', 'bg-orange-50', 'bg-green-50');
+        }
+      });
+
+      // 高亮选中的规则类型卡片
+      const ruleTypeCards = document.querySelectorAll('[onclick^="selectRuleType"]');
+      ruleTypeCards.forEach(card => {
+        card.classList.remove('border-blue-300', 'border-orange-300', 'border-green-300', 'bg-blue-50', 'bg-orange-50', 'bg-green-50');
+      });
+
+      const selectedCard = document.querySelector(`[onclick="selectRuleType('${ruleType}')"]`);
+      if (selectedCard) {
+        if (ruleType === 'depreciation') {
+          selectedCard.classList.add('border-blue-300', 'bg-blue-50');
+        } else if (ruleType === 'impairment') {
+          selectedCard.classList.add('border-orange-300', 'bg-orange-50');
+        } else if (ruleType === 'disclosure') {
+          selectedCard.classList.add('border-green-300', 'bg-green-50');
+        }
+      }
+    }
+
+    // 保存校验规则配置
+    function saveValidationRules() {
+      // 收集所有配置数据
+      const validationConfig = {
+        depreciation: {
+          defaultMethod: document.getElementById('defaultDepreciationMethod').value,
+          defaultYears: document.getElementById('defaultDepreciationYears').value,
+          defaultResidualRate: document.getElementById('defaultResidualRate').value,
+          frequency: document.getElementById('depreciationFrequency').value,
+          checkCalculation: document.getElementById('checkDepreciationCalculation').checked,
+          checkTiming: document.getElementById('checkDepreciationTiming').checked,
+          checkMethod: document.getElementById('checkDepreciationMethod').checked
+        },
+        impairment: {
+          testFrequency: document.getElementById('impairmentTestFrequency').value,
+          threshold: document.getElementById('impairmentThreshold').value,
+          triggerMarketDecline: document.getElementById('triggerMarketDecline').checked,
+          triggerTechnologyObsolescence: document.getElementById('triggerTechnologyObsolescence').checked,
+          triggerBusinessChange: document.getElementById('triggerBusinessChange').checked,
+          triggerRegulationChange: document.getElementById('triggerRegulationChange').checked,
+          checkRecoverableAmount: document.getElementById('checkRecoverableAmount').checked,
+          checkImpairmentAmount: document.getElementById('checkImpairmentAmount').checked,
+          checkImpairmentReversal: document.getElementById('checkImpairmentReversal').checked
+        },
+        disclosure: {
+          frequency: document.getElementById('disclosureFrequency').value,
+          threshold: document.getElementById('disclosureThreshold').value,
+          discloseSignificantImpairment: document.getElementById('discloseSignificantImpairment').checked,
+          discloseMethodChange: document.getElementById('discloseMethodChange').checked,
+          discloseAssetDisposal: document.getElementById('discloseAssetDisposal').checked,
+          discloseRegulatoryRequirement: document.getElementById('discloseRegulatoryRequirement').checked,
+          checkCompleteness: document.getElementById('checkDisclosureCompleteness').checked,
+          checkAccuracy: document.getElementById('checkDisclosureAccuracy').checked,
+          checkTimeliness: document.getElementById('checkDisclosureTimeliness').checked
+        },
+        general: {
+          autoValidation: document.querySelector('input[name="autoValidation"]:checked').value,
+          notifyOnError: document.getElementById('notifyOnError').checked,
+          notifyOnWarning: document.getElementById('notifyOnWarning').checked
+        }
+      };
+
+      // 这里可以添加实际的保存逻辑，比如发送到服务器
+      console.log('保存校验规则配置:', validationConfig);
+      
+      // 显示保存成功消息
+      alert('自动校验规则配置已保存！');
+      
+      // 关闭弹窗
+      closeModal('validationRulesModal');
+    }
+
+    // 页面加载完成后的初始化
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('资产会计核算页面加载完成');
+      
+      // 初始化校验规则配置
+      initializeValidationRules();
+    });
+
+    // 初始化校验规则配置
+    function initializeValidationRules() {
+      // 设置默认值
+      document.getElementById('defaultDepreciationMethod').value = 'straight';
+      document.getElementById('defaultDepreciationYears').value = '5';
+      document.getElementById('defaultResidualRate').value = '5';
+      document.getElementById('depreciationFrequency').value = 'annually';
+      
+      document.getElementById('impairmentTestFrequency').value = 'quarterly';
+      document.getElementById('impairmentThreshold').value = '10';
+      
+      document.getElementById('disclosureFrequency').value = 'quarterly';
+      document.getElementById('disclosureThreshold').value = '100';
+      
+      // 设置默认选中状态
+      document.querySelector('input[name="autoValidation"][value="enabled"]').checked = true;
+    }
+  </script>
+</body>
+</html>
+</html>
+</html>
+</html>

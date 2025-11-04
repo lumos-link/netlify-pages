@@ -1,27 +1,13 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>资产标签管理 - 数据资产管理系统</title>
+  <title>数据分级管理 - 数据资产管理系统</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <style>
     body { background: #f6f8fa; }
-    .content-card { background: white; border-radius: 1rem; box-shadow: 0 2px 16px 0 #2563eb22; }
-    .btn-primary { background: #2563eb; color: #fff; border-radius: 0.5rem; padding: 0.5rem 1.5rem; font-weight: 600; transition: background 0.2s; }
-    .btn-primary:hover { background: #1d4ed8; }
-    .btn-secondary { background: #6b7280; color: #fff; border-radius: 0.5rem; padding: 0.5rem 1.5rem; font-weight: 600; transition: background 0.2s; }
-    .btn-secondary:hover { background: #4b5563; }
-    .btn-outline { border: 1.5px solid #2563eb; color: #2563eb; background: #fff; border-radius: 0.5rem; padding: 0.5rem 1.5rem; font-weight: 600; transition: background 0.2s, color 0.2s; }
-    .btn-outline:hover { background: #2563eb; color: #fff; }
-    .catalog-card { transition: transform 0.2s, box-shadow 0.2s; }
-    .catalog-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15); }
-    .modal-overlay { background: rgba(0, 0, 0, 0.5); }
-    .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
-    .status-active { background: #dcfce7; color: #166534; }
-    .status-inactive { background: #fef2f2; color: #dc2626; }
-    .status-pending { background: #fef3c7; color: #d97706; }
     .tree-item { cursor: pointer; transition: background-color 0.2s; }
     .tree-item:hover { background-color: #f3f4f6; }
     .tree-item.active { background-color: #dbeafe; color: #2563eb; }
@@ -42,7 +28,7 @@
   <!-- 顶部主导航栏 -->
   <header class="bg-gradient-to-r from-red-900 via-red-800 to-red-900 shadow flex items-center justify-between px-10 h-16 sticky top-0 z-20">
     <div class="flex items-center space-x-4">
-              <div class="h-10 w-10 rounded-full border-2 border-red-400 shadow bg-white flex items-center justify-center">
+      <div class="h-10 w-10 rounded-full border-2 border-red-400 shadow bg-white flex items-center justify-center">
           <svg class="h-6 w-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
             <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
@@ -56,18 +42,18 @@
         <i class="fas fa-home mr-2"></i>返回首页
       </a>
       <div class="relative" id="user-dropdown">
-                  <div class="flex items-center space-x-2 cursor-pointer hover:bg-red-700 px-2 py-1 rounded-lg transition" onclick="toggleUserDropdown()">
-                      <img src="https://i.pravatar.cc/32?img=3" class="rounded-full w-8 h-8 border-2 border-red-200" alt="用户头像">
+        <div class="flex items-center space-x-2 cursor-pointer hover:bg-red-700 px-2 py-1 rounded-lg transition" onclick="toggleUserDropdown()">
+          <img src="https://i.pravatar.cc/32?img=3" class="rounded-full w-8 h-8 border-2 border-red-200" alt="用户头像">
           <span class="text-red-100 text-sm">张三</span>
-                      <i class="fas fa-chevron-down text-xs text-red-300 transition-transform" id="dropdown-arrow"></i>
+          <i class="fas fa-chevron-down text-xs text-red-300 transition-transform" id="dropdown-arrow"></i>
         </div>
         <div id="user-dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 hidden z-50">
           <a href="个人中心.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
-            <i class="fas fa-user-circle mr-3 text-blue-500"></i>
+            <i class="fas fa-user-circle mr-3 text-red-500"></i>
             个人中心
           </a>
           <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
-            <i class="fas fa-cog mr-3 text-blue-500"></i>
+            <i class="fas fa-cog mr-3 text-red-500"></i>
             系统管理
           </a>
           <div class="border-t border-gray-200 my-1"></div>
@@ -79,12 +65,11 @@
       </div>
     </div>
   </header>
-
+  
   <!-- 可收起平台导航栏 -->
   <aside id="sidebar" class="fixed top-16 left-0 min-h-[calc(100vh-4rem)] w-60 bg-gradient-to-b from-red-900 to-red-800 border-r border-red-700 shadow-xl z-30 transition-transform duration-300">
-    <div class="flex items-center justify-between px-4 py-3 border-b border-red-700">
+    <div class="flex items-center justify-between px-4 py-3 border-b border-white border-opacity-20">
       <span class="text-lg font-bold text-red-100">平台导航</span>
-      <button onclick="toggleSidebar()" class="text-red-300 hover:text-white focus:outline-none"><i class="fas fa-chevron-left"></i></button>
     </div>
     <ul class="mt-4 space-y-2 px-4">
       <!-- 资源盘点登记 -->
@@ -101,10 +86,10 @@
           <li><a href="数据资源扫描.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据资源扫描</a></li>
           <li><a href="数据资源.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据资源盘点</a></li>
           <li><a href="资产属性管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 资产属性管理</a></li>
-          <li><a href="资产标签管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm bg-red-700"><i class="fas fa-tag"></i> 资产标签管理</a></li>
+          <li><a href="资产标签管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-tag"></i> 资产标签管理</a></li>
           <li><a href="资产目录管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-sitemap"></i> 资产目录管理</a></li>
           <li><a href="数据分类管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据分类管理</a></li>
-          <li><a href="数据分级管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-layer-group"></i> 数据分级管理</a></li>
+          <li><a href="数据分级管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm bg-red-700"><i class="fas fa-layer-group"></i> 数据分级管理</a></li>
         </ul>
       </li>
       
@@ -118,11 +103,8 @@
           <i class="fas fa-chevron-down text-xs transition-transform" id="rights-arrow"></i>
         </div>
         <ul id="rights-submenu" class="ml-6 mt-2 space-y-1 hidden">
-          <li><a href="内部申请记录.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-user-shield"></i> 内部申请记录</a></li>
+          <li><a href="权属信息管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-user-shield"></i> 权属信息管理</a></li>
           <li><a href="授权链路记录.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-link"></i> 授权链路记录</a></li>
-
-          <li><a href="权属转移记录.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-exchange-alt"></i> 权属转移记录</a></li>
-
           <li><a href="权属证明记录.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-certificate"></i> 权属证明记录</a></li>
         </ul>
       </li>
@@ -159,10 +141,10 @@
       </li>
     </ul>
   </aside>
-
+  
   <!-- 展开按钮 -->
       <button id="sidebar-toggle" onclick="toggleSidebar()" class="fixed top-20 left-64 z-40 bg-black bg-opacity-50 backdrop-blur-sm text-white rounded-full p-2 shadow-lg hover:bg-black hover:bg-opacity-70 focus:outline-none transition"><i class="fas fa-chevron-left"></i></button>
-
+  
   <!-- 主内容区域 -->
   <main class="flex-1 ml-60 transition-all duration-300" id="mainContent">
     <div class="p-6">
@@ -170,30 +152,30 @@
 
     <!-- 主要内容区域 -->
     <div class="flex gap-6 h-[calc(100vh-12rem)]">
-      <!-- 左侧标签树 -->
+      <!-- 左侧分级树 -->
       <div class="w-80 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col">
         <div class="p-4 border-b border-gray-200">
-          <h2 class="text-lg font-semibold text-gray-900">资产标签管理</h2>
+          <h2 class="text-lg font-semibold text-gray-900">分级管理</h2>
         </div>
         <div class="flex-1 overflow-y-auto p-4">
-          <!-- 添加根标签按钮 -->
+          <!-- 添加根分级按钮 -->
           <div class="mb-4">
-            <button class="w-full flex items-center justify-center gap-2 py-2 px-3 bg-blue-50 border border-blue-200 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors" onclick="addRootTag()">
+            <button class="w-full flex items-center justify-center gap-2 py-2 px-3 bg-blue-50 border border-blue-200 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors" onclick="addRootLevel()">
               <i class="fas fa-plus text-sm"></i>
-              <span class="text-sm font-medium">添加根标签</span>
+              <span class="text-sm font-medium">添加根分级</span>
             </button>
           </div>
           
           <div class="space-y-1">
-            <!-- 业务标签 -->
+            <!-- 公开数据 -->
             <div class="tree-item">
               <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="toggleTreeItem(this)">
                 <div class="flex items-center gap-2">
                   <i class="fas fa-chevron-right tree-arrow text-xs text-gray-500"></i>
-                  <span class="font-medium">业务标签 (Business Tags)</span>
+                  <span class="font-medium">公开数据 (Public Data)</span>
                 </div>
                 <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子标签">
+                  <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子分级">
                     <i class="fas fa-plus text-xs"></i>
                   </button>
                   <button class="action-btn up" onclick="event.stopPropagation(); moveUp(this)" title="上移">
@@ -208,14 +190,14 @@
                 </div>
               </div>
               <div class="tree-children expanded ml-6">
-                <!-- 客户标签 -->
+                <!-- 一般公开 -->
                 <div class="tree-item active">
-                  <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="selectTreeItem(this, '客户标签')">
+                  <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="selectTreeItem(this, '一般公开')">
                     <div class="flex items-center gap-2">
-                      <span>客户标签 (Customer Tags)</span>
+                      <span>一般公开 (General Public)</span>
                     </div>
                     <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子标签">
+                      <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子分级">
                         <i class="fas fa-plus text-xs"></i>
                       </button>
                       <button class="action-btn up" onclick="event.stopPropagation(); moveUp(this)" title="上移">
@@ -230,36 +212,14 @@
                     </div>
                   </div>
                 </div>
-                <!-- 产品标签 -->
+                <!-- 限制公开 -->
                 <div class="tree-item">
-                  <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="selectTreeItem(this, '产品标签')">
+                  <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="selectTreeItem(this, '限制公开')">
                     <div class="flex items-center gap-2">
-                      <span>产品标签 (Product Tags)</span>
+                      <span>限制公开 (Limited Public)</span>
                     </div>
                     <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子标签">
-                        <i class="fas fa-plus text-xs"></i>
-                      </button>
-                      <button class="action-btn up" onclick="event.stopPropagation(); moveUp(this)" title="上移">
-                        <i class="fas fa-arrow-up text-xs"></i>
-                      </button>
-                      <button class="action-btn down" onclick="event.stopPropagation(); moveDown(this)" title="下移">
-                        <i class="fas fa-arrow-down text-xs"></i>
-                      </button>
-                      <button class="action-btn delete" onclick="event.stopPropagation(); deleteItem(this)" title="删除">
-                        <i class="fas fa-trash text-xs"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <!-- 订单标签 -->
-                <div class="tree-item">
-                  <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="selectTreeItem(this, '订单标签')">
-                    <div class="flex items-center gap-2">
-                      <span>订单标签 (Order Tags)</span>
-                    </div>
-                    <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子标签">
+                      <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子分级">
                         <i class="fas fa-plus text-xs"></i>
                       </button>
                       <button class="action-btn up" onclick="event.stopPropagation(); moveUp(this)" title="上移">
@@ -277,15 +237,15 @@
               </div>
             </div>
 
-            <!-- 技术标签 -->
+            <!-- 内部数据 -->
             <div class="tree-item">
               <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="toggleTreeItem(this)">
                 <div class="flex items-center gap-2">
                   <i class="fas fa-chevron-right tree-arrow text-xs text-gray-500"></i>
-                  <span class="font-medium">技术标签 (Technical Tags)</span>
+                  <span class="font-medium">内部数据 (Internal Data)</span>
                 </div>
                 <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子标签">
+                  <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子分级">
                     <i class="fas fa-plus text-xs"></i>
                   </button>
                   <button class="action-btn up" onclick="event.stopPropagation(); moveUp(this)" title="上移">
@@ -301,12 +261,12 @@
               </div>
               <div class="tree-children ml-6">
                 <div class="tree-item">
-                  <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="selectTreeItem(this, '数据库标签')">
+                  <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="selectTreeItem(this, '部门内部')">
                     <div class="flex items-center gap-2">
-                      <span>数据库标签 (Database Tags)</span>
+                      <span>部门内部 (Department Internal)</span>
                     </div>
                     <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子标签">
+                      <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子分级">
                         <i class="fas fa-plus text-xs"></i>
                       </button>
                       <button class="action-btn up" onclick="event.stopPropagation(); moveUp(this)" title="上移">
@@ -322,33 +282,12 @@
                   </div>
                 </div>
                 <div class="tree-item">
-                  <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="selectTreeItem(this, 'API标签')">
+                  <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="selectTreeItem(this, '公司内部')">
                     <div class="flex items-center gap-2">
-                      <span>API标签 (API Tags)</span>
+                      <span>公司内部 (Company Internal)</span>
                     </div>
                     <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子标签">
-                        <i class="fas fa-plus text-xs"></i>
-                      </button>
-                      <button class="action-btn up" onclick="event.stopPropagation(); moveUp(this)" title="上移">
-                        <i class="fas fa-arrow-up text-xs"></i>
-                      </button>
-                      <button class="action-btn down" onclick="event.stopPropagation(); moveDown(this)" title="下移">
-                        <i class="fas fa-arrow-down text-xs"></i>
-                      </button>
-                      <button class="action-btn delete" onclick="event.stopPropagation(); deleteItem(this)" title="删除">
-                        <i class="fas fa-trash text-xs"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div class="tree-item">
-                  <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="selectTreeItem(this, '文件标签')">
-                    <div class="flex items-center gap-2">
-                      <span>文件标签 (File Tags)</span>
-                    </div>
-                    <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子标签">
+                      <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子分级">
                         <i class="fas fa-plus text-xs"></i>
                       </button>
                       <button class="action-btn up" onclick="event.stopPropagation(); moveUp(this)" title="上移">
@@ -366,15 +305,15 @@
               </div>
             </div>
 
-            <!-- 安全标签 -->
+            <!-- 机密数据 -->
             <div class="tree-item">
               <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="toggleTreeItem(this)">
                 <div class="flex items-center gap-2">
                   <i class="fas fa-chevron-right tree-arrow text-xs text-gray-500"></i>
-                  <span class="font-medium">安全标签 (Security Tags)</span>
+                  <span class="font-medium">机密数据 (Confidential Data)</span>
                 </div>
                 <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子标签">
+                  <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子分级">
                     <i class="fas fa-plus text-xs"></i>
                   </button>
                   <button class="action-btn up" onclick="event.stopPropagation(); moveUp(this)" title="上移">
@@ -390,12 +329,12 @@
               </div>
               <div class="tree-children ml-6">
                 <div class="tree-item">
-                  <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="selectTreeItem(this, '敏感数据标签')">
+                  <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="selectTreeItem(this, '商业机密')">
                     <div class="flex items-center gap-2">
-                      <span>敏感数据标签 (Sensitive Data Tags)</span>
+                      <span>商业机密 (Business Confidential)</span>
                     </div>
                     <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子标签">
+                      <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子分级">
                         <i class="fas fa-plus text-xs"></i>
                       </button>
                       <button class="action-btn up" onclick="event.stopPropagation(); moveUp(this)" title="上移">
@@ -411,12 +350,101 @@
                   </div>
                 </div>
                 <div class="tree-item">
-                  <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="selectTreeItem(this, '加密标签')">
+                  <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="selectTreeItem(this, '技术机密')">
                     <div class="flex items-center gap-2">
-                      <span>加密标签 (Encryption Tags)</span>
+                      <span>技术机密 (Technical Confidential)</span>
                     </div>
                     <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子标签">
+                      <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子分级">
+                        <i class="fas fa-plus text-xs"></i>
+                      </button>
+                      <button class="action-btn up" onclick="event.stopPropagation(); moveUp(this)" title="上移">
+                        <i class="fas fa-arrow-up text-xs"></i>
+                      </button>
+                      <button class="action-btn down" onclick="event.stopPropagation(); moveDown(this)" title="下移">
+                        <i class="fas fa-arrow-down text-xs"></i>
+                      </button>
+                      <button class="action-btn delete" onclick="event.stopPropagation(); deleteItem(this)" title="删除">
+                        <i class="fas fa-trash text-xs"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="tree-item">
+                  <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="selectTreeItem(this, '财务机密')">
+                    <div class="flex items-center gap-2">
+                      <span>财务机密 (Financial Confidential)</span>
+                    </div>
+                    <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子分级">
+                        <i class="fas fa-plus text-xs"></i>
+                      </button>
+                      <button class="action-btn up" onclick="event.stopPropagation(); moveUp(this)" title="上移">
+                        <i class="fas fa-arrow-up text-xs"></i>
+                      </button>
+                      <button class="action-btn down" onclick="event.stopPropagation(); moveDown(this)" title="下移">
+                        <i class="fas fa-arrow-down text-xs"></i>
+                      </button>
+                      <button class="action-btn delete" onclick="event.stopPropagation(); deleteItem(this)" title="删除">
+                        <i class="fas fa-trash text-xs"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 绝密数据 -->
+            <div class="tree-item">
+              <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="toggleTreeItem(this)">
+                <div class="flex items-center gap-2">
+                  <i class="fas fa-chevron-right tree-arrow text-xs text-gray-500"></i>
+                  <span class="font-medium">绝密数据 (Top Secret Data)</span>
+                </div>
+                <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子分级">
+                    <i class="fas fa-plus text-xs"></i>
+                  </button>
+                  <button class="action-btn up" onclick="event.stopPropagation(); moveUp(this)" title="上移">
+                    <i class="fas fa-arrow-up text-xs"></i>
+                  </button>
+                  <button class="action-btn down" onclick="event.stopPropagation(); moveDown(this)" title="下移">
+                    <i class="fas fa-arrow-down text-xs"></i>
+                  </button>
+                  <button class="action-btn delete" onclick="event.stopPropagation(); deleteItem(this)" title="删除">
+                    <i class="fas fa-trash text-xs"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="tree-children ml-6">
+                <div class="tree-item">
+                  <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="selectTreeItem(this, '核心机密')">
+                    <div class="flex items-center gap-2">
+                      <span>核心机密 (Core Secret)</span>
+                    </div>
+                    <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子分级">
+                        <i class="fas fa-plus text-xs"></i>
+                      </button>
+                      <button class="action-btn up" onclick="event.stopPropagation(); moveUp(this)" title="上移">
+                        <i class="fas fa-arrow-up text-xs"></i>
+                      </button>
+                      <button class="action-btn down" onclick="event.stopPropagation(); moveDown(this)" title="下移">
+                        <i class="fas fa-arrow-down text-xs"></i>
+                      </button>
+                      <button class="action-btn delete" onclick="event.stopPropagation(); deleteItem(this)" title="删除">
+                        <i class="fas fa-trash text-xs"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="tree-item">
+                  <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="selectTreeItem(this, '战略机密')">
+                    <div class="flex items-center gap-2">
+                      <span>战略机密 (Strategic Secret)</span>
+                    </div>
+                    <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子分级">
                         <i class="fas fa-plus text-xs"></i>
                       </button>
                       <button class="action-btn up" onclick="event.stopPropagation(); moveUp(this)" title="上移">
@@ -440,18 +468,18 @@
       <!-- 右侧表单区域 -->
       <div class="flex-1 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col">
         <div class="p-6 border-b border-gray-200">
-          <h2 class="text-lg font-semibold text-gray-900">标签信息</h2>
+          <h2 class="text-lg font-semibold text-gray-900">分级信息</h2>
         </div>
         <div class="flex-1 p-6">
           <form class="space-y-6">
-            <!-- 标签名称 -->
+            <!-- 分级名称 -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2 required">标签名称</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2 required">分级名称</label>
               <div class="relative">
                 <input 
                   type="text" 
-                  id="tagName" 
-                  placeholder="请输入标签名称" 
+                  id="levelName" 
+                  placeholder="请输入分级名称" 
                   class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   maxlength="20"
                   oninput="updateCharCount(this, 'nameCount')"
@@ -462,14 +490,14 @@
               </div>
             </div>
 
-            <!-- 标签描述 -->
+            <!-- 分级描述 -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">标签描述</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2">分级描述</label>
               <div class="relative">
                 <textarea 
-                  id="tagDescription" 
+                  id="levelDescription" 
                   rows="4" 
-                  placeholder="请输入标签描述" 
+                  placeholder="请输入分级描述" 
                   class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                   maxlength="300"
                   oninput="updateCharCount(this, 'descCount')"
@@ -477,15 +505,6 @@
                 <div class="absolute bottom-2 right-3 text-xs text-gray-500">
                   <span id="descCount">0</span>/300
                 </div>
-              </div>
-            </div>
-
-            <!-- 标签颜色 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2 required">标签颜色</label>
-              <div class="flex items-center gap-3">
-                <input type="color" id="tagColor" value="#3B82F6" class="w-12 h-10 border border-gray-300 rounded cursor-pointer">
-                <span class="text-sm text-gray-600">选择标签显示颜色</span>
               </div>
             </div>
 
@@ -516,115 +535,111 @@
     </div>
   </main>
 
-  <!-- 新增/编辑标签模态框 -->
-  <div id="tagModal" class="fixed inset-0 z-50 hidden">
-    <div class="modal-overlay absolute inset-0"></div>
-    <div class="relative z-10 flex items-center justify-center min-h-screen p-4">
-      <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full">
-        <div class="flex items-center justify-between p-6 border-b">
-          <h3 class="text-lg font-semibold text-gray-900" id="modalTitle">新增标签</h3>
-          <button onclick="hideTagModal()" class="text-gray-400 hover:text-gray-600">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        
-        <div class="p-6">
-          <form id="tagForm">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">标签名称</label>
-                <input type="text" id="tagName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入标签名称">
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">标签分类</label>
-                <select id="tagCategory" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option value="business">业务标签</option>
-                  <option value="technical">技术标签</option>
-                  <option value="security">安全标签</option>
-                  <option value="quality">质量标签</option>
-                </select>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">标签颜色</label>
-                <select id="tagColor" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option value="blue">蓝色</option>
-                  <option value="green">绿色</option>
-                  <option value="red">红色</option>
-                  <option value="purple">紫色</option>
-                  <option value="yellow">黄色</option>
-                  <option value="gray">灰色</option>
-                </select>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">标签状态</label>
-                <select id="tagStatus" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option value="active">启用</option>
-                  <option value="inactive">禁用</option>
-                </select>
-              </div>
+  <!-- 新增分级模态框 -->
+  <div id="addLevelModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4">
+      <div class="flex items-center justify-between p-6 border-b">
+        <h3 class="text-lg font-semibold text-gray-900">新增数据分级</h3>
+        <button onclick="closeModal('addLevelModal')" class="text-gray-400 hover:text-gray-600">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="p-6">
+        <form class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">分级编码</label>
+              <input type="text" placeholder="请输入分级编码" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
-            
-            <div class="mt-6">
-              <label class="block text-sm font-medium text-gray-700 mb-2">标签描述</label>
-              <textarea id="tagDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入标签描述"></textarea>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">分级名称</label>
+              <input type="text" placeholder="请输入分级名称" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
-            
-            <div class="mt-6">
-              <label class="block text-sm font-medium text-gray-700 mb-2">使用场景</label>
-              <textarea id="usageScenarios" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入标签的使用场景"></textarea>
-            </div>
-          </form>
-        </div>
-        
-        <div class="flex items-center justify-end space-x-4 p-6 border-t">
-          <button onclick="hideTagModal()" class="btn-secondary">取消</button>
-          <button onclick="saveTag()" class="btn-primary">保存</button>
-        </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">上级分级</label>
+            <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">请选择上级分级</option>
+              <option value="LVL-001">公开数据</option>
+              <option value="LVL-002">内部数据</option>
+              <option value="LVL-003">机密数据</option>
+              <option value="LVL-004">绝密数据</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">分级描述</label>
+            <textarea rows="3" placeholder="请输入分级描述" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">状态</label>
+            <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="active" selected>启用</option>
+              <option value="inactive">停用</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="flex items-center justify-end gap-3 p-6 border-t">
+        <button onclick="closeModal('addLevelModal')" class="btn-secondary">取消</button>
+        <button onclick="submitLevel()" class="btn-primary">确认新增</button>
       </div>
     </div>
   </div>
 
-  <!-- 新增分类模态框 -->
-  <div id="categoryModal" class="fixed inset-0 z-50 hidden">
-    <div class="modal-overlay absolute inset-0"></div>
-    <div class="relative z-10 flex items-center justify-center min-h-screen p-4">
-      <div class="bg-white rounded-lg shadow-xl max-w-lg w-full">
-        <div class="flex items-center justify-between p-6 border-b">
-          <h3 class="text-lg font-semibold text-gray-900">新增分类</h3>
-          <button onclick="hideCategoryModal()" class="text-gray-400 hover:text-gray-600">
-            <i class="fas fa-times"></i>
-          </button>
+  <!-- 分级详情模态框 -->
+  <div id="levelDetailModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl mx-4">
+      <div class="flex items-center justify-between p-6 border-b">
+        <h3 class="text-lg font-semibold text-gray-900">分级详情</h3>
+        <button onclick="closeModal('levelDetailModal')" class="text-gray-400 hover:text-gray-600">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-500 mb-1">分级编码</label>
+            <p class="text-gray-900">LVL-001</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-500 mb-1">分级名称</label>
+            <p class="text-gray-900">公开数据</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-500 mb-1">上级分级</label>
+            <p class="text-gray-900">-</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-500 mb-1">层级</label>
+            <p class="text-gray-900">1</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-500 mb-1">状态</label>
+            <p class="text-gray-900"><span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full status-active">启用</span></p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-500 mb-1">创建时间</label>
+            <p class="text-gray-900">2024-01-01</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-500 mb-1">资产数量</label>
+            <p class="text-gray-900">89</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-500 mb-1">创建人</label>
+            <p class="text-gray-900">张三</p>
+          </div>
         </div>
-        
-        <div class="p-6">
-          <form id="categoryForm">
-            <div class="mb-6">
-              <label class="block text-sm font-medium text-gray-700 mb-2">分类名称</label>
-              <input type="text" id="categoryName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入分类名称">
-            </div>
-            
-            <div class="mb-6">
-              <label class="block text-sm font-medium text-gray-700 mb-2">分类描述</label>
-              <textarea id="categoryDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入分类描述"></textarea>
-            </div>
-            
-            <div class="mb-6">
-              <label class="block text-sm font-medium text-gray-700 mb-2">分类状态</label>
-              <select id="categoryStatus" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="active">启用</option>
-                <option value="inactive">禁用</option>
-              </select>
-            </div>
-          </form>
+        <div class="mt-6">
+          <label class="block text-sm font-medium text-gray-500 mb-2">分级描述</label>
+          <div class="bg-gray-50 rounded-lg p-4 text-sm text-gray-700">
+            <p>公开数据是指可以对外公开的数据，包括一般公开和限制公开两个子级别，主要用于对外展示和宣传。</p>
+          </div>
         </div>
-        
-        <div class="flex items-center justify-end space-x-4 p-6 border-t">
-          <button onclick="hideCategoryModal()" class="btn-secondary">取消</button>
-          <button onclick="saveCategory()" class="btn-primary">保存</button>
-        </div>
+      </div>
+      <div class="flex items-center justify-end gap-3 p-6 border-t">
+        <button onclick="closeModal('levelDetailModal')" class="btn-secondary">关闭</button>
+        <button onclick="editLevelFromDetail()" class="btn-primary">编辑</button>
       </div>
     </div>
   </div>
@@ -684,12 +699,12 @@
       element.closest('.tree-item').classList.add('active');
       
       // 更新表单数据
-      document.getElementById('tagName').value = name;
-      document.getElementById('tagDescription').value = `这是${name}的描述信息`;
+      document.getElementById('levelName').value = name;
+      document.getElementById('levelDescription').value = `这是${name}的描述信息`;
       
       // 更新字符计数
-      updateCharCount(document.getElementById('tagName'), 'nameCount');
-      updateCharCount(document.getElementById('tagDescription'), 'descCount');
+      updateCharCount(document.getElementById('levelName'), 'nameCount');
+      updateCharCount(document.getElementById('levelDescription'), 'descCount');
     }
 
     // 字符计数更新
@@ -698,11 +713,11 @@
       counter.textContent = element.value.length;
     }
 
-    // 添加子标签
+    // 添加子分级
     function addChild(button) {
       const parentItem = button.closest('.tree-item');
       const parentSpan = parentItem.querySelector('div:first-child span');
-      const parentName = parentSpan ? parentSpan.textContent : '新标签';
+      const parentName = parentSpan ? parentSpan.textContent : '新分级';
       
       // 查找或创建子容器
       let childrenContainer = parentItem.querySelector('.tree-children');
@@ -723,20 +738,20 @@
         childrenContainer.classList.add('expanded');
       }
       
-      // 生成唯一的标签名称
+      // 生成唯一的分级名称
       const timestamp = new Date().getTime();
-      const newTagName = `新标签_${timestamp}`;
+      const newLevelName = `新分级_${timestamp}`;
       
-      // 创建新的子标签项
+      // 创建新的子分级项
       const newItem = document.createElement('div');
       newItem.className = 'tree-item';
       newItem.innerHTML = `
-        <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="selectTreeItem(this, '${newTagName}')">
+        <div class="flex items-center justify-between py-2 px-2 rounded group" onclick="selectTreeItem(this, '${newLevelName}')">
           <div class="flex items-center gap-2">
-            <span>${newTagName}</span>
+            <span>${newLevelName}</span>
           </div>
           <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子标签">
+            <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子分级">
               <i class="fas fa-plus text-xs"></i>
             </button>
             <button class="action-btn up" onclick="event.stopPropagation(); moveUp(this)" title="上移">
@@ -752,26 +767,26 @@
         </div>
       `;
       
-      // 将新标签添加到子容器中
+      // 将新分级添加到子容器中
       childrenContainer.appendChild(newItem);
       
-      // 自动选中新创建的标签
-      selectTreeItem(newItem.querySelector('div'), newTagName);
+      // 自动选中新创建的分级
+      selectTreeItem(newItem.querySelector('div'), newLevelName);
       
       // 更新统计信息
       updateStatistics();
       
       // 显示成功提示
-      showNotification('新标签添加成功！', 'success');
+      showNotification('新分级添加成功！', 'success');
     }
 
-    // 添加根标签
-    function addRootTag() {
-      // 生成唯一的根标签名称
+    // 添加根分级
+    function addRootLevel() {
+      // 生成唯一的根分级名称
       const timestamp = new Date().getTime();
-      const newRootName = `新根标签_${timestamp}`;
+      const newRootName = `新根分级_${timestamp}`;
       
-      // 创建新的根标签项
+      // 创建新的根分级项
       const newRootItem = document.createElement('div');
       newRootItem.className = 'tree-item';
       newRootItem.innerHTML = `
@@ -780,7 +795,7 @@
             <span class="font-medium">${newRootName}</span>
           </div>
           <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子标签">
+            <button class="action-btn add" onclick="event.stopPropagation(); addChild(this)" title="添加子分级">
               <i class="fas fa-plus text-xs"></i>
             </button>
             <button class="action-btn up" onclick="event.stopPropagation(); moveUp(this)" title="上移">
@@ -796,21 +811,21 @@
         </div>
       `;
       
-      // 将新根标签添加到页面左侧标签树的最顶部
+      // 将新根分级添加到页面左侧分级树的最顶部
       const treeContainer = document.querySelector('.w-80 .space-y-1');
       if (treeContainer) {
         treeContainer.insertBefore(newRootItem, treeContainer.firstChild);
         
-        // 自动选中新创建的根标签
+        // 自动选中新创建的根分级
         selectTreeItem(newRootItem.querySelector('div'), newRootName);
         
         // 更新统计信息
         updateStatistics();
         
         // 显示成功提示
-        showNotification('根标签添加成功！', 'success');
+        showNotification('根分级添加成功！', 'success');
       } else {
-        showNotification('无法找到标签树容器！', 'error');
+        showNotification('无法找到分级树容器！', 'error');
       }
     }
 
@@ -836,7 +851,7 @@
 
     // 删除项目
     function deleteItem(button) {
-      if (confirm('确认删除该标签？')) {
+      if (confirm('确认删除该分级？')) {
         const item = button.closest('.tree-item');
         item.remove();
         
@@ -844,15 +859,15 @@
         updateStatistics();
         
         // 显示删除成功提示
-        showNotification('标签删除成功！', 'success');
+        showNotification('分级删除成功！', 'success');
       }
     }
 
     // 更新统计信息
     function updateStatistics() {
-      // 计算页面左侧标签树中的标签总数
-      const totalTags = document.querySelectorAll('.w-80 .tree-item').length;
-      console.log(`当前标签总数: ${totalTags}`);
+      // 计算页面左侧分级树中的分级总数
+      const totalLevels = document.querySelectorAll('.w-80 .tree-item').length;
+      console.log(`当前分级总数: ${totalLevels}`);
     }
 
     // 显示通知
@@ -899,8 +914,8 @@
     // 页面加载时初始化
     document.addEventListener('DOMContentLoaded', function() {
       // 初始化字符计数
-      updateCharCount(document.getElementById('tagName'), 'nameCount');
-      updateCharCount(document.getElementById('tagDescription'), 'descCount');
+      updateCharCount(document.getElementById('levelName'), 'nameCount');
+      updateCharCount(document.getElementById('levelDescription'), 'descCount');
     });
     
     // 用户下拉菜单切换
@@ -930,13 +945,4 @@
     });
   </script>
 </body>
-</html> 
-
-
-
-
-
-
-
-
-
+</html>
