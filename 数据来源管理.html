@@ -1,0 +1,797 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>数据来源管理 - 数据资产管理系统</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    body { 
+      background: #ffffff;
+      min-height: 100vh;
+      position: relative;
+    }
+    .content-card { 
+      background: rgba(255, 255, 255, 0.95); 
+      backdrop-filter: blur(10px);
+      border-radius: 1rem; 
+      box-shadow: 0 4px 20px rgba(37, 99, 235, 0.15);
+    }
+    .sidebar-item {
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .sidebar-item:hover {
+      background: rgba(59, 130, 246, 0.1);
+    }
+    .sidebar-item.active {
+      background: rgba(59, 130, 246, 0.2);
+      color: #2563eb;
+      font-weight: 600;
+    }
+    .table-row {
+      transition: background-color 0.2s;
+    }
+    .table-row:hover {
+      background-color: #f8fafc;
+    }
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+    .btn-secondary {
+      background: white;
+      color: #2563eb;
+      border: 1px solid #2563eb;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover {
+      background: #2563eb;
+      color: white;
+    }
+    .hidden {
+      display: none !important;
+    }
+    .modal-overlay {
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <!-- 顶部主导航栏 -->
+  <header class="bg-gradient-to-r from-red-900 via-red-800 to-red-900 shadow flex items-center justify-between px-10 h-16 sticky top-0 z-20">
+    <div class="flex items-center space-x-4">
+      <div class="h-10 w-10 rounded-full border-2 border-red-400 shadow bg-white flex items-center justify-center">
+          <svg class="h-6 w-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+      <span class="text-xl font-bold text-white tracking-wide whitespace-nowrap">数据资产管理系统</span>
+    </div>
+    <nav class="flex-1 flex items-center justify-center space-x-8">
+    </nav>
+    <div class="flex items-center space-x-4">
+      <a href="首页.html" class="text-red-100 hover:text-red-400 font-medium px-3 py-1 rounded border border-red-400 hover:bg-red-700 transition">
+        <i class="fas fa-home mr-2"></i>返回首页
+      </a>
+      <div class="relative" id="user-dropdown">
+        <div class="flex items-center space-x-2 cursor-pointer hover:bg-red-700 px-2 py-1 rounded-lg transition" onclick="toggleUserDropdown()">
+          <img src="https://i.pravatar.cc/32?img=3" class="rounded-full w-8 h-8 border-2 border-red-200" alt="用户头像">
+          <span class="text-red-100 text-sm">张三</span>
+          <i class="fas fa-chevron-down text-xs text-red-300 transition-transform" id="dropdown-arrow"></i>
+        </div>
+        <div id="user-dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 hidden z-50">
+          <a href="个人中心.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+            <i class="fas fa-user-circle mr-3 text-red-500"></i>
+            个人中心
+          </a>
+          <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+            <i class="fas fa-cog mr-3 text-red-500"></i>
+            系统管理
+          </a>
+
+          <div class="border-t border-gray-200 my-1"></div>
+          <a href="#" class="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 transition">
+            <i class="fas fa-sign-out-alt mr-3"></i>
+            退出
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <!-- 可收起平台导航栏 -->
+  <aside id="sidebar" class="fixed top-16 left-0 min-h-[calc(100vh-4rem)] w-60 bg-gradient-to-b from-red-900 to-red-800 border-r border-red-700 shadow-xl z-30 transition-transform duration-300">
+    <div class="flex items-center justify-between px-4 py-3 border-b border-white border-opacity-20">
+      <span class="text-lg font-bold text-red-100">平台导航</span>
+    </div>
+    <ul class="mt-4 space-y-2 px-4">
+      <!-- 资源盘点登记 -->
+      <li>
+        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer bg-red-700" onclick="toggleSubMenu('inventory')">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-clipboard-list"></i>
+            <span>资源盘点登记</span>
+          </div>
+          <i class="fas fa-chevron-down text-xs transition-transform" id="inventory-arrow" style="transform: rotate(180deg);"></i>
+        </div>
+        <ul id="inventory-submenu" class="ml-6 mt-2 space-y-1">
+          <li><a href="数据来源管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm bg-red-700"><i class="fas fa-database"></i> 数据来源管理</a></li>
+          <li><a href="数据资源扫描.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据资源扫描</a></li>
+          <li><a href="数据资源.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据资源盘点</a></li>
+          <li><a href="资产属性管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 资产属性管理</a></li>
+          <li><a href="资产标签管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-tag"></i> 资产标签管理</a></li>
+          <li><a href="资产目录管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-sitemap"></i> 资产目录管理</a></li>
+          <li><a href="数据分类管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-database"></i> 数据分类管理</a></li>
+          <li><a href="数据分级管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-layer-group"></i> 数据分级管理</a></li>
+        </ul>
+      </li>
+      
+      <!-- 资产确权与管理 -->
+      <li>
+        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('rights')">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-gavel"></i>
+            <span>资产确权与管理</span>
+          </div>
+          <i class="fas fa-chevron-down text-xs transition-transform" id="rights-arrow"></i>
+        </div>
+        <ul id="rights-submenu" class="ml-6 mt-2 space-y-1 hidden">
+          <li><a href="内部申请记录.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-user-shield"></i> 内部申请记录</a></li>
+          <li><a href="授权链路记录.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-link"></i> 授权链路记录</a></li>
+          <li><a href="权属转移记录.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-exchange-alt"></i> 权属转移记录</a></li>
+          <li><a href="权属证明记录.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-certificate"></i> 权属证明记录</a></li>
+        </ul>
+      </li>
+      
+      <!-- 资产开发管理 -->
+      <li>
+        <div class="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 cursor-pointer" onclick="toggleSubMenu('development')">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-code"></i>
+            <span>资产开发管理</span>
+          </div>
+          <i class="fas fa-chevron-down text-xs transition-transform" id="development-arrow"></i>
+        </div>
+        <ul id="development-submenu" class="ml-6 mt-2 space-y-1 hidden">
+          <li><a href="资产开发管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 资产开发管理</a></li>
+          <li><a href="资产内容管理.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100 text-sm"><i class="fas fa-cogs"></i> 资产内容管理</a></li>
+        </ul>
+      </li>
+      
+      <!-- 资产会计核算 -->
+      <li>
+        <a href="资产会计核算.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100">
+          <i class="fas fa-calculator"></i>
+          <span>资产会计核算</span>
+        </a>
+      </li>
+      
+      <!-- API管理 -->
+      <li>
+        <a href="API管理页面.html" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-700 text-red-100">
+          <i class="fas fa-plug"></i>
+          <span>API管理</span>
+        </a>
+      </li>
+    </ul>
+  </aside>
+  
+  <!-- 展开按钮 -->
+  <button id="sidebar-toggle" onclick="toggleSidebar()" class="fixed top-20 left-64 z-40 bg-black bg-opacity-50 backdrop-blur-sm text-white rounded-full p-2 shadow-lg hover:bg-black hover:bg-opacity-70 focus:outline-none transition"><i class="fas fa-chevron-left"></i></button>
+
+  <!-- 主体内容区 -->
+  <main class="relative z-10 max-w-7xl mx-auto px-6 py-8 transition-all duration-300 ml-60" id="main-content">
+    <!-- 顶部筛选栏 -->
+    <div class="content-card p-6 mb-6">
+      <div class="flex items-center space-x-4">
+        <div class="flex-1">
+          <label class="block text-sm font-medium text-gray-700 mb-1">搜索</label>
+          <input type="text" placeholder="请输入数据来源名称或来源系统名称进行搜索" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div class="flex flex-col space-y-1">
+          <div class="h-5"></div> <!-- 占位符，与输入框对齐 -->
+          <div class="flex space-x-2">
+            <button class="btn-primary">
+              <i class="fas fa-search mr-2"></i>查询
+            </button>
+            <button class="btn-secondary">
+              <i class="fas fa-times mr-2"></i>清空
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div class="content-card p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-gray-800">数据来源管理</h2>
+        <button class="btn-primary" onclick="showCreateModal()">
+          <i class="fas fa-plus mr-2"></i>新建
+        </button>
+      </div>
+
+      <!-- 数据源表格 -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">来源系统名称</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">授权方</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">申请方</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">使用年限</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">数据更新方式</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">数据更新频率</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">创建时间</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr class="table-row">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">智慧管理系统</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">集团信息部</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">数据管理部</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5年</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">自动扫描</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">实时</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-01-15 10:30:21</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <button onclick="viewDataSource('智慧管理系统')" class="text-blue-600 hover:text-blue-900 mr-2">查看</button>
+                <button onclick="editDataSource('智慧管理系统')" class="text-blue-600 hover:text-blue-900 mr-2">修改</button>
+                <button onclick="deleteDataSource('智慧管理系统')" class="text-red-600 hover:text-red-900">删除</button>
+              </td>
+            </tr>
+            
+            <tr class="table-row">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">财务管理系统</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">集团评审部</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">数据分析部</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3年</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">自动扫描</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">实时</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-01-10 14:25:15</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <button onclick="viewDataSource('财务管理系统')" class="text-blue-600 hover:text-blue-900 mr-2">查看</button>
+                <button onclick="editDataSource('财务管理系统')" class="text-blue-600 hover:text-blue-900 mr-2">修改</button>
+                <button onclick="deleteDataSource('财务管理系统')" class="text-red-600 hover:text-red-900">删除</button>
+              </td>
+            </tr>
+            
+            <tr class="table-row">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">人力资源系统</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">集团供应链部</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">业务分析部</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">4年</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">自动扫描</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">实时</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-01-05 09:15:30</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <button onclick="viewDataSource('人力资源系统')" class="text-blue-600 hover:text-blue-900 mr-2">查看</button>
+                <button onclick="editDataSource('人力资源系统')" class="text-blue-600 hover:text-blue-900 mr-2">修改</button>
+                <button onclick="deleteDataSource('人力资源系统')" class="text-red-600 hover:text-red-900">删除</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- 新建数据源弹窗 -->
+  <div id="createModal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-overlay absolute inset-0" onclick="hideCreateModal()"></div>
+    <div class="relative z-10 flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between p-6 border-b">
+          <h3 class="text-lg font-semibold text-gray-900">新建数据来源</h3>
+          <button onclick="hideCreateModal()" class="text-gray-400 hover:text-gray-600">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="p-6 space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">* 来源系统名称:</label>
+              <select id="create-system-name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">请选择来源系统</option>
+                <option value="智慧管理系统">智慧管理系统</option>
+                <option value="财务管理系统">财务管理系统</option>
+                <option value="人力资源系统">人力资源系统</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">* 授权方:</label>
+              <input type="text" id="create-authorization" placeholder="请输入授权方" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">* 申请方:</label>
+              <input type="text" id="create-applicant" placeholder="请输入申请方" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">* 使用年限:</label>
+              <input type="number" id="create-duration" placeholder="请输入使用年限（年）" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">* 数据更新方式:</label>
+              <select id="create-update-method" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="toggleCreateUpdateFields()">
+                <option value="">请选择数据更新方式</option>
+                <option value="手动扫描">手动扫描</option>
+                <option value="自动扫描">自动扫描</option>
+              </select>
+            </div>
+            
+            <div id="create-update-frequency-container" class="hidden">
+              <label class="block text-sm font-medium text-gray-700 mb-2">* 数据更新频率:</label>
+              <select id="create-update-frequency" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">请选择数据更新频率</option>
+                <option value="实时">实时</option>
+                <option value="分钟级">分钟级</option>
+                <option value="小时级">小时级</option>
+                <option value="日度">日度</option>
+                <option value="周度">周度</option>
+                <option value="月度">月度</option>
+              </select>
+            </div>
+            
+            <div class="col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-2">* 适用范围:</label>
+              <textarea id="create-scope" rows="3" placeholder="请详细描述数据使用范围" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+            
+            <div class="col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-2">* 使用目的:</label>
+              <textarea id="create-purpose" rows="3" placeholder="请描述数据使用目的" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-end p-6 border-t space-x-4">
+          <button onclick="hideCreateModal()" class="btn-secondary">取消</button>
+          <button onclick="submitCreate()" class="btn-primary">
+            <i class="fas fa-paper-plane mr-2"></i>发起申请
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 查看数据来源弹窗 -->
+  <div id="viewModal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-overlay absolute inset-0" onclick="hideViewModal()"></div>
+    <div class="relative z-10 flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between p-6 border-b">
+          <h3 class="text-lg font-semibold text-gray-900">查看数据来源</h3>
+          <button onclick="hideViewModal()" class="text-gray-400 hover:text-gray-600">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="p-6 space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">来源系统名称:</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900" id="view-system-name">-</div>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">授权方:</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900" id="view-authorization">-</div>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">申请方:</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900" id="view-applicant">-</div>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">使用年限:</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900" id="view-duration">-</div>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">数据更新方式:</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900" id="view-update-method">-</div>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">数据更新频率:</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900" id="view-update-frequency">-</div>
+            </div>
+            
+            <div class="col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-2">适用范围:</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900" id="view-scope">-</div>
+            </div>
+            
+            <div class="col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-2">使用目的:</label>
+              <div class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-900" id="view-purpose">-</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-end p-6 border-t">
+          <button onclick="hideViewModal()" class="btn-secondary">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 修改数据来源弹窗 -->
+  <div id="editModal" class="fixed inset-0 z-50 hidden">
+    <div class="modal-overlay absolute inset-0" onclick="hideEditModal()"></div>
+    <div class="relative z-10 flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between p-6 border-b">
+          <h3 class="text-lg font-semibold text-gray-900">修改数据来源</h3>
+          <button onclick="hideEditModal()" class="text-gray-400 hover:text-gray-600">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="p-6 space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">* 来源系统名称:</label>
+              <select id="edit-system-name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">请选择来源系统</option>
+                <option value="智慧管理系统">智慧管理系统</option>
+                <option value="财务管理系统">财务管理系统</option>
+                <option value="人力资源系统">人力资源系统</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">* 授权方:</label>
+              <input type="text" id="edit-authorization" placeholder="请输入授权方" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">* 申请方:</label>
+              <input type="text" id="edit-applicant" placeholder="请输入申请方" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">* 使用年限:</label>
+              <input type="number" id="edit-duration" placeholder="请输入使用年限（年）" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">* 数据更新方式:</label>
+              <select id="edit-update-method" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="toggleEditUpdateFields()">
+                <option value="">请选择数据更新方式</option>
+                <option value="手动扫描">手动扫描</option>
+                <option value="自动扫描">自动扫描</option>
+              </select>
+            </div>
+            
+            <div id="edit-update-frequency-container" class="hidden">
+              <label class="block text-sm font-medium text-gray-700 mb-2">* 数据更新频率:</label>
+              <select id="edit-update-frequency" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">请选择数据更新频率</option>
+                <option value="实时">实时</option>
+                <option value="分钟级">分钟级</option>
+                <option value="小时级">小时级</option>
+                <option value="日度">日度</option>
+                <option value="周度">周度</option>
+                <option value="月度">月度</option>
+              </select>
+            </div>
+            
+            <div class="col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-2">* 适用范围:</label>
+              <textarea id="edit-scope" rows="3" placeholder="请详细描述数据使用范围" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+            
+            <div class="col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-2">* 使用目的:</label>
+              <textarea id="edit-purpose" rows="3" placeholder="请描述数据使用目的" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-end p-6 border-t space-x-4">
+          <button onclick="hideEditModal()" class="btn-secondary">取消</button>
+          <button onclick="submitEdit()" class="btn-primary">
+            <i class="fas fa-save mr-2"></i>保存修改
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 页面加载完成后的初始化
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('数据来源管理页面加载完成');
+      
+      // 确保主体内容区域初始状态适配侧边栏
+      const main = document.getElementById('main-content');
+      main.style.marginLeft = '240px';
+      main.style.maxWidth = 'calc(100% - 240px)';
+    });
+
+    // 侧边栏切换功能
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const main = document.getElementById('main-content');
+      const toggleBtn = document.getElementById('sidebar-toggle');
+      const toggleIcon = toggleBtn.querySelector('i');
+      
+      sidebar.classList.toggle('hidden');
+      
+      if (sidebar.classList.contains('hidden')) {
+        // 侧边栏收起状态
+        main.style.marginLeft = '0';
+        main.style.maxWidth = '100%';
+        toggleBtn.style.left = '0.5rem';
+        toggleIcon.className = 'fas fa-bars';
+      } else {
+        // 侧边栏展开状态
+        main.style.marginLeft = '240px';
+        main.style.maxWidth = 'calc(100% - 240px)';
+        toggleBtn.style.left = '16rem';
+        toggleIcon.className = 'fas fa-chevron-left';
+      }
+    }
+
+    // 子菜单切换功能
+    function toggleSubMenu(menuId) {
+      const submenu = document.getElementById(menuId + '-submenu');
+      const arrow = document.getElementById(menuId + '-arrow');
+      
+      if (submenu.classList.contains('hidden')) {
+        submenu.classList.remove('hidden');
+        arrow.style.transform = 'rotate(180deg)';
+      } else {
+        submenu.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    // 用户下拉菜单切换
+    function toggleUserDropdown() {
+      const dropdownMenu = document.getElementById('user-dropdown-menu');
+      const arrow = document.getElementById('dropdown-arrow');
+      
+      if (dropdownMenu.classList.contains('hidden')) {
+        dropdownMenu.classList.remove('hidden');
+        arrow.style.transform = 'rotate(180deg)';
+      } else {
+        dropdownMenu.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+      }
+    }
+    
+    // 点击外部关闭下拉菜单
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('user-dropdown');
+      const dropdownMenu = document.getElementById('user-dropdown-menu');
+      const arrow = document.getElementById('dropdown-arrow');
+      
+      if (!dropdown.contains(event.target)) {
+        dropdownMenu.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+      }
+    });
+
+    // 显示新建模态框
+    function showCreateModal() {
+      document.getElementById('createModal').classList.remove('hidden');
+    }
+
+    // 隐藏新建模态框
+    function hideCreateModal() {
+      document.getElementById('createModal').classList.add('hidden');
+    }
+
+    // 切换新建更新字段显示
+    function toggleCreateUpdateFields() {
+      const updateMethod = document.getElementById('create-update-method').value;
+      const frequencyContainer = document.getElementById('create-update-frequency-container');
+      
+      if (updateMethod === '自动扫描') {
+        frequencyContainer.classList.remove('hidden');
+      } else {
+        frequencyContainer.classList.add('hidden');
+      }
+    }
+
+    // 提交新建
+    function submitCreate() {
+      const systemName = document.getElementById('create-system-name').value;
+      const authorization = document.getElementById('create-authorization').value;
+      const applicant = document.getElementById('create-applicant').value;
+      const duration = document.getElementById('create-duration').value;
+      const updateMethod = document.getElementById('create-update-method').value;
+      const scope = document.getElementById('create-scope').value;
+      const purpose = document.getElementById('create-purpose').value;
+      
+      if (!systemName || !authorization || !applicant || !duration || !updateMethod || !scope || !purpose) {
+        alert('请填写所有必填字段');
+        return;
+      }
+      
+      console.log('发起数据来源申请:', { systemName, authorization, applicant, duration, updateMethod, scope, purpose });
+      alert('数据来源申请已提交，等待审批！');
+      hideCreateModal();
+    }
+
+    // 查看数据来源
+    function viewDataSource(sourceName) {
+      // 模拟数据
+      const mockData = {
+        '智慧管理系统': {
+          systemName: '智慧管理系统',
+          authorization: '集团信息部',
+          applicant: '数据管理部',
+          duration: '5年',
+          updateMethod: '自动扫描',
+          updateFrequency: '实时',
+          scope: '用户信息、系统日志、操作记录等核心业务数据',
+          purpose: '用于业务分析、用户行为研究、系统性能优化'
+        },
+        '财务管理系统': {
+          systemName: '财务管理系统',
+          authorization: '集团评审部',
+          applicant: '数据分析部',
+          duration: '3年',
+          updateMethod: '自动扫描',
+          updateFrequency: '实时',
+          scope: '评审记录、评分数据、专家意见等评审相关数据',
+          purpose: '用于评审质量分析、专家能力评估、流程优化'
+        },
+        '人力资源系统': {
+          systemName: '人力资源系统',
+          authorization: '集团供应链部',
+          applicant: '业务分析部',
+          duration: '4年',
+          updateMethod: '自动扫描',
+          updateFrequency: '实时',
+          scope: '供应商信息、采购记录、库存数据等供应链数据',
+          purpose: '用于供应链优化、成本分析、供应商评估'
+        }
+      };
+      
+      const data = mockData[sourceName];
+      if (data) {
+        document.getElementById('view-system-name').textContent = data.systemName;
+        document.getElementById('view-authorization').textContent = data.authorization;
+        document.getElementById('view-applicant').textContent = data.applicant;
+        document.getElementById('view-duration').textContent = data.duration;
+        document.getElementById('view-update-method').textContent = data.updateMethod;
+        document.getElementById('view-update-frequency').textContent = data.updateFrequency;
+        document.getElementById('view-scope').textContent = data.scope;
+        document.getElementById('view-purpose').textContent = data.purpose;
+        
+        document.getElementById('viewModal').classList.remove('hidden');
+      }
+    }
+
+    // 隐藏查看弹窗
+    function hideViewModal() {
+      document.getElementById('viewModal').classList.add('hidden');
+    }
+
+    // 修改数据来源
+    function editDataSource(sourceName) {
+      // 模拟数据
+      const mockData = {
+        '智慧管理系统': {
+          systemName: '智慧管理系统',
+          authorization: '集团信息部',
+          applicant: '数据管理部',
+          duration: '5',
+          updateMethod: '自动扫描',
+          updateFrequency: '实时',
+          scope: '用户信息、系统日志、操作记录等核心业务数据',
+          purpose: '用于业务分析、用户行为研究、系统性能优化'
+        },
+        '财务管理系统': {
+          systemName: '财务管理系统',
+          authorization: '集团评审部',
+          applicant: '数据分析部',
+          duration: '3',
+          updateMethod: '自动扫描',
+          updateFrequency: '实时',
+          scope: '评审记录、评分数据、专家意见等评审相关数据',
+          purpose: '用于评审质量分析、专家能力评估、流程优化'
+        },
+        '人力资源系统': {
+          systemName: '人力资源系统',
+          authorization: '集团供应链部',
+          applicant: '业务分析部',
+          duration: '4',
+          updateMethod: '自动扫描',
+          updateFrequency: '实时',
+          scope: '供应商信息、采购记录、库存数据等供应链数据',
+          purpose: '用于供应链优化、成本分析、供应商评估'
+        }
+      };
+      
+      const data = mockData[sourceName];
+      if (data) {
+        document.getElementById('edit-system-name').value = data.systemName;
+        document.getElementById('edit-authorization').value = data.authorization;
+        document.getElementById('edit-applicant').value = data.applicant;
+        document.getElementById('edit-duration').value = data.duration;
+        document.getElementById('edit-update-method').value = data.updateMethod;
+        document.getElementById('edit-scope').value = data.scope;
+        document.getElementById('edit-purpose').value = data.purpose;
+        
+        if (data.updateMethod === '自动扫描') {
+          document.getElementById('edit-update-frequency-container').classList.remove('hidden');
+          document.getElementById('edit-update-frequency').value = data.updateFrequency;
+        }
+        
+        document.getElementById('editModal').classList.remove('hidden');
+      }
+    }
+
+    // 隐藏修改弹窗
+    function hideEditModal() {
+      document.getElementById('editModal').classList.add('hidden');
+    }
+
+    // 切换修改更新字段显示
+    function toggleEditUpdateFields() {
+      const updateMethod = document.getElementById('edit-update-method').value;
+      const frequencyContainer = document.getElementById('edit-update-frequency-container');
+      
+      if (updateMethod === '自动扫描') {
+        frequencyContainer.classList.remove('hidden');
+      } else {
+        frequencyContainer.classList.add('hidden');
+      }
+    }
+
+    // 提交修改
+    function submitEdit() {
+      const systemName = document.getElementById('edit-system-name').value;
+      const authorization = document.getElementById('edit-authorization').value;
+      const applicant = document.getElementById('edit-applicant').value;
+      const duration = document.getElementById('edit-duration').value;
+      const updateMethod = document.getElementById('edit-update-method').value;
+      const scope = document.getElementById('edit-scope').value;
+      const purpose = document.getElementById('edit-purpose').value;
+      
+      if (!systemName || !authorization || !applicant || !duration || !updateMethod || !scope || !purpose) {
+        alert('请填写所有必填字段');
+        return;
+      }
+      
+      console.log('修改数据来源:', { systemName, authorization, applicant, duration, updateMethod, scope, purpose });
+      alert('修改成功！');
+      hideEditModal();
+    }
+
+    // 删除数据来源
+    function deleteDataSource(sourceName) {
+      if (confirm(`确定要删除数据来源"${sourceName}"吗？此操作不可恢复。`)) {
+        console.log('删除数据来源:', sourceName);
+        alert(`数据来源"${sourceName}"已删除！`);
+      }
+    }
+  </script>
+</body>
+</html>
+

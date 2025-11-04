@@ -1,0 +1,10 @@
+[build]
+  # 发布目录（所有文件都在根目录）
+  publish = "."
+
+# 404 错误页面处理（可选）
+# [[redirects]]
+#   from = "/*"
+#   to = "/首页.html"
+#   status = 404
+

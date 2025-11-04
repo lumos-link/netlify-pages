@@ -1,0 +1,1657 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>数据资产 - 数据资产管理系统</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    body { background: #ffffff; }
+    .search-card { box-shadow: 0 2px 16px 0 #2563eb22; }
+    .btn-blue { background: #2563eb; color: #fff; border-radius: 0.5rem; padding: 0.25rem 1.2rem; font-weight: 600; transition: background 0.2s; white-space: nowrap; font-size: 1rem; }
+    .btn-blue:hover { background: #1d4ed8; }
+    .btn-outline { border: 1.5px solid #2563eb; color: #2563eb; background: #fff; border-radius: 0.5rem; padding: 0.25rem 1.2rem; font-weight: 600; transition: background 0.2s, color 0.2s; white-space: nowrap; font-size: 1rem; }
+    .btn-outline:hover { background: #2563eb; color: #fff; }
+    .asset-card { transition: transform 0.2s, box-shadow 0.2s; }
+    .asset-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15); }
+    .tree-item { cursor: pointer; transition: background-color 0.2s; }
+    .tree-item:hover { background-color: #f3f4f6; }
+    .tree-item.active { background-color: #dbeafe; color: #2563eb; }
+    .tree-arrow { transition: transform 0.2s; }
+    .tree-arrow.rotated { transform: rotate(90deg); }
+    
+    /* 弹窗滚动条优化 */
+    .modal-content {
+      scrollbar-width: thin;
+      scrollbar-color: #cbd5e0 #f7fafc;
+    }
+    
+    .modal-content::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .modal-content::-webkit-scrollbar-track {
+      background: #f7fafc;
+      border-radius: 3px;
+    }
+    
+    .modal-content::-webkit-scrollbar-thumb {
+      background: #cbd5e0;
+      border-radius: 3px;
+    }
+    
+    .modal-content::-webkit-scrollbar-thumb:hover {
+      background: #a0aec0;
+    }
+    
+    /* 移动端弹窗优化 */
+    @media (max-width: 640px) {
+      .modal-content {
+        max-height: calc(95vh - 120px);
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- 顶部主导航栏 -->
+  <header class="bg-gradient-to-r from-red-900 via-red-800 to-red-900 shadow flex items-center justify-between px-10 h-16 sticky top-0 z-20">
+    <div class="flex items-center space-x-4">
+              <div class="h-10 w-10 rounded-full border-2 border-red-400 shadow bg-white flex items-center justify-center">
+          <svg class="h-6 w-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+      <span class="text-xl font-bold text-white tracking-wide whitespace-nowrap">数据资产管理系统</span>
+    </div>
+    <nav class="flex-1 flex items-center justify-center space-x-8">
+    </nav>
+    <div class="flex items-center space-x-4">
+      <a href="首页.html" class="text-red-100 hover:text-red-400 font-medium px-3 py-1 rounded border border-red-400 hover:bg-red-700 transition">
+        <i class="fas fa-home mr-2"></i>返回首页
+      </a>
+      <div class="relative" id="user-dropdown">
+        <div class="flex items-center space-x-2 cursor-pointer hover:bg-red-700 px-2 py-1 rounded-lg transition" onclick="toggleUserDropdown()">
+          <img src="https://i.pravatar.cc/32?img=3" class="rounded-full w-8 h-8 border-2 border-red-200" alt="用户头像">
+          <span class="text-red-100 text-sm">张三</span>
+          <i class="fas fa-chevron-down text-xs text-red-300 transition-transform" id="dropdown-arrow"></i>
+        </div>
+        <div id="user-dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 hidden z-50">
+          <a href="个人中心.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+            <i class="fas fa-user-circle mr-3 text-red-500"></i>
+            个人中心
+          </a>
+          <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+            <i class="fas fa-cog mr-3 text-red-500"></i>
+            系统管理
+          </a>
+
+          <div class="border-t border-gray-200 my-1"></div>
+          <a href="#" class="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 transition">
+            <i class="fas fa-sign-out-alt mr-3"></i>
+            退出
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+
+  
+  <!-- 主体内容区 -->
+  <main class="flex-1 w-full max-w-7xl mx-auto flex gap-8 py-8 px-4">
+    <!-- 左侧资产目录 -->
+    <aside class="w-80 bg-white rounded-2xl p-6 search-card h-fit">
+      <div class="font-bold text-gray-700 mb-4 flex items-center gap-2">
+        <i class="fas fa-sitemap"></i> 资产目录
+      </div>
+      <div class="space-y-2">
+        <!-- 业务发展 -->
+        <div class="tree-item flex items-center justify-between p-2 rounded" onclick="toggleSubDirectory('business-development')">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-chevron-right tree-arrow" id="business-development-arrow"></i>
+            <span>业务发展</span>
+            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">核心</span>
+          </div>
+          <span class="text-xs text-gray-500">5</span>
+        </div>
+        
+        <!-- 业务发展子目录 -->
+        <div id="business-development-submenu" class="ml-6 space-y-1">
+          <!-- 业务管理 -->
+          <div class="tree-item flex items-center justify-between p-2 rounded" onclick="toggleSubDirectory('business-management')">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-chevron-right tree-arrow" id="business-management-arrow"></i>
+              <i class="fas fa-briefcase"></i>
+              <span>业务管理</span>
+            </div>
+            <span class="text-xs text-gray-500">4</span>
+          </div>
+          
+          <!-- 业务管理子目录 -->
+          <div id="business-management-submenu" class="ml-6 space-y-1">
+            <div class="tree-item flex items-center justify-between p-2 rounded" onclick="selectCategory('non-bidding')">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-handshake"></i>
+                <span>非招标</span>
+            </div>
+              <span class="text-xs text-gray-500">1</span>
+          </div>
+            <div class="tree-item flex items-center justify-between p-2 rounded" onclick="selectCategory('mall')">
+              <div class="flex items-center gap-2">
+                <i class="fas fa-store"></i>
+                <span>商城</span>
+        </div>
+              <span class="text-xs text-gray-500">1</span>
+            </div>
+            <div class="tree-item flex items-center justify-between p-2 rounded" onclick="selectCategory('centralized-procurement')">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-shopping-cart"></i>
+                <span>集采</span>
+          </div>
+              <span class="text-xs text-gray-500">1</span>
+            </div>
+            <div class="tree-item flex items-center justify-between p-2 rounded" onclick="selectCategory('guoneng-auction')">
+              <div class="flex items-center gap-2">
+                <i class="fas fa-gavel"></i>
+                <span>国能e拍</span>
+              </div>
+              <span class="text-xs text-gray-500">1</span>
+            </div>
+        </div>
+        
+          <!-- 决策支持 -->
+          <div class="tree-item flex items-center justify-between p-2 rounded" onclick="selectCategory('decision-support')">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-chart-line"></i>
+              <span>决策支持</span>
+            </div>
+            <span class="text-xs text-gray-500">1</span>
+          </div>
+          
+          <!-- 资源管理 -->
+          <div class="tree-item flex items-center justify-between p-2 rounded" onclick="toggleSubDirectory('resource-management')">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-chevron-right tree-arrow" id="resource-management-arrow"></i>
+              <i class="fas fa-users"></i>
+              <span>资源管理</span>
+            </div>
+            <span class="text-xs text-gray-500">2</span>
+          </div>
+          
+          <!-- 资源管理子目录 -->
+          <div id="resource-management-submenu" class="ml-6 space-y-1">
+        <div class="tree-item flex items-center justify-between p-2 rounded" onclick="selectCategory('supplier')">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-users"></i>
+                <span>供应商</span>
+          </div>
+              <span class="text-xs text-gray-500">1</span>
+            </div>
+            <div class="tree-item flex items-center justify-between p-2 rounded" onclick="selectCategory('review-experts')">
+              <div class="flex items-center gap-2">
+                <i class="fas fa-user-tie"></i>
+                <span>评审专家</span>
+              </div>
+              <span class="text-xs text-gray-500">1</span>
+            </div>
+        </div>
+        
+          <!-- 费用管理 -->
+          <div class="tree-item flex items-center justify-between p-2 rounded" onclick="selectCategory('expense-management')">
+          <div class="flex items-center gap-2">
+              <i class="fas fa-calculator"></i>
+              <span>费用管理</span>
+          </div>
+            <span class="text-xs text-gray-500">1</span>
+          </div>
+          
+          <!-- 主数据 -->
+          <div class="tree-item flex items-center justify-between p-2 rounded" onclick="selectCategory('master-data')">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-database"></i>
+              <span>主数据</span>
+            </div>
+            <span class="text-xs text-gray-500">1</span>
+          </div>
+        </div>
+        
+        <!-- 绿色发展 -->
+        <div class="tree-item flex items-center justify-between p-2 rounded" onclick="toggleSubDirectory('green-development')">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-chevron-right tree-arrow" id="green-development-arrow"></i>
+            <span>绿色发展</span>
+            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">环保</span>
+          </div>
+          <span class="text-xs text-gray-500">2</span>
+        </div>
+        
+        <!-- 绿色发展子目录 -->
+        <div id="green-development-submenu" class="ml-6 space-y-1">
+          <div class="tree-item flex items-center justify-between p-2 rounded" onclick="selectCategory('carbon-footprint')">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-leaf"></i>
+              <span>产品碳足迹核算模型与数据</span>
+            </div>
+            <span class="text-xs text-gray-500">1</span>
+          </div>
+          <div class="tree-item flex items-center justify-between p-2 rounded" onclick="selectCategory('green-supplier')">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-recycle"></i>
+              <span>绿色供应商</span>
+            </div>
+            <span class="text-xs text-gray-500">1</span>
+          </div>
+        </div>
+        
+        <!-- 智能发展 -->
+        <div class="tree-item flex items-center justify-between p-2 rounded" onclick="toggleSubDirectory('smart-development')">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-chevron-right tree-arrow" id="smart-development-arrow"></i>
+            <span>智能发展</span>
+            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">AI</span>
+          </div>
+          <span class="text-xs text-gray-500">2</span>
+        </div>
+        
+        <!-- 智能发展子目录 -->
+        <div id="smart-development-submenu" class="ml-6 space-y-1">
+          <div class="tree-item flex items-center justify-between p-2 rounded" onclick="selectCategory('smart-review')">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-brain"></i>
+              <span>智能评审</span>
+            </div>
+            <span class="text-xs text-gray-500">1</span>
+          </div>
+          <div class="tree-item flex items-center justify-between p-2 rounded" onclick="selectCategory('predictive-analysis')">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-chart-line"></i>
+              <span>预测分析</span>
+            </div>
+            <span class="text-xs text-gray-500">1</span>
+          </div>
+        </div>
+        
+        <!-- 业务监督 -->
+        <div class="tree-item flex items-center justify-between p-2 rounded" onclick="toggleSubDirectory('business-supervision')">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-chevron-right tree-arrow" id="business-supervision-arrow"></i>
+            <span>业务监督</span>
+            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">监管</span>
+          </div>
+          <span class="text-xs text-gray-500">2</span>
+        </div>
+        
+        <!-- 业务监督子目录 -->
+        <div id="business-supervision-submenu" class="ml-6 space-y-1">
+          <div class="tree-item flex items-center justify-between p-2 rounded" onclick="selectCategory('performance-appraisal')">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-chart-bar"></i>
+              <span>绩效考核</span>
+            </div>
+            <span class="text-xs text-gray-500">1</span>
+          </div>
+          <div class="tree-item flex items-center justify-between p-2 rounded" onclick="selectCategory('monitoring-warning')">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span>监控预警</span>
+            </div>
+            <span class="text-xs text-gray-500">1</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+    
+    <!-- 右侧主要内容区 -->
+    <section class="flex-1">
+      <!-- 搜索和筛选区域 -->
+      <div class="bg-white rounded-xl p-6 search-card mb-6">
+        <!-- 顶部功能栏 -->
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold text-gray-800">数据资产</h2>
+          <button onclick="window.location.href='申请使用.html'" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2">
+            <i class="fas fa-hand-paper"></i>
+            申请使用
+          </button>
+        </div>
+        
+        <!-- 模糊搜索 -->
+        <div class="mb-4">
+          <div class="flex items-center gap-4">
+            <input type="text" placeholder="请输入资产名称、标识符或描述关键词" class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button class="btn-blue"><i class="fas fa-search"></i> 搜索</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 面包屑导航 -->
+      <div class="mb-6">
+      </div>
+      
+      <!-- 分类描述 -->
+      <div class="bg-blue-50 rounded-xl p-6 mb-6">
+        <h3 class="font-semibold text-gray-800 mb-3">非招标</h3>
+        <p class="text-gray-700 text-sm leading-relaxed">
+          非招标业务相关数据资产，包括非招标成交分析、业务流程管理等核心数据。
+          通过规范化的非招标业务管理流程，确保非招标业务数据的准确性、完整性和合规性。
+          为业务决策提供可靠的数据支撑，支持非招标业务的高效运营和风险控制。
+        </p>
+      </div>
+      
+      <!-- 结果统计和排序 -->
+      <div class="flex items-center justify-between mb-6">
+        <div class="text-gray-600">共查询到 <span class="font-semibold text-blue-600">1</span> 条相关数据</div>
+        <div class="flex items-center gap-4">
+          <label class="flex items-center gap-2 text-sm">
+            <input type="checkbox" class="rounded">
+            <span>我的收藏(0)</span>
+          </label>
+          <label class="flex items-center gap-2 text-sm">
+            <input type="checkbox" checked class="rounded">
+            <span>A--Z</span>
+          </label>
+          <label class="flex items-center gap-2 text-sm">
+            <input type="checkbox" class="rounded">
+            <span>更新时间</span>
+          </label>
+        </div>
+      </div>
+      
+      <!-- 资产卡片列表 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- 资产卡片1 -->
+        <div class="bg-white rounded-xl p-6 search-card asset-card relative">
+          
+          <div class="mb-4 cursor-pointer" onclick="window.location.href='资产详情.html'">
+            <h3 class="text-lg font-bold text-gray-800 mb-2">非招标业务管理系统</h3>
+          </div>
+          
+          <!-- 基本信息展示 -->
+          <div class="mb-4 space-y-3">
+            <!-- 资产属性 -->
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-gray-500 font-medium">属性:</span>
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">结构化数据</span>
+            </div>
+            
+            
+            
+            <!-- 标签 -->
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-gray-500 font-medium">标签:</span>
+              <div class="flex flex-wrap gap-1">
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">非招标</span>
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">业务管理</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="space-y-2 mb-4">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-600">更新时间:</span>
+              <span class="text-gray-500">2024-01-15 08:30:25</span>
+            </div>
+          </div>
+          
+          <p class="text-sm text-gray-600">非招标业务全流程管理系统，涵盖非招标申请、审批、执行、监控等核心业务环节</p>
+        </div>
+        
+        <!-- 资产卡片2 -->
+        <div class="bg-white rounded-xl p-6 search-card asset-card relative">
+          
+          <div class="mb-4 cursor-pointer" onclick="window.location.href='资产详情.html'">
+            <h3 class="text-lg font-bold text-gray-800 mb-2">商城运营管理系统</h3>
+          </div>
+          
+          <!-- 基本信息展示 -->
+          <div class="mb-4 space-y-3">
+            <!-- 资产属性 -->
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-gray-500 font-medium">属性:</span>
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">结构化数据</span>
+            </div>
+            
+            
+            
+            <!-- 标签 -->
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-gray-500 font-medium">标签:</span>
+              <div class="flex flex-wrap gap-1">
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">商城运营</span>
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">商品管理</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="space-y-2 mb-4">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-600">更新时间:</span>
+              <span class="text-gray-500">2024-01-15 09:45:12</span>
+            </div>
+          </div>
+          
+          <p class="text-sm text-gray-600">商城运营全流程管理系统，涵盖商品管理、订单处理、用户行为分析等核心业务数据</p>
+        </div>
+        
+        <!-- 资产卡片3 -->
+        <div class="bg-white rounded-xl p-6 search-card asset-card relative">
+          
+          <div class="mb-4 cursor-pointer" onclick="window.location.href='资产详情.html'">
+            <h3 class="text-lg font-bold text-gray-800 mb-2">集采业务管理系统</h3>
+          </div>
+          
+          <!-- 基本信息展示 -->
+          <div class="mb-4 space-y-3">
+            <!-- 资产属性 -->
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-gray-500 font-medium">属性:</span>
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">结构化数据</span>
+            </div>
+            
+            
+            
+            <!-- 标签 -->
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-gray-500 font-medium">标签:</span>
+              <div class="flex flex-wrap gap-1">
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">集采</span>
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">采购管理</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="space-y-2 mb-4">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-600">更新时间:</span>
+              <span class="text-gray-500">2024-01-15 10:20:30</span>
+            </div>
+          </div>
+          
+          <p class="text-sm text-gray-600">集中采购业务管理系统，涵盖采购计划、供应商管理、合同执行等核心业务数据</p>
+        </div>
+        
+        <!-- 集团外资产卡片1 -->
+        <div class="bg-white rounded-xl p-6 search-card asset-card relative" style="display: none;">
+          
+          <div class="mb-4 cursor-pointer" onclick="window.location.href='资产详情.html'">
+            <h3 class="text-lg font-bold text-gray-800 mb-2">第三方市场数据</h3>
+          </div>
+          
+          <!-- 基本信息展示 -->
+          <div class="mb-4 space-y-3">
+            <!-- 资产属性 -->
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-gray-500 font-medium">属性:</span>
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">结构化数据</span>
+            </div>
+            
+            
+            
+            <!-- 标签 -->
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-gray-500 font-medium">标签:</span>
+              <div class="flex flex-wrap gap-1">
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">市场数据</span>
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">第三方</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="space-y-2 mb-4">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-600">更新时间:</span>
+              <span class="text-gray-500">2024-01-15 14:30:15</span>
+            </div>
+          </div>
+          
+          <p class="text-sm text-gray-600">整合第三方市场数据，为市场分析和竞争情报提供外部数据支撑</p>
+        </div>
+        
+        <!-- 集团外资产卡片2 -->
+        <div class="bg-white rounded-xl p-6 search-card asset-card relative" style="display: none;">
+          
+          <div class="mb-4 cursor-pointer" onclick="window.location.href='资产详情.html'">
+            <h3 class="text-lg font-bold text-gray-800 mb-2">合作伙伴数据</h3>
+          </div>
+          
+          <!-- 基本信息展示 -->
+          <div class="mb-4 space-y-3">
+            <!-- 资产属性 -->
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-gray-500 font-medium">属性:</span>
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">结构化数据</span>
+            </div>
+            
+            
+            
+            <!-- 标签 -->
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-gray-500 font-medium">标签:</span>
+              <div class="flex flex-wrap gap-1">
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">合作伙伴</span>
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">协同数据</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="space-y-2 mb-4">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-600">更新时间:</span>
+              <span class="text-gray-500">2024-01-15 15:45:22</span>
+            </div>
+          </div>
+          
+          <p class="text-sm text-gray-600">整合合作伙伴共享数据，促进业务协同和生态合作发展</p>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <script>
+    // 侧边栏展开/收起
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const mainContent = document.querySelector('main');
+      const toggleBtn = document.getElementById('sidebar-toggle');
+      const toggleIcon = toggleBtn.querySelector('i');
+      
+      sidebar.classList.toggle('hidden');
+      mainContent.classList.toggle('ml-60');
+      
+      if (sidebar.classList.contains('hidden')) {
+        // 侧边栏收起状态
+        toggleBtn.style.left = '0.5rem';
+        toggleIcon.className = 'fas fa-bars';
+        mainContent.style.marginLeft = '0';
+        mainContent.style.maxWidth = '100%';
+      } else {
+        // 侧边栏展开状态
+        toggleBtn.style.left = '16rem';
+        toggleIcon.className = 'fas fa-chevron-left';
+        mainContent.style.marginLeft = '240px';
+        mainContent.style.maxWidth = 'calc(100% - 240px)';
+      }
+    }
+    
+    // 子菜单切换
+    function toggleSubMenu(menuId) {
+      const submenu = document.getElementById(menuId + '-submenu');
+      const arrow = document.getElementById(menuId + '-arrow');
+      
+      submenu.classList.toggle('hidden');
+      arrow.style.transform = submenu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+    
+    // 切换子目录
+    function toggleSubDirectory(subDirId) {
+      const subDirMenu = document.getElementById(subDirId + '-submenu');
+      const arrow = document.getElementById(subDirId + '-arrow');
+      
+      if (subDirMenu && arrow) {
+        if (subDirMenu.classList.contains('hidden')) {
+          subDirMenu.classList.remove('hidden');
+          arrow.style.transform = 'rotate(90deg)';
+        } else {
+          subDirMenu.classList.add('hidden');
+          arrow.style.transform = 'rotate(0deg)';
+        }
+      }
+    }
+    
+    // 选择分类
+    function selectCategory(categoryId) {
+      // 移除所有活动状态
+      document.querySelectorAll('.tree-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      // 添加活动状态到当前项目
+      const currentItem = document.querySelector(`[onclick="selectCategory('${categoryId}')"]`);
+      if (currentItem) {
+        currentItem.closest('.tree-item').classList.add('active');
+      }
+      
+      // 更新页面内容
+      updatePageContent(categoryId);
+    }
+    
+    // 更新页面内容
+    function updatePageContent(categoryId) {
+      const descriptionElement = document.querySelector('.bg-blue-50 h3');
+      const descriptionTextElement = document.querySelector('.bg-blue-50 p');
+      const resultCountElement = document.querySelector('.text-gray-600 span');
+      
+      // 根据新的目录结构更新内容
+      const categoryInfo = {
+        'non-bidding': {
+          title: '非招标',
+          description: '非招标业务相关数据资产，包括非招标成交分析、业务流程管理等核心数据。',
+          count: '1'
+        },
+        'mall': {
+          title: '商城',
+          description: '商城运营相关数据资产，涵盖商品管理、订单处理、用户行为分析等业务数据。',
+          count: '1'
+        },
+        'centralized-procurement': {
+          title: '集采',
+          description: '集中采购业务数据资产，包括采购计划、供应商管理、合同执行等关键数据。',
+          count: '1'
+        },
+        'guoneng-auction': {
+          title: '国能e拍',
+          description: '国能e拍平台相关数据资产，涵盖拍卖流程、竞价数据、交易记录等业务信息。',
+          count: '1'
+        },
+        'decision-support': {
+          title: '决策支持',
+          description: '决策支持相关数据资产，包括综合决策分析、业务指标监控等核心数据。',
+          count: '1'
+        },
+        'supplier': {
+          title: '供应商',
+          description: '供应商管理相关数据资产，涵盖供应商信息、信用评价、合规性分析等业务数据。',
+          count: '1'
+        },
+        'review-experts': {
+          title: '评审专家',
+          description: '评审专家管理相关数据资产，包括专家信息、评审记录、专业能力评估等数据。',
+          count: '1'
+        },
+        'expense-management': {
+          title: '费用管理',
+          description: '费用管理相关数据资产，涵盖收支管理、节支率管理、成本控制等财务数据。',
+          count: '1'
+        },
+        'master-data': {
+          title: '主数据',
+          description: '主数据管理相关数据资产，包括物资主数据、基础数据标准化等核心数据。',
+          count: '1'
+        },
+        'carbon-footprint': {
+          title: '产品碳足迹核算模型与数据',
+          description: '产品碳足迹核算相关数据资产，涵盖碳排放计算模型、环保指标监控等绿色数据。',
+          count: '1'
+        },
+        'green-supplier': {
+          title: '绿色供应商',
+          description: '绿色供应商管理相关数据资产，包括环保认证、绿色采购、可持续发展等数据。',
+          count: '1'
+        },
+        'smart-review': {
+          title: '智能评审',
+          description: '智能评审相关数据资产，包括大模型数据集、智能分析算法等AI技术数据。',
+          count: '1'
+        },
+        'predictive-analysis': {
+          title: '预测分析',
+          description: '预测分析相关数据资产，涵盖需求预测、价格监控、趋势分析等智能数据。',
+          count: '1'
+        },
+        'performance-appraisal': {
+          title: '绩效考核',
+          description: '绩效考核相关数据资产，包括效率效能分析、考核与对标管理等监督数据。',
+          count: '1'
+        },
+        'monitoring-warning': {
+          title: '监控预警',
+          description: '监控预警相关数据资产，涵盖异常监控、风险合规、预警机制等监管数据。',
+          count: '1'
+        }
+      };
+      
+      const info = categoryInfo[categoryId];
+      if (info) {
+        if (descriptionElement) descriptionElement.textContent = info.title;
+        if (descriptionTextElement) descriptionTextElement.textContent = info.description;
+        if (resultCountElement) resultCountElement.textContent = info.count;
+        
+        // 显示对应的资产卡片
+        showCategoryAssets(categoryId);
+      }
+    }
+    
+    // 显示分类资产
+    function showCategoryAssets(categoryId) {
+      const assetCards = document.querySelectorAll('.asset-card');
+      
+      // 隐藏所有卡片
+      assetCards.forEach(card => {
+        card.style.display = 'none';
+      });
+      
+      // 根据分类显示对应的卡片
+      switch(categoryId) {
+        case 'non-bidding':
+          // 显示非招标相关资产
+          if (assetCards[0]) assetCards[0].style.display = 'block';
+          break;
+        case 'mall':
+          // 显示商城相关资产
+          if (assetCards[1]) assetCards[1].style.display = 'block';
+          break;
+        case 'centralized-procurement':
+          // 显示集采相关资产
+          if (assetCards[2]) assetCards[2].style.display = 'block';
+          break;
+        default:
+          // 默认显示第一个卡片
+          if (assetCards[0]) assetCards[0].style.display = 'block';
+          break;
+      }
+    }
+            </div>
+          </div>
+        
+          <!-- 申请人信息 -->
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">需求单位 <span class="text-red-500">*</span></label>
+                <input type="text" id="requestingUnit" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入需求单位" value="数据管理部">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">经办人 <span class="text-red-500">*</span></label>
+                <input type="text" id="handler" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入经办人" value="张三">
+              </div>
+            </div>
+          </div>
+        
+        <div class="mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">邮箱 <span class="text-red-500">*</span></label>
+              <input type="email" id="email" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入邮箱地址">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">联系电话 <span class="text-red-500">*</span></label>
+              <input type="tel" id="phone" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入联系电话">
+            </div>
+          </div>
+        </div>
+        
+          <!-- 需求类型 -->
+          <div class="mb-6">
+            <h4 class="text-lg font-medium text-gray-900 mb-4">需求类型 <span class="text-red-500">*</span></h4>
+            <div class="space-y-2">
+              <label class="flex items-center">
+                <input type="checkbox" name="requestType" value="extraction" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">数据提取</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" name="requestType" value="api" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">数据接入 (API接口等方式)</span>
+              </label>
+            </div>
+          </div>
+          
+          <!-- 是否涉及权属变更 -->
+          <div class="mb-6">
+            <h4 class="text-lg font-medium text-gray-900 mb-4">是否涉及权属变更 <span class="text-red-500">*</span></h4>
+            <div class="space-y-2">
+              <label class="flex items-center">
+                <input type="radio" name="ownershipChange" value="yes" class="text-blue-600 focus:ring-blue-500" onchange="toggleOwnershipType()">
+                <span class="ml-2 text-sm text-gray-700">是</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="ownershipChange" value="no" class="text-blue-600 focus:ring-blue-500" onchange="toggleOwnershipType()">
+                <span class="ml-2 text-sm text-gray-700">否</span>
+              </label>
+            </div>
+          </div>
+          
+          <!-- 权属类型选择 -->
+          <div id="ownershipTypeSection" class="mb-6 hidden">
+            <h4 class="text-lg font-medium text-gray-900 mb-4">权属类型 <span class="text-red-500">*</span></h4>
+            <div class="space-y-2">
+              <label class="flex items-center">
+                <input type="radio" name="ownershipType" value="holding" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">持有权</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="ownershipType" value="processing" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">数据加工使用权</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="ownershipType" value="operation" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">数据产品经营权</span>
+              </label>
+            </div>
+          </div>
+        
+        <!-- 使用期限 -->
+        <div class="mb-6">
+          <h4 class="text-lg font-medium text-gray-900 mb-4">使用期限 <span class="text-red-500">*</span></h4>
+          <div class="space-y-2">
+            <label class="flex items-center">
+              <input type="radio" name="usagePeriod" value="once" class="text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">单次</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="usagePeriod" value="permanent" class="text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">永久</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="usagePeriod" value="periodic" class="text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">周期性</span>
+              <input type="text" id="periodicDetail" class="ml-2 border border-gray-300 rounded px-2 py-1 text-sm w-32" placeholder="请说明周期">
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="usagePeriod" value="other" class="text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">其他</span>
+              <input type="text" id="otherPeriodDetail" class="ml-2 border border-gray-300 rounded px-2 py-1 text-sm w-32" placeholder="请说明">
+            </label>
+          </div>
+        </div>
+        
+        <!-- 需求原因 -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">需求原因 <span class="text-red-500">*</span></label>
+          <textarea id="reason" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3" placeholder="请详细说明数据使用的原因和背景"></textarea>
+        </div>
+        
+          <!-- 使用范围 -->
+          <div class="mb-6">
+            <h4 class="text-lg font-medium text-gray-900 mb-4">使用范围 <span class="text-red-500">*</span></h4>
+            <div class="space-y-2">
+              <label class="flex items-center">
+                <input type="radio" name="usageScope" value="internal" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">物资公司部门 (所属单位) 内部使用</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="usageScope" value="other" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">其他</span>
+                <input type="text" id="otherScopeDetail" class="ml-2 border border-gray-300 rounded px-2 py-1 text-sm w-32" placeholder="请说明">
+              </label>
+            </div>
+          </div>
+        
+        <!-- 使用时效 -->
+        <div class="mb-6">
+          <h4 class="text-lg font-medium text-gray-900 mb-4">使用时效 <span class="text-red-500">*</span></h4>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+            <label class="flex items-center">
+              <input type="radio" name="usageValidity" value="week" class="text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">一周内</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="usageValidity" value="month" class="text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">一个月内</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="usageValidity" value="quarter" class="text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">一个季度内</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="usageValidity" value="halfyear" class="text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">半年内</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="usageValidity" value="year" class="text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">一年内</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="usageValidity" value="longterm" class="text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">长期</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="usageValidity" value="other" class="text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">其他</span>
+            </label>
+          </div>
+        </div>
+        
+        <!-- 信息系统 -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">信息系统 <span class="text-red-500">*</span></label>
+          <input type="text" id="informationSystem" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入使用的信息系统名称">
+        </div>
+        
+        <!-- 数据等级 -->
+        <div class="mb-6">
+          <h4 class="text-lg font-medium text-gray-900 mb-4">数据等级 <span class="text-red-500">*</span></h4>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <label class="flex items-center">
+              <input type="radio" name="dataLevel" value="core" class="text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">核心数据</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="dataLevel" value="important" class="text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">重要数据</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="dataLevel" value="general" class="text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">一般数据</span>
+            </label>
+            <label class="flex items-center">
+              <input type="radio" name="dataLevel" value="public" class="text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">公开数据</span>
+            </label>
+          </div>
+        </div>
+        
+        <!-- 数据分类 -->
+        <div class="mb-6">
+          <h4 class="text-lg font-medium text-gray-900 mb-4">数据分类 <span class="text-red-500">*</span></h4>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+            <label class="flex items-center">
+              <input type="checkbox" name="dataClassification" value="basic" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">基础数据</span>
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" name="dataClassification" value="master" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">主数据</span>
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" name="dataClassification" value="transaction" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">交易数据</span>
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" name="dataClassification" value="indicator" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">指标数据</span>
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" name="dataClassification" value="production" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+              <span class="ml-2 text-sm text-gray-700">生产数据</span>
+            </label>
+          </div>
+        </div>
+        
+        <!-- 需求内容 -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">需求内容 <span class="text-red-500">*</span></label>
+          <textarea id="requestContent" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" rows="4" placeholder="请详细描述具体的数据需求内容"></textarea>
+        </div>
+        
+        <!-- 需求单位意见 -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">需求单位意见</label>
+          <textarea id="unitOpinion" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3" placeholder="请输入需求单位的意见或说明"></textarea>
+        </div>
+        
+          <!-- 负责人和日期 -->
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">负责人</label>
+                <input type="text" id="signature" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入负责人姓名">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">签字日期</label>
+                <input type="date" id="signatureDate" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 外部申请表单 -->
+        <div id="externalApplyForm" class="hidden space-y-6">
+          <!-- 申请资产 -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">申请资产</label>
+            <div class="bg-gray-50 rounded-lg p-3 border">
+              <span id="external-assetName" class="text-gray-800 font-medium">采购数据专题分析模型</span>
+            </div>
+          </div>
+          
+          <!-- 编号和申请日期 -->
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">编号</label>
+                <input type="text" id="external-serialNumber" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="系统自动生成">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">申请日期 <span class="text-red-500">*</span></label>
+                <input type="date" id="external-applicationDate" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+            </div>
+          </div>
+          
+          <!-- 申请人信息 -->
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">需求单位 <span class="text-red-500">*</span></label>
+                <input type="text" id="external-requestingUnit" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入需求单位" value="数据管理部">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">经办人 <span class="text-red-500">*</span></label>
+                <input type="text" id="external-handler" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入经办人" value="张三">
+              </div>
+            </div>
+          </div>
+          
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">邮箱 <span class="text-red-500">*</span></label>
+                <input type="email" id="external-email" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入邮箱地址">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">联系电话 <span class="text-red-500">*</span></label>
+                <input type="tel" id="external-phone" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入联系电话">
+              </div>
+            </div>
+          </div>
+          
+          <!-- 需求类型 -->
+          <div class="mb-6">
+            <h4 class="text-lg font-medium text-gray-900 mb-4">需求类型 <span class="text-red-500">*</span></h4>
+            <div class="space-y-2">
+              <label class="flex items-center">
+                <input type="checkbox" name="external-requestType" value="extraction" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">数据提取</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" name="external-requestType" value="api" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">数据接入 (API接口等方式)</span>
+              </label>
+            </div>
+          </div>
+          
+          <!-- 是否涉及权属变更 -->
+          <div class="mb-6">
+            <h4 class="text-lg font-medium text-gray-900 mb-4">是否涉及权属变更 <span class="text-red-500">*</span></h4>
+            <div class="space-y-2">
+              <label class="flex items-center">
+                <input type="radio" name="external-ownershipChange" value="yes" class="text-blue-600 focus:ring-blue-500" onchange="toggleExternalOwnershipType()">
+                <span class="ml-2 text-sm text-gray-700">是</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="external-ownershipChange" value="no" class="text-blue-600 focus:ring-blue-500" onchange="toggleExternalOwnershipType()">
+                <span class="ml-2 text-sm text-gray-700">否</span>
+              </label>
+            </div>
+          </div>
+          
+          <!-- 权属类型选择 -->
+          <div id="external-ownershipTypeSection" class="mb-6 hidden">
+            <h4 class="text-lg font-medium text-gray-900 mb-4">权属类型 <span class="text-red-500">*</span></h4>
+            <div class="space-y-2">
+              <label class="flex items-center">
+                <input type="radio" name="external-ownershipType" value="holding" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">持有权</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="external-ownershipType" value="processing" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">数据加工使用权</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="external-ownershipType" value="operation" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">数据产品经营权</span>
+              </label>
+            </div>
+          </div>
+          
+          <!-- 使用期限 -->
+          <div class="mb-6">
+            <h4 class="text-lg font-medium text-gray-900 mb-4">使用期限 <span class="text-red-500">*</span></h4>
+            <div class="space-y-2">
+              <label class="flex items-center">
+                <input type="radio" name="external-usagePeriod" value="once" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">单次</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="external-usagePeriod" value="permanent" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">永久</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="external-usagePeriod" value="periodic" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">周期性</span>
+                <input type="text" id="external-periodicDetail" class="ml-2 border border-gray-300 rounded px-2 py-1 text-sm w-32" placeholder="请说明周期">
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="external-usagePeriod" value="other" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">其他</span>
+                <input type="text" id="external-otherPeriodDetail" class="ml-2 border border-gray-300 rounded px-2 py-1 text-sm w-32" placeholder="请说明">
+              </label>
+            </div>
+          </div>
+          
+          <!-- 需求原因 -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">需求原因 <span class="text-red-500">*</span></label>
+            <textarea id="external-reason" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3" placeholder="请详细说明数据使用的原因和背景"></textarea>
+          </div>
+          
+          <!-- 使用范围 -->
+          <div class="mb-6">
+            <h4 class="text-lg font-medium text-gray-900 mb-4">使用范围 <span class="text-red-500">*</span></h4>
+            <div class="space-y-2">
+              <label class="flex items-center">
+                <input type="radio" name="external-usageScope" value="group" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">物资公司外部、集团公司内部</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="external-usageScope" value="external" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">集团公司外部</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="external-usageScope" value="other" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">其他</span>
+                <input type="text" id="external-otherScopeDetail" class="ml-2 border border-gray-300 rounded px-2 py-1 text-sm w-32" placeholder="请说明">
+              </label>
+            </div>
+          </div>
+          
+          <!-- 使用时效 -->
+          <div class="mb-6">
+            <h4 class="text-lg font-medium text-gray-900 mb-4">使用时效 <span class="text-red-500">*</span></h4>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+              <label class="flex items-center">
+                <input type="radio" name="external-usageValidity" value="week" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">一周内</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="external-usageValidity" value="month" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">一个月内</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="external-usageValidity" value="quarter" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">一个季度内</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="external-usageValidity" value="halfyear" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">半年内</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="external-usageValidity" value="year" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">一年内</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="external-usageValidity" value="longterm" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">长期</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="external-usageValidity" value="other" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">其他</span>
+              </label>
+            </div>
+          </div>
+          
+          <!-- 信息系统 -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">信息系统 <span class="text-red-500">*</span></label>
+            <input type="text" id="external-informationSystem" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入使用的信息系统名称">
+          </div>
+          
+          <!-- 数据等级 -->
+          <div class="mb-6">
+            <h4 class="text-lg font-medium text-gray-900 mb-4">数据等级 <span class="text-red-500">*</span></h4>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <label class="flex items-center">
+                <input type="radio" name="external-dataLevel" value="core" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">核心数据</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="external-dataLevel" value="important" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">重要数据</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="external-dataLevel" value="general" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">一般数据</span>
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="external-dataLevel" value="public" class="text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">公开数据</span>
+              </label>
+            </div>
+          </div>
+          
+          <!-- 数据分类 -->
+          <div class="mb-6">
+            <h4 class="text-lg font-medium text-gray-900 mb-4">数据分类 <span class="text-red-500">*</span></h4>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+              <label class="flex items-center">
+                <input type="checkbox" name="external-dataClassification" value="basic" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">基础数据</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" name="external-dataClassification" value="master" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">主数据</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" name="external-dataClassification" value="transaction" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">交易数据</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" name="external-dataClassification" value="indicator" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">指标数据</span>
+              </label>
+              <label class="flex items-center">
+                <input type="checkbox" name="external-dataClassification" value="production" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <span class="ml-2 text-sm text-gray-700">生产数据</span>
+              </label>
+            </div>
+          </div>
+          
+          <!-- 需求内容 -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">需求内容 <span class="text-red-500">*</span></label>
+            <textarea id="external-requestContent" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" rows="4" placeholder="请详细描述具体的数据需求内容"></textarea>
+          </div>
+          
+          <!-- 需求单位意见 -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">需求单位意见</label>
+            <textarea id="external-unitOpinion" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3" placeholder="请输入需求单位的意见或说明"></textarea>
+          </div>
+          
+          <!-- 负责人和日期 -->
+          <div class="mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">负责人</label>
+                <input type="text" id="external-signature" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入负责人姓名">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">签字日期</label>
+                <input type="date" id="external-signatureDate" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+            </div>
+          </div>
+          
+          <!-- 上传合同 -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">上传合同 <span class="text-red-500">*</span></label>
+            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
+              <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <div class="mt-4">
+                <label for="contract-upload" class="cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                  选择文件
+                </label>
+                <input id="contract-upload" type="file" accept=".pdf,.doc,.docx" class="hidden" required onchange="updateContractFileName()">
+              </div>
+              <p class="mt-2 text-sm text-gray-500">支持 PDF、Word 格式，最大 10MB</p>
+              <div id="contract-file-name" class="mt-2 text-sm text-blue-600 hidden"></div>
+            </div>
+          </div>
+          
+          <!-- 买授方 -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">买授方 <span class="text-red-500">*</span></label>
+            <input type="text" id="external-buyer" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入买授方名称">
+          </div>
+          
+          <!-- 账面价值 -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">账面价值 <span class="text-red-500">*</span></label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">¥</span>
+              <input type="number" id="external-bookValue" placeholder="请输入账面价值金额" step="0.01" min="0" class="w-full border border-gray-300 rounded-lg pl-8 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 弹窗底部按钮 -->
+      <div class="flex items-center justify-end gap-3 p-6 border-t border-gray-200 flex-shrink-0">
+        <button onclick="hideApplyModal()" class="px-6 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors">
+          取消
+        </button>
+        <button onclick="submitApplication()" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+          提交申请
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // 侧边栏展开/收起
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const mainContent = document.querySelector('main');
+      const toggleBtn = document.getElementById('sidebar-toggle');
+      const toggleIcon = toggleBtn.querySelector('i');
+      
+      sidebar.classList.toggle('hidden');
+      mainContent.classList.toggle('ml-60');
+      
+      if (sidebar.classList.contains('hidden')) {
+        // 侧边栏收起状态
+        toggleBtn.style.left = '0.5rem';
+        toggleIcon.className = 'fas fa-bars';
+        mainContent.style.marginLeft = '0';
+        mainContent.style.maxWidth = '100%';
+      } else {
+        // 侧边栏展开状态
+        toggleBtn.style.left = '16rem';
+        toggleIcon.className = 'fas fa-chevron-left';
+        mainContent.style.marginLeft = '240px';
+        mainContent.style.maxWidth = 'calc(100% - 240px)';
+      }
+    }
+    
+    // 子菜单切换
+    function toggleSubMenu(menuId) {
+      const submenu = document.getElementById(menuId + '-submenu');
+      const arrow = document.getElementById(menuId + '-arrow');
+      
+      if (submenu.classList.contains('hidden')) {
+        submenu.classList.remove('hidden');
+        arrow.style.transform = 'rotate(180deg)';
+      } else {
+        submenu.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    // 子目录切换
+    function toggleSubDirectory(subDirId) {
+      const subDirMenu = document.getElementById(subDirId + '-submenu');
+      const arrow = document.getElementById(subDirId + '-arrow');
+      
+      if (subDirMenu && arrow) {
+      if (subDirMenu.classList.contains('hidden')) {
+        subDirMenu.classList.remove('hidden');
+          arrow.style.transform = 'rotate(90deg)';
+      } else {
+        subDirMenu.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+        }
+      }
+    }
+    
+    // 目录选择
+    function selectCategory(categoryId) {
+      // 移除所有active类
+      document.querySelectorAll('.tree-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      // 添加active类到选中的项目
+      event.currentTarget.classList.add('active');
+      
+      // 根据选择的目录更新页面内容
+      updatePageContent(categoryId);
+      
+      console.log('选择了分类:', categoryId);
+    }
+    
+    // 更新页面内容
+    function updatePageContent(categoryId) {
+      const descriptionElement = document.querySelector('.bg-blue-50 h3');
+      const descriptionTextElement = document.querySelector('.bg-blue-50 p');
+      const resultCountElement = document.querySelector('.text-gray-600 span');
+      
+      // 根据新的目录结构更新内容
+      const categoryInfo = {
+        'non-bidding': {
+          title: '非招标',
+          description: '非招标业务相关数据资产，包括非招标成交分析、业务流程管理等核心数据。',
+          count: '1'
+        },
+        'mall': {
+          title: '商城',
+          description: '商城运营相关数据资产，涵盖商品管理、订单处理、用户行为分析等业务数据。',
+          count: '1'
+        },
+        'centralized-procurement': {
+          title: '集采',
+          description: '集中采购业务数据资产，包括采购计划、供应商管理、合同执行等关键数据。',
+          count: '1'
+        },
+        'guoneng-auction': {
+          title: '国能e拍',
+          description: '国能e拍平台相关数据资产，涵盖拍卖流程、竞价数据、交易记录等业务信息。',
+          count: '1'
+        },
+        'decision-support': {
+          title: '决策支持',
+          description: '决策支持相关数据资产，包括综合决策分析、业务指标监控等核心数据。',
+          count: '1'
+        },
+        'supplier': {
+          title: '供应商',
+          description: '供应商管理相关数据资产，涵盖供应商信息、信用评价、合规性分析等业务数据。',
+          count: '1'
+        },
+        'review-experts': {
+          title: '评审专家',
+          description: '评审专家管理相关数据资产，包括专家信息、评审记录、专业能力评估等数据。',
+          count: '1'
+        },
+        'expense-management': {
+          title: '费用管理',
+          description: '费用管理相关数据资产，涵盖收支管理、节支率管理、成本控制等财务数据。',
+          count: '1'
+        },
+        'master-data': {
+          title: '主数据',
+          description: '主数据管理相关数据资产，包括物资主数据、基础数据标准化等核心数据。',
+          count: '1'
+        },
+        'carbon-footprint': {
+          title: '产品碳足迹核算模型与数据',
+          description: '产品碳足迹核算相关数据资产，涵盖碳排放计算模型、环保指标监控等绿色数据。',
+          count: '1'
+        },
+        'green-supplier': {
+          title: '绿色供应商',
+          description: '绿色供应商管理相关数据资产，包括环保认证、绿色采购、可持续发展等数据。',
+          count: '1'
+        },
+        'smart-review': {
+          title: '智能评审',
+          description: '智能评审相关数据资产，包括大模型数据集、智能分析算法等AI技术数据。',
+          count: '1'
+        },
+        'predictive-analysis': {
+          title: '预测分析',
+          description: '预测分析相关数据资产，涵盖需求预测、价格监控、趋势分析等智能数据。',
+          count: '1'
+        },
+        'performance-appraisal': {
+          title: '绩效考核',
+          description: '绩效考核相关数据资产，包括效率效能分析、考核与对标管理等监督数据。',
+          count: '1'
+        },
+        'monitoring-warning': {
+          title: '监控预警',
+          description: '监控预警相关数据资产，涵盖异常监控、风险合规、预警机制等监管数据。',
+          count: '1'
+        }
+      };
+      
+      const info = categoryInfo[categoryId];
+      if (info) {
+        if (descriptionElement) descriptionElement.textContent = info.title;
+        if (descriptionTextElement) descriptionTextElement.textContent = info.description;
+        if (resultCountElement) resultCountElement.textContent = info.count;
+        
+        // 显示对应的资产卡片
+        showCategoryAssets(categoryId);
+      }
+    }
+    
+    // 显示分类资产
+    function showCategoryAssets(categoryId) {
+      const assetCards = document.querySelectorAll('.asset-card');
+      
+      // 隐藏所有卡片
+      assetCards.forEach(card => {
+        card.style.display = 'none';
+      });
+      
+      // 根据分类显示对应的卡片
+      switch(categoryId) {
+        case 'non-bidding':
+          // 显示非招标相关资产
+          if (assetCards[0]) assetCards[0].style.display = 'block';
+          break;
+        case 'mall':
+          // 显示商城相关资产
+          if (assetCards[1]) assetCards[1].style.display = 'block';
+          break;
+        case 'centralized-procurement':
+          // 显示集采相关资产
+          if (assetCards[2]) assetCards[2].style.display = 'block';
+          break;
+        case 'guoneng-auction':
+          // 显示国能e拍相关资产
+          if (assetCards[0]) assetCards[0].style.display = 'block';
+          break;
+        case 'decision-support':
+          // 显示决策支持相关资产
+          if (assetCards[1]) assetCards[1].style.display = 'block';
+          break;
+        case 'supplier':
+          // 显示供应商相关资产
+          if (assetCards[2]) assetCards[2].style.display = 'block';
+          break;
+        case 'review-experts':
+          // 显示评审专家相关资产
+          if (assetCards[0]) assetCards[0].style.display = 'block';
+          break;
+        case 'expense-management':
+          // 显示费用管理相关资产
+          if (assetCards[1]) assetCards[1].style.display = 'block';
+          break;
+        case 'master-data':
+          // 显示主数据相关资产
+          if (assetCards[2]) assetCards[2].style.display = 'block';
+          break;
+        case 'carbon-footprint':
+          // 显示碳足迹相关资产
+          if (assetCards[0]) assetCards[0].style.display = 'block';
+          break;
+        case 'green-supplier':
+          // 显示绿色供应商相关资产
+          if (assetCards[1]) assetCards[1].style.display = 'block';
+          break;
+        case 'smart-review':
+          // 显示智能评审相关资产
+          if (assetCards[2]) assetCards[2].style.display = 'block';
+          break;
+        case 'predictive-analysis':
+          // 显示预测分析相关资产
+          if (assetCards[0]) assetCards[0].style.display = 'block';
+          break;
+        case 'performance-appraisal':
+          // 显示绩效考核相关资产
+          if (assetCards[1]) assetCards[1].style.display = 'block';
+          break;
+        case 'monitoring-warning':
+          // 显示监控预警相关资产
+          if (assetCards[2]) assetCards[2].style.display = 'block';
+          break;
+        default:
+          // 默认显示第一个卡片
+          if (assetCards[0]) assetCards[0].style.display = 'block';
+          break;
+      }
+    }
+    
+    // 用户下拉菜单切换
+    function toggleUserDropdown() {
+      const dropdownMenu = document.getElementById('user-dropdown-menu');
+      const arrow = document.getElementById('dropdown-arrow');
+      
+      if (dropdownMenu.classList.contains('hidden')) {
+        dropdownMenu.classList.remove('hidden');
+        arrow.style.transform = 'rotate(180deg)';
+      } else {
+        dropdownMenu.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+      }
+    }
+    
+    // 点击外部关闭下拉菜单
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('user-dropdown');
+      const dropdownMenu = document.getElementById('user-dropdown-menu');
+      const arrow = document.getElementById('dropdown-arrow');
+      
+      if (!dropdown.contains(event.target)) {
+        dropdownMenu.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+      }
+    });
+    
+    // 申请使用弹窗相关功能
+    // 生成随机编号
+    function generateSerialNumber() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+      return `WZ${year}${month}${day}${randomNum}`;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    function formatDateTimeLocal(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      
+      return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+    
+    // 点击弹窗外部关闭弹窗
+    document.addEventListener('click', function(event) {
+      const modal = document.getElementById('applyModal');
+      if (event.target === modal) {
+        hideApplyModal();
+      }
+    });
+    
+    // ESC键关闭弹窗
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        hideApplyModal();
+      }
+    });
+    
+    // 默认展开
+    document.addEventListener('DOMContentLoaded', () => {
+      // 默认展开业务发展子目录
+      const businessDevelopmentSubmenu = document.getElementById('business-development-submenu');
+      const businessDevelopmentArrow = document.getElementById('business-development-arrow');
+      if (businessDevelopmentSubmenu && businessDevelopmentArrow) {
+        businessDevelopmentSubmenu.classList.remove('hidden');
+        businessDevelopmentArrow.style.transform = 'rotate(90deg)';
+      }
+      
+      // 默认展开业务管理子目录
+      const businessManagementSubmenu = document.getElementById('business-management-submenu');
+      const businessManagementArrow = document.getElementById('business-management-arrow');
+      if (businessManagementSubmenu && businessManagementArrow) {
+        businessManagementSubmenu.classList.remove('hidden');
+        businessManagementArrow.style.transform = 'rotate(90deg)';
+      }
+      
+      // 默认选择非招标
+      selectCategory('non-bidding');
+      
+      // 隐藏所有资产卡片，只显示选中的
+      const assetCards = document.querySelectorAll('.asset-card');
+      assetCards.forEach(card => {
+        card.style.display = 'none';
+      });
+    });
+  </script>
+</body>
+</html> 
+
+
+
+
+
+
+
+

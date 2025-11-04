@@ -1,0 +1,1209 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>首页 - 数据资产管理系统</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    body { 
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 25%, #2d1b69 50%, #1a1a3a 75%, #0f0f23 100%);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    /* 动态星空背景 */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+        radial-gradient(1px 1px at 130px 80px, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(2px 2px at 160px 30px, #ddd, transparent);
+      background-repeat: repeat;
+      background-size: 200px 100px;
+      animation: sparkle 20s linear infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    @keyframes sparkle {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-200px); }
+    }
+    
+    /* 科技感网格背景 */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(102, 126, 234, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(102, 126, 234, 0.08) 1px, transparent 1px);
+      background-size: 50px 50px;
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    /* 浮动数据粒子 */
+    .floating-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
+    
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: linear-gradient(45deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8));
+      border-radius: 50%;
+      animation: float-particle 8s ease-in-out infinite;
+    }
+    
+    .particle:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
+    .particle:nth-child(2) { top: 25%; right: 20%; animation-delay: 2s; }
+    .particle:nth-child(3) { top: 60%; left: 5%; animation-delay: 4s; }
+    .particle:nth-child(4) { top: 75%; right: 10%; animation-delay: 6s; }
+    .particle:nth-child(5) { top: 35%; left: 80%; animation-delay: 1s; }
+    .particle:nth-child(6) { top: 85%; left: 70%; animation-delay: 3s; }
+    
+    @keyframes float-particle {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.7; }
+      50% { transform: translateY(-30px) scale(1.5); opacity: 1; }
+    }
+    
+    /* 主要内容区域 */
+    main {
+      position: relative;
+      z-index: 10;
+    }
+    
+    /* 增强的卡片样式 */
+    .tech-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      border-radius: 16px;
+    }
+    
+    .tech-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.15), transparent);
+      transition: left 0.6s ease;
+    }
+    
+    .tech-card:hover::before {
+      left: 100%;
+    }
+    
+    .tech-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 
+        0 20px 40px rgba(102, 126, 234, 0.2),
+        0 0 0 1px rgba(102, 126, 234, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      border-color: rgba(102, 126, 234, 0.4);
+    }
+    
+    /* 统计卡片特殊样式 */
+    .stat-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      position: relative;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-radius: 16px;
+    }
+    
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: inherit;
+      padding: 2px;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.6), rgba(118, 75, 162, 0.6), rgba(240, 147, 251, 0.6));
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+    }
+    
+    /* 搜索框增强样式 */
+    .search-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .search-container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: inherit;
+      padding: 2px;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.6), rgba(118, 75, 162, 0.6));
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+    }
+    
+    .search-container input {
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* 统一模块容器样式 */
+    .module-container {
+      margin-bottom: 3rem;
+    }
+    
+    .module-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .module-grid {
+      display: grid;
+      gap: 2rem;
+    }
+    
+    .module-grid-2 {
+      grid-template-columns: 1fr;
+    }
+    
+    @media (min-width: 1024px) {
+      .module-grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    .module-grid-3 {
+      grid-template-columns: 1fr;
+    }
+    
+    @media (min-width: 1024px) {
+      .module-grid-3 {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+    
+    /* 增强的按钮样式 */
+    .btn-orange {
+      background: linear-gradient(135deg, #ff4500, #ff8c00, #ff6347);
+      color: white;
+      border-radius: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(255, 69, 0, 0.3);
+    }
+    
+    .btn-orange::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+    
+    .btn-orange:hover::before {
+      left: 100%;
+    }
+    
+    .btn-orange:hover {
+      background: linear-gradient(135deg, #ff6347, #ffa500, #ff4500);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 69, 0, 0.4);
+    }
+    
+    /* 统计数字动画增强 */
+    .stat-number {
+      background: linear-gradient(135deg, #ff4500, #ff8c00, #ff6347);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 2px 10px rgba(255, 69, 0, 0.3);
+      position: relative;
+    }
+    
+    .stat-number::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #ff4500, transparent);
+      border-radius: 1px;
+    }
+    
+    /* 标题样式增强 */
+    .tech-title {
+      color: white;
+      text-shadow: 
+        0 2px 10px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(255, 69, 0, 0.3);
+      position: relative;
+    }
+    
+    .tech-title::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #ff4500, transparent);
+      border-radius: 2px;
+    }
+    
+    .tech-subtitle {
+      color: rgba(255, 255, 255, 0.95);
+      text-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+    }
+    
+    /* 快速访问卡片增强 */
+    .quick-access-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+      backdrop-filter: blur(20px);
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .quick-access-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: inherit;
+      padding: 2px;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.6), rgba(118, 75, 162, 0.6), rgba(240, 147, 251, 0.6));
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+    }
+    
+    .quick-access-card:hover {
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+    }
+    
+    /* 响应式设计增强 */
+    @media (max-width: 1024px) {
+      .tech-card {
+        min-height: 240px;
+      }
+      
+      .module-container {
+        margin-bottom: 2rem;
+      }
+      
+      .module-grid {
+        gap: 1.5rem;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .tech-title {
+        font-size: 2rem;
+      }
+      
+      .tech-card {
+        padding: 1.5rem;
+        min-height: 200px;
+      }
+      
+      .search-container {
+        margin: 0 1rem;
+      }
+      
+      .floating-particles {
+        display: none;
+      }
+      
+      .module-grid {
+        gap: 1.5rem;
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .tech-card {
+        min-height: 180px;
+        padding: 1rem;
+      }
+      
+      .module-grid {
+        gap: 1rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .tech-title {
+        font-size: 1.5rem;
+      }
+      
+      .tech-card {
+        padding: 1.25rem;
+        min-height: 160px;
+      }
+      
+      .btn-orange {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+      }
+    }
+    
+    /* 新增：光晕效果 */
+    .glow-effect {
+      position: relative;
+    }
+    
+    .glow-effect::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, rgba(102, 126, 234, 0.6), rgba(118, 75, 162, 0.6), rgba(240, 147, 251, 0.6), rgba(102, 126, 234, 0.6));
+      border-radius: inherit;
+      z-index: -1;
+      animation: glow-rotate 3s linear infinite;
+      opacity: 0.7;
+    }
+    
+    @keyframes glow-rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- 浮动粒子装饰 -->
+  <div class="floating-particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+  
+  <!-- 顶部主导航栏 -->
+  <header class="bg-gradient-to-r from-red-900 via-red-800 to-red-900 shadow-lg flex items-center justify-between px-10 h-16 sticky top-0 z-20 backdrop-blur-sm">
+    <div class="flex items-center space-x-4">
+      <div class="h-10 w-10 rounded-full border-2 border-red-400 shadow-lg bg-white flex items-center justify-center glow-effect">
+        <svg class="h-6 w-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <span class="text-xl font-bold text-white tracking-wide whitespace-nowrap">数据资产管理系统</span>
+    </div>
+    <nav class="flex-1 flex items-center justify-center space-x-8">
+      <a href="首页.html" class="text-red-100 hover:text-red-400 font-medium px-4 py-2 rounded-lg border border-red-400 hover:bg-red-700 transition-all duration-300 hover:scale-105">
+        <i class="fas fa-home mr-2"></i>首页
+      </a>
+      <a href="数据资产.html" class="text-red-100 hover:text-red-400 font-medium px-4 py-2 rounded-lg border border-red-400 hover:bg-red-700 transition-all duration-300 hover:scale-105">
+        <i class="fas fa-cube mr-2"></i>数据资产
+      </a>
+    </nav>
+    <div class="flex items-center space-x-4">
+      <a href="数据来源管理.html" class="text-red-100 hover:text-red-400 font-medium px-4 py-2 rounded-lg border border-red-400 hover:bg-red-700 transition-all duration-300 hover:scale-105">
+        <i class="fas fa-cog mr-2"></i>后台管理
+      </a>
+      <div class="relative" id="user-dropdown">
+        <div class="flex items-center space-x-2 cursor-pointer hover:bg-red-700 px-3 py-2 rounded-lg transition-all duration-300" onclick="toggleUserDropdown()">
+          <img src="https://i.pravatar.cc/32?img=3" class="rounded-full w-8 h-8 border-2 border-red-200" alt="用户头像">
+          <span class="text-red-100 text-sm">张三</span>
+          <i class="fas fa-chevron-down text-xs text-red-300 transition-transform" id="dropdown-arrow"></i>
+        </div>
+        <div id="user-dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 hidden z-50">
+          <a href="个人中心.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+            <i class="fas fa-user-circle mr-3 text-red-500"></i>
+            个人中心
+          </a>
+          <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+            <i class="fas fa-cog mr-3 text-red-500"></i>
+            系统管理
+          </a>
+          <div class="border-t border-gray-200 my-1"></div>
+          <a href="#" class="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 transition">
+            <i class="fas fa-sign-out-alt mr-3"></i>
+            退出
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <!-- 主体内容区 -->
+  <main class="flex-1 w-full max-w-7xl mx-auto flex gap-6 py-3 px-6 relative z-10">
+    <div class="flex-1">
+      <!-- 横幅图片 -->
+      <div class="bg-gradient-to-r from-blue-50 via-white to-blue-50 rounded-xl shadow-lg overflow-hidden mb-3 relative">
+        <div class="relative">
+          <!-- 内容区域 -->
+          <div class="relative z-10 p-4">
+            <!-- 搜索框 -->
+            <div class="max-w-4xl mb-3">
+              <div class="relative">
+                <input type="text" placeholder="请输入关键或者资产的英文名、中文名或者标签" 
+                       class="w-full px-4 py-2 pr-20 rounded-lg border border-gray-200 focus:border-blue-500 focus:outline-none text-sm text-gray-700 placeholder-gray-400 shadow-sm transition">
+                <button class="absolute right-1 top-1/2 transform -translate-y-1/2 px-4 py-1.5 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition">
+                  搜索
+                </button>
+              </div>
+      </div>
+      
+            <!-- 分类标签 -->
+            <div class="flex items-center space-x-3">
+              <button class="px-4 py-1.5 bg-blue-600 text-white rounded-full text-xs font-medium shadow-sm hover:bg-blue-700 transition">业务发展</button>
+              <button class="px-4 py-1.5 bg-white text-gray-700 rounded-full text-xs font-medium border border-gray-200 hover:border-blue-500 hover:text-blue-600 transition">绿色发展</button>
+              <button class="px-4 py-1.5 bg-white text-gray-700 rounded-full text-xs font-medium border border-gray-200 hover:border-blue-500 hover:text-blue-600 transition">智能发展</button>
+              <button class="px-4 py-1.5 bg-white text-gray-700 rounded-full text-xs font-medium border border-gray-200 hover:border-blue-500 hover:text-blue-600 transition">业务监督</button>
+            </div>
+        </div>
+
+          <!-- 底部装饰线 -->
+          <div class="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+          </div>
+          </div>
+
+      <!-- 内容展示区域 -->
+      <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-4">
+        <!-- 二级分类标签 -->
+        <div class="flex items-center gap-3 mb-3 border-b border-gray-200">
+          <button class="px-3 py-1.5 text-xs font-medium text-blue-600 border-b-2 border-blue-600 -mb-px">业务管理</button>
+          <button class="px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-blue-600 transition">决策支持</button>
+          <button class="px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-blue-600 transition">资源管理</button>
+          <button class="px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-blue-600 transition">费用管理</button>
+          <button class="px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-blue-600 transition">主数据</button>
+          </div>
+
+        <!-- KPI指标卡片 -->
+        <div class="grid grid-cols-5 gap-3 mb-3">
+          <!-- 资产个数 -->
+          <div class="bg-gradient-to-br from-blue-50 to-white rounded-lg p-2.5 border border-blue-100">
+            <div class="flex items-center mb-1.5">
+              <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-2">
+                <i class="fas fa-database text-blue-600 text-sm"></i>
+          </div>
+          </div>
+            <div class="text-xl font-bold text-gray-900 mb-0.5">3 <span class="text-sm">个</span></div>
+            <div class="text-xs text-gray-500">资产个数</div>
+        </div>
+
+          <!-- 数据子集个数 -->
+          <div class="bg-gradient-to-br from-green-50 to-white rounded-lg p-2.5 border border-green-100">
+            <div class="flex items-center mb-1.5">
+              <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-2">
+                <i class="fas fa-layer-group text-green-600 text-sm"></i>
+            </div>
+            </div>
+            <div class="text-xl font-bold text-gray-900 mb-0.5">23 <span class="text-sm">个</span></div>
+            <div class="text-xs text-gray-500">数据子集个数</div>
+          </div>
+
+          <!-- 数据总量 -->
+          <div class="bg-gradient-to-br from-purple-50 to-white rounded-lg p-2.5 border border-purple-100">
+            <div class="flex items-center mb-1.5">
+              <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mr-2">
+                <i class="fas fa-chart-bar text-purple-600 text-sm"></i>
+              </div>
+            </div>
+            <div class="text-xl font-bold text-gray-900 mb-0.5">16亿+ <span class="text-sm">条</span></div>
+            <div class="text-xs text-gray-500">数据总量</div>
+          </div>
+
+          <!-- 数据资源个数 -->
+          <div class="bg-gradient-to-br from-orange-50 to-white rounded-lg p-2.5 border border-orange-100">
+            <div class="flex items-center mb-1.5">
+              <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center mr-2">
+                <i class="fas fa-cubes text-orange-600 text-sm"></i>
+              </div>
+            </div>
+            <div class="text-xl font-bold text-gray-900 mb-0.5">2289 <span class="text-sm">个</span></div>
+            <div class="text-xs text-gray-500">数据资源个数</div>
+          </div>
+
+          <!-- 数据服务调用次数 -->
+          <div class="bg-gradient-to-br from-cyan-50 to-white rounded-lg p-2.5 border border-cyan-100">
+            <div class="flex items-center mb-1.5">
+              <div class="w-8 h-8 bg-cyan-100 rounded-lg flex items-center justify-center mr-2">
+                <i class="fas fa-sync-alt text-cyan-600 text-sm"></i>
+              </div>
+            </div>
+            <div class="text-xl font-bold text-gray-900 mb-0.5">1,723,245 <span class="text-sm">次</span></div>
+            <div class="text-xs text-gray-500">数据服务调用次数</div>
+          </div>
+        </div>
+
+        <!-- 资产详情区域 -->
+        <div class="flex gap-3">
+          <!-- 左侧导航卡片 -->
+          <div class="w-32 space-y-2">
+            <div id="nav-asset-info" class="bg-blue-600 text-white rounded-lg p-2.5 shadow-sm cursor-pointer transition" onclick="switchContent('asset-info')">
+              <div class="flex items-center justify-center mb-1">
+                <i class="fas fa-chart-pie text-lg"></i>
+              </div>
+              <div class="text-xs text-center font-medium">资产情况</div>
+            </div>
+            <div id="nav-latest-asset" class="bg-white border border-gray-200 rounded-lg p-2.5 hover:border-blue-400 cursor-pointer transition" onclick="switchContent('latest-asset')">
+              <div class="flex items-center justify-center mb-1">
+                <i class="fas fa-file-alt text-lg text-gray-400"></i>
+              </div>
+              <div class="text-xs text-center text-gray-600">最新资产</div>
+            </div>
+            <div id="nav-hot-service" class="bg-white border border-gray-200 rounded-lg p-2.5 hover:border-blue-400 cursor-pointer transition" onclick="switchContent('hot-service')">
+              <div class="flex items-center justify-center mb-1">
+                <i class="fas fa-fire text-lg text-gray-400"></i>
+              </div>
+              <div class="text-xs text-center text-gray-600">热门服务</div>
+            </div>
+          </div>
+
+          <!-- 右侧主体内容 -->
+          <div class="flex-1">
+            <!-- 资产情况内容 -->
+            <div id="content-asset-info">
+            <!-- 资产页签 -->
+            <div class="flex items-center gap-2 mb-2">
+              <button class="flex items-center gap-1 px-2 py-1.5 bg-blue-600 text-white rounded text-xs font-medium shadow-sm">
+                <i class="fas fa-chevron-left text-xs"></i>
+              </button>
+              <button class="px-3 py-1.5 bg-blue-600 text-white rounded text-xs font-medium shadow-sm">资产1</button>
+              <button class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded text-xs hover:bg-gray-200 transition">资产2</button>
+              <button class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded text-xs hover:bg-gray-200 transition">资产3</button>
+              <button class="flex items-center gap-1 px-2 py-1.5 bg-blue-600 text-white rounded text-xs font-medium shadow-sm">
+                <i class="fas fa-chevron-right text-xs"></i>
+              </button>
+            </div>
+
+            <!-- 资产指标 -->
+            <div class="grid grid-cols-5 gap-2 mb-3">
+              <div class="bg-blue-50 rounded p-2 border border-blue-100">
+                <div class="flex items-center gap-1 mb-0.5">
+                  <i class="fas fa-box text-blue-600 text-xs"></i>
+                  <span class="text-xs text-gray-600">数据子集</span>
+                </div>
+                <div class="text-lg font-bold text-gray-900">4 <span class="text-xs font-normal">个</span></div>
+              </div>
+              <div class="bg-green-50 rounded p-2 border border-green-100">
+                <div class="flex items-center gap-1 mb-0.5">
+                  <i class="fas fa-database text-green-600 text-xs"></i>
+                  <span class="text-xs text-gray-600">数据资源</span>
+                </div>
+                <div class="text-lg font-bold text-gray-900">334 <span class="text-xs font-normal">个</span></div>
+              </div>
+              <div class="bg-purple-50 rounded p-2 border border-purple-100">
+                <div class="flex items-center gap-1 mb-0.5">
+                  <i class="fas fa-th text-purple-600 text-xs"></i>
+                  <span class="text-xs text-gray-600">字段个数</span>
+                </div>
+                <div class="text-lg font-bold text-gray-900">10893 <span class="text-xs font-normal">个</span></div>
+              </div>
+              <div class="bg-orange-50 rounded p-2 border border-orange-100">
+                <div class="flex items-center gap-1 mb-0.5">
+                  <i class="fas fa-sync text-orange-600 text-xs"></i>
+                  <span class="text-xs text-gray-600">版本更新</span>
+                </div>
+                <div class="text-lg font-bold text-gray-900">3 <span class="text-xs font-normal">次</span></div>
+              </div>
+              <div class="bg-cyan-50 rounded p-2 border border-cyan-100">
+                <div class="flex items-center gap-1 mb-0.5">
+                  <i class="fas fa-plug text-cyan-600 text-xs"></i>
+                  <span class="text-xs text-gray-600">服务调用</span>
+                </div>
+                <div class="text-lg font-bold text-gray-900">3984 <span class="text-xs font-normal">次</span></div>
+              </div>
+            </div>
+
+            <!-- 数据可视化图表 -->
+            <div class="grid grid-cols-3 gap-3">
+              <!-- 总数据量 -->
+              <div class="bg-white border border-gray-200 rounded-lg p-2.5">
+                <div class="flex items-center gap-1 mb-2">
+                  <i class="fas fa-hdd text-blue-600 text-xs"></i>
+                  <h4 class="text-xs font-semibold text-gray-800">总数据量</h4>
+                  </div>
+                <div class="text-xl font-bold text-gray-900 mb-2">32GB</div>
+                
+                <div class="space-y-1.5">
+                  <div>
+                    <div class="flex items-center justify-between mb-0.5">
+                      <span class="text-xs text-gray-600">国能e购(GB)</span>
+                      <div class="flex items-center gap-1">
+                        <span class="text-xs font-semibold text-gray-900">24</span>
+                        <span class="text-xs text-blue-600 font-medium">75%</span>
+                  </div>
+                </div>
+                    <div class="w-full bg-gray-200 rounded-full h-1.5">
+                      <div class="bg-blue-500 h-1.5 rounded-full" style="width: 75%"></div>
+                </div>
+              </div>
+
+                  <div>
+                    <div class="flex items-center justify-between mb-0.5">
+                      <span class="text-xs text-gray-600">集团统建(GB)</span>
+                      <div class="flex items-center gap-1">
+                        <span class="text-xs font-semibold text-gray-900">8</span>
+                        <span class="text-xs text-orange-600 font-medium">25%</span>
+                      </div>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-1.5">
+                      <div class="bg-orange-500 h-1.5 rounded-full" style="width: 25%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 数据主题域分类 -->
+              <div class="bg-white border border-gray-200 rounded-lg p-2.5">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-1">
+                    <i class="fas fa-chart-pie text-blue-600 text-xs"></i>
+                    <h4 class="text-xs font-semibold text-gray-800">数据主题域分类</h4>
+                  </div>
+                  <span class="text-xs text-gray-400">单位：个</span>
+                </div>
+                
+                <div class="flex items-center justify-center mb-2">
+              <!-- 饼图占位 -->
+                  <div class="relative w-28 h-28">
+                    <svg viewBox="0 0 100 100" class="transform -rotate-90">
+                      <!-- 财务域 48% -->
+                      <circle cx="50" cy="50" r="40" fill="none" stroke="#3B82F6" stroke-width="20" 
+                              stroke-dasharray="120 1000" stroke-dashoffset="0"/>
+                      <!-- 计划域 23% -->
+                      <circle cx="50" cy="50" r="40" fill="none" stroke="#06B6D4" stroke-width="20" 
+                              stroke-dasharray="58 1000" stroke-dashoffset="-120"/>
+                      <!-- 仓储物流域 17% -->
+                      <circle cx="50" cy="50" r="40" fill="none" stroke="#F59E0B" stroke-width="20" 
+                              stroke-dasharray="43 1000" stroke-dashoffset="-178"/>
+                      <!-- 公共域 12% -->
+                      <circle cx="50" cy="50" r="40" fill="none" stroke="#EF4444" stroke-width="20" 
+                              stroke-dasharray="30 1000" stroke-dashoffset="-221"/>
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                      <div class="text-center">
+                        <div class="text-lg font-bold text-gray-900">421<span class="text-xs">个</span></div>
+                        <div class="text-xs text-gray-400">总数量</div>
+                      </div>
+                    </div>
+                </div>
+              </div>
+
+                <div class="grid grid-cols-2 gap-1 text-xs">
+                  <div class="flex items-center gap-1">
+                    <div class="w-1.5 h-1.5 bg-blue-500 rounded-sm"></div>
+                    <span class="text-gray-600">财务域</span>
+                </div>
+                  <div class="flex items-center gap-1">
+                    <div class="w-1.5 h-1.5 bg-cyan-500 rounded-sm"></div>
+                    <span class="text-gray-600">计划域</span>
+              </div>
+                  <div class="flex items-center gap-1">
+                    <div class="w-1.5 h-1.5 bg-orange-500 rounded-sm"></div>
+                    <span class="text-gray-600">仓储物流域</span>
+            </div>
+                  <div class="flex items-center gap-1">
+                    <div class="w-1.5 h-1.5 bg-red-500 rounded-sm"></div>
+                    <span class="text-gray-600">公共域</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 数据资源服务调用次数 -->
+              <div class="bg-white border border-gray-200 rounded-lg p-2.5">
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-1">
+                    <i class="fas fa-chart-bar text-blue-600 text-xs"></i>
+                    <h4 class="text-xs font-semibold text-gray-800">服务调用次数</h4>
+                  </div>
+                  <span class="text-xs text-gray-400">单位：次</span>
+                </div>
+                
+                <div class="flex items-end justify-between h-24 gap-1">
+                  <!-- 2025-01 -->
+                  <div class="flex-1 flex flex-col items-center gap-0.5">
+                    <div class="w-full flex gap-0.5">
+                      <div class="flex-1 bg-blue-500 rounded-t" style="height: 60px"></div>
+                      <div class="flex-1 bg-green-500 rounded-t" style="height: 36px"></div>
+                    </div>
+                    <span class="text-xs text-gray-500">01</span>
+                  </div>
+                  <!-- 2025-02 -->
+                  <div class="flex-1 flex flex-col items-center gap-0.5">
+                    <div class="w-full flex gap-0.5">
+                      <div class="flex-1 bg-blue-500 rounded-t" style="height: 72px"></div>
+                      <div class="flex-1 bg-green-500 rounded-t" style="height: 30px"></div>
+                    </div>
+                    <span class="text-xs text-gray-500">02</span>
+                  </div>
+                  <!-- 2025-03 -->
+                  <div class="flex-1 flex flex-col items-center gap-0.5">
+                    <div class="w-full flex gap-0.5">
+                      <div class="flex-1 bg-blue-500 rounded-t" style="height: 66px"></div>
+                      <div class="flex-1 bg-green-500 rounded-t" style="height: 24px"></div>
+                    </div>
+                    <span class="text-xs text-gray-500">03</span>
+                  </div>
+                  <!-- 2025-04 -->
+                  <div class="flex-1 flex flex-col items-center gap-0.5">
+                    <div class="w-full flex gap-0.5">
+                      <div class="flex-1 bg-blue-500 rounded-t" style="height: 48px"></div>
+                      <div class="flex-1 bg-green-500 rounded-t" style="height: 78px"></div>
+                    </div>
+                    <span class="text-xs text-gray-500">04</span>
+                  </div>
+                </div>
+                
+                <div class="flex items-center justify-center gap-2 mt-2 text-xs">
+                  <div class="flex items-center gap-1">
+                    <div class="w-1.5 h-1.5 bg-blue-500 rounded-sm"></div>
+                    <span class="text-gray-600">服务1</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <div class="w-1.5 h-1.5 bg-green-500 rounded-sm"></div>
+                    <span class="text-gray-600">服务2</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <div class="w-1.5 h-1.5 bg-purple-500 rounded-sm"></div>
+                    <span class="text-gray-600">服务3</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+            <!-- 资产情况内容结束 -->
+
+            <!-- 最新资产内容 -->
+            <div id="content-latest-asset" class="hidden">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-gray-800">共展示 12 条资讯</h3>
+                <a href="#" class="text-xs text-blue-600 hover:text-blue-700">查看更多 ›</a>
+              </div>
+              
+              <div class="space-y-2">
+                <!-- 资讯项 -->
+                <div class="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition">
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                        <h4 class="text-xs font-medium text-gray-900">新增资产 "供应商信用评价与合规性分析"</h4>
+                      </div>
+                    </div>
+                    <span class="text-xs text-gray-400 ml-4">2025年5月25日 18:23:24</span>
+                  </div>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition">
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                        <h4 class="text-xs font-medium text-gray-900">"采购数据专题分析模型" 进行资产变更</h4>
+                      </div>
+                    </div>
+                    <span class="text-xs text-gray-400 ml-4">2025年5月25日 18:23:24</span>
+                  </div>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition">
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                        <h4 class="text-xs font-medium text-gray-900">"智能评审大模型" 进行资产变更</h4>
+                      </div>
+                    </div>
+                    <span class="text-xs text-gray-400 ml-4">2025年5月25日 18:23:24</span>
+                  </div>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition">
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                        <h4 class="text-xs font-medium text-gray-900">"采购数据专题分析模型" 进行资产变更</h4>
+                      </div>
+                    </div>
+                    <span class="text-xs text-gray-400 ml-4">2025年5月25日 18:23:24</span>
+                  </div>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition">
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                        <h4 class="text-xs font-medium text-gray-900">新增资产 "供应商信用评价与合规性分析"</h4>
+                      </div>
+                    </div>
+                    <span class="text-xs text-gray-400 ml-4">2025年5月25日 18:23:24</span>
+                  </div>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition">
+                  <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                        <h4 class="text-xs font-medium text-gray-900">"采购数据专题分析模型" 进行资产变更</h4>
+                      </div>
+                    </div>
+                    <span class="text-xs text-gray-400 ml-4">2025年5月25日 18:23:24</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 最新资产内容结束 -->
+
+            <!-- 热门服务内容 -->
+            <div id="content-hot-service" class="hidden">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-gray-800">共展示 12 条服务</h3>
+                <a href="#" class="text-xs text-blue-600 hover:text-blue-700">查看更多 ›</a>
+              </div>
+              
+              <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                <table class="w-full text-xs">
+                  <thead class="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                      <th class="px-3 py-2 text-left text-xs font-semibold text-gray-700">序号</th>
+                      <th class="px-3 py-2 text-left text-xs font-semibold text-gray-700">名称</th>
+                      <th class="px-3 py-2 text-right text-xs font-semibold text-gray-700">调用次数（次）↓</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-100">
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-3 py-2 text-center">
+                        <i class="fas fa-crown text-yellow-500"></i>
+                      </td>
+                      <td class="px-3 py-2 text-gray-900">某某某某某某某名称</td>
+                      <td class="px-3 py-2 text-right font-semibold text-gray-900">5,456,315</td>
+                    </tr>
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-3 py-2 text-center">
+                        <i class="fas fa-medal text-gray-400"></i>
+                      </td>
+                      <td class="px-3 py-2 text-gray-900">ABC服务名称</td>
+                      <td class="px-3 py-2 text-right font-semibold text-gray-900">354,645</td>
+                    </tr>
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-3 py-2 text-center">
+                        <i class="fas fa-medal text-orange-400"></i>
+                      </td>
+                      <td class="px-3 py-2 text-gray-900">服务名称1</td>
+                      <td class="px-3 py-2 text-right font-semibold text-gray-900">249,848</td>
+                    </tr>
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-3 py-2 text-center text-gray-600">4</td>
+                      <td class="px-3 py-2 text-gray-900">服务3</td>
+                      <td class="px-3 py-2 text-right font-semibold text-gray-900">228,483</td>
+                    </tr>
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-3 py-2 text-center text-gray-600">5</td>
+                      <td class="px-3 py-2 text-gray-900">XXXXXXXXXXXXXXXXXXX服务</td>
+                      <td class="px-3 py-2 text-right font-semibold text-gray-900">219,848</td>
+                    </tr>
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-3 py-2 text-center text-gray-600">6</td>
+                      <td class="px-3 py-2 text-gray-900">服务3</td>
+                      <td class="px-3 py-2 text-right font-semibold text-gray-900">228,483</td>
+                    </tr>
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-3 py-2 text-center text-gray-600">7</td>
+                      <td class="px-3 py-2 text-gray-900">服务名称5</td>
+                      <td class="px-3 py-2 text-right font-semibold text-gray-900">249,848</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- 热门服务内容结束 -->
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+  
+   <!-- 页脚 -->
+   <footer class="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-t border-gray-700 py-6 mt-6">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <!-- 系统信息 -->
+        <div class="col-span-1 md:col-span-2">
+          <div class="flex items-center mb-4">
+            <div class="h-10 w-10 rounded-full border-2 border-red-400 shadow-lg bg-white flex items-center justify-center mr-3">
+              <svg class="h-6 w-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <span class="text-xl font-bold text-white">数据资产管理系统</span>
+          </div>
+          <p class="text-gray-400 mb-4 max-w-md">
+            构建企业级数据资产全生命周期管理平台，实现数据价值的最大化释放，为企业数字化转型提供强有力的数据支撑。
+          </p>
+          <div class="flex space-x-4">
+            <div class="bg-white/10 rounded-lg px-3 py-2">
+              <span class="text-white text-sm font-medium">版本 v4.7.0903</span>
+            </div>
+            <div class="bg-white/10 rounded-lg px-3 py-2">
+              <span class="text-white text-sm font-medium">© 2025</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 快速链接 -->
+        <div>
+          <h3 class="text-white font-bold text-lg mb-4">快速链接</h3>
+          <ul class="space-y-2">
+            <li><a href="数据资产.html" class="text-gray-300 hover:text-white transition-colors duration-300 font-medium">数据资产</a></li>
+            <li><a href="数据来源管理.html" class="text-gray-300 hover:text-white transition-colors duration-300 font-medium">数据来源管理</a></li>
+            <li><a href="资产会计核算.html" class="text-gray-300 hover:text-white transition-colors duration-300 font-medium">资产会计核算</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300 font-medium">帮助文档</a></li>
+          </ul>
+        </div>
+        
+        <!-- 联系信息 -->
+        <div>
+          <h3 class="text-white font-bold text-lg mb-4">联系我们</h3>
+          <ul class="space-y-2">
+            <li class="flex items-center text-gray-300">
+              <i class="fas fa-envelope mr-2 text-gray-400"></i>
+              <span class="text-sm font-medium">support@dataasset.com</span>
+            </li>
+            <li class="flex items-center text-gray-300">
+              <i class="fas fa-phone mr-2 text-gray-400"></i>
+              <span class="text-sm font-medium">400-888-8888</span>
+            </li>
+            <li class="flex items-center text-gray-300">
+              <i class="fas fa-clock mr-2 text-gray-400"></i>
+              <span class="text-sm font-medium">7×24小时服务</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- 底部版权 -->
+      <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+        <p class="text-gray-400 text-sm">
+          数据资产管理系统 | 智能管理 · 安全共享 · 价值创造
+        </p>
+      </div>
+    </div>
+  </footer>
+  
+  <script>
+    // 子菜单切换
+    function toggleSubMenu(menuId) {
+      const submenu = document.getElementById(menuId + '-submenu');
+      const arrow = document.getElementById(menuId + '-arrow');
+      
+      if (submenu.classList.contains('hidden')) {
+        submenu.classList.remove('hidden');
+        arrow.style.transform = 'rotate(180deg)';
+      } else {
+        submenu.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+      }
+    }
+    
+    // 模块导航
+    function navigateToModule(moduleId) {
+      alert(`导航到${moduleId}模块功能演示`);
+    }
+    
+    // 用户下拉菜单切换
+    function toggleUserDropdown() {
+      const dropdownMenu = document.getElementById('user-dropdown-menu');
+      const arrow = document.getElementById('dropdown-arrow');
+      
+      if (dropdownMenu.classList.contains('hidden')) {
+        dropdownMenu.classList.remove('hidden');
+        arrow.style.transform = 'rotate(180deg)';
+      } else {
+        dropdownMenu.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    // 切换内容显示
+    function switchContent(type) {
+      // 隐藏所有内容区域
+      document.getElementById('content-asset-info').classList.add('hidden');
+      document.getElementById('content-latest-asset').classList.add('hidden');
+      document.getElementById('content-hot-service').classList.add('hidden');
+      
+      // 重置所有导航卡片样式
+      const navItems = ['nav-asset-info', 'nav-latest-asset', 'nav-hot-service'];
+      navItems.forEach(navId => {
+        const navItem = document.getElementById(navId);
+        navItem.classList.remove('bg-blue-600', 'text-white');
+        navItem.classList.add('bg-white', 'border', 'border-gray-200');
+        // 重置图标和文字颜色
+        const icon = navItem.querySelector('i');
+        const text = navItem.querySelector('.text-xs');
+        if (icon) icon.classList.add('text-gray-400');
+        if (text) text.classList.add('text-gray-600');
+      });
+      
+      // 显示对应的内容区域并激活对应导航
+      const contentMap = {
+        'asset-info': 'content-asset-info',
+        'latest-asset': 'content-latest-asset',
+        'hot-service': 'content-hot-service'
+      };
+      
+      const navMap = {
+        'asset-info': 'nav-asset-info',
+        'latest-asset': 'nav-latest-asset',
+        'hot-service': 'nav-hot-service'
+      };
+      
+      if (contentMap[type]) {
+        // 显示内容
+        document.getElementById(contentMap[type]).classList.remove('hidden');
+        
+        // 激活导航
+        const activeNav = document.getElementById(navMap[type]);
+        activeNav.classList.remove('bg-white', 'border', 'border-gray-200');
+        activeNav.classList.add('bg-blue-600', 'text-white');
+        
+        // 更新图标和文字颜色
+        const icon = activeNav.querySelector('i');
+        const text = activeNav.querySelector('.text-xs');
+        if (icon) icon.classList.remove('text-gray-400');
+        if (text) text.classList.remove('text-gray-600');
+      }
+    }
+    
+    // 点击外部关闭下拉菜单
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('user-dropdown');
+      const dropdownMenu = document.getElementById('user-dropdown-menu');
+      const arrow = document.getElementById('dropdown-arrow');
+      
+      if (!dropdown.contains(event.target)) {
+        dropdownMenu.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+      }
+    });
+    
+    // 数字计数动画增强
+    function animateNumber(element, target, duration = 2000) {
+      const start = 0;
+      const increment = target / (duration / 16);
+      let current = start;
+      
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          current = target;
+          clearInterval(timer);
+        }
+        // 根据目标值决定显示格式
+        if (Number.isInteger(target)) {
+          element.textContent = Math.floor(current);
+        } else {
+          element.textContent = current.toFixed(2);
+        }
+      }, 16);
+    }
+    
+    // 页面加载完成后启动数字动画
+    document.addEventListener('DOMContentLoaded', () => {
+      // 启动数字动画
+      setTimeout(() => {
+        const numbers = document.querySelectorAll('.stat-number');
+        numbers.forEach((num, index) => {
+          const target = parseFloat(num.textContent);
+          animateNumber(num, target);
+        });
+      }, 800);
+      
+      // 添加卡片进入动画
+      const cards = document.querySelectorAll('.tech-card, .quick-access-card');
+      cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        setTimeout(() => {
+          card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, 200 + index * 100);
+      });
+    });
+  </script>
+</body>
+</html> 
+
+
+
+
+
+
+
