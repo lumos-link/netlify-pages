@@ -2511,10 +2511,6 @@
                         <option>加工数据</option>
                       </select>
                     </div>
-                    <div>
-                      <label class="block text-sm font-medium text-gray-700 mb-1">数据来源 *</label>
-                      <input type="text" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md" placeholder="请输入数据来源">
-                    </div>
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">详细描述</label>
@@ -3768,7 +3764,7 @@
   <!-- 选择数据资源弹窗 -->
   <div id="dataResourceSelectionModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
     <div class="flex items-center justify-center min-h-screen p-4">
-      <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+      <div class="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] flex flex-col">
         <div class="flex items-center justify-between p-6 border-b border-gray-200 flex-shrink-0">
           <h3 class="text-lg font-medium text-gray-900">选择数据资源</h3>
           <button onclick="closeDataResourceModal()" class="text-gray-400 hover:text-gray-600">
@@ -3776,171 +3772,46 @@
           </button>
         </div>
         
-        <!-- 搜索框 -->
-        <div class="p-4 border-b border-gray-200 flex-shrink-0">
-          <div class="relative">
-            <input type="text" id="dataResourceSearch" placeholder="搜索数据资源..." 
-                   class="w-full px-4 py-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                   oninput="filterDataResources()">
-            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+        <!-- 左右两栏布局 -->
+        <div class="flex flex-1 overflow-hidden">
+          <!-- 左侧：可选内容（树结构） -->
+          <div class="w-1/2 border-r border-gray-200 flex flex-col">
+            <!-- 搜索框 -->
+            <div class="p-4 border-b border-gray-200 flex-shrink-0">
+              <div class="flex gap-2">
+                <input type="text" id="dataResourceSearch" placeholder="搜索数据资源" 
+                       class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                       onkeypress="if(event.key === 'Enter') searchDataResources()">
+                <button onclick="searchDataResources()" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 text-sm">
+                  <i class="fas fa-search mr-1"></i>查询
+                </button>
+              </div>
+            </div>
+            
+            <!-- 树形结构 -->
+            <div class="flex-1 overflow-y-auto p-4">
+              <div id="dataResourceTree" class="tree-container">
+                <!-- 树形结构将通过JavaScript动态生成 -->
+              </div>
+            </div>
           </div>
-        </div>
-        
-        <!-- 数据资源列表 -->
-        <div class="p-6 overflow-y-auto flex-1">
-          <div class="space-y-3" id="dataResourceList">
-            <!-- 用户基础信息表 -->
-            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50" data-resource-id="res_001">
-              <div class="flex items-center cursor-pointer" onclick="toggleResourceSelection(this, 'res_001')">
-                <input type="checkbox" class="mr-4 h-4 w-4 text-blue-600 resource-checkbox" onclick="event.stopPropagation(); toggleResourceSelection(this.parentElement, 'res_001')">
-                <div class="flex-1">
-                  <div class="flex items-center justify-between mb-2">
-                    <h4 class="text-sm font-medium text-gray-900">用户基础信息表</h4>
-                    <span class="text-xs text-gray-500">res_001</span>
-                  </div>
-                  <div class="flex items-center space-x-4 text-xs text-gray-600">
-                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded">类型：结构化</span>
-                    <span>大小：2.5GB</span>
-                    <span>记录数：1,250,000</span>
-                  </div>
-                </div>
-              </div>
-              <!-- 权属有效时间字段（选中后显示） -->
-              <div class="ownership-time-fields hidden mt-3 pl-10 border-t border-gray-200 pt-3">
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">权属有效开始时间 <span class="text-red-500">*</span></label>
-                    <input type="date" class="ownership-start-date w-full px-2 py-1 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                  </div>
-                  <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">权属有效结束时间 <span class="text-red-500">*</span></label>
-                    <input type="date" class="ownership-end-date w-full px-2 py-1 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                  </div>
-                </div>
+          
+          <!-- 右侧：已选申请清单 -->
+          <div class="w-1/2 flex flex-col bg-gray-50">
+            <div class="p-4 border-b border-gray-200 flex-shrink-0">
+              <div class="flex items-center justify-between">
+                <h4 class="text-sm font-medium text-gray-900">已选申请清单: <span id="selectedCount">0</span>项</h4>
+                <button onclick="clearSelectedResources()" class="text-sm text-blue-500 hover:text-blue-700">清空表单</button>
               </div>
             </div>
             
-            <!-- 订单交易记录 -->
-            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50" data-resource-id="res_002">
-              <div class="flex items-center cursor-pointer" onclick="toggleResourceSelection(this, 'res_002')">
-                <input type="checkbox" class="mr-4 h-4 w-4 text-blue-600 resource-checkbox" onclick="event.stopPropagation(); toggleResourceSelection(this.parentElement, 'res_002')">
-                <div class="flex-1">
-                  <div class="flex items-center justify-between mb-2">
-                    <h4 class="text-sm font-medium text-gray-900">订单交易记录</h4>
-                    <span class="text-xs text-gray-500">res_002</span>
-                  </div>
-                  <div class="flex items-center space-x-4 text-xs text-gray-600">
-                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded">类型：结构化</span>
-                    <span>大小：15.8GB</span>
-                    <span>记录数：8,750,000</span>
-                  </div>
-                </div>
+            <!-- 已选列表 -->
+            <div class="flex-1 overflow-y-auto p-4">
+              <div id="selectedResourcesList" class="space-y-2">
+                <!-- 已选择的数据资源将在这里显示 -->
               </div>
-              <!-- 权属有效时间字段（选中后显示） -->
-              <div class="ownership-time-fields hidden mt-3 pl-10 border-t border-gray-200 pt-3">
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">权属有效开始时间 <span class="text-red-500">*</span></label>
-                    <input type="date" class="ownership-start-date w-full px-2 py-1 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                  </div>
-                  <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">权属有效结束时间 <span class="text-red-500">*</span></label>
-                    <input type="date" class="ownership-end-date w-full px-2 py-1 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- 商品目录信息 -->
-            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50" data-resource-id="res_003">
-              <div class="flex items-center cursor-pointer" onclick="toggleResourceSelection(this, 'res_003')">
-                <input type="checkbox" class="mr-4 h-4 w-4 text-blue-600 resource-checkbox" onclick="event.stopPropagation(); toggleResourceSelection(this.parentElement, 'res_003')">
-                <div class="flex-1">
-                  <div class="flex items-center justify-between mb-2">
-                    <h4 class="text-sm font-medium text-gray-900">商品目录信息</h4>
-                    <span class="text-xs text-gray-500">res_003</span>
-                  </div>
-                  <div class="flex items-center space-x-4 text-xs text-gray-600">
-                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded">类型：结构化</span>
-                    <span>大小：1.2GB</span>
-                    <span>记录数：450,000</span>
-                  </div>
-                </div>
-              </div>
-              <!-- 权属有效时间字段（选中后显示） -->
-              <div class="ownership-time-fields hidden mt-3 pl-10 border-t border-gray-200 pt-3">
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">权属有效开始时间 <span class="text-red-500">*</span></label>
-                    <input type="date" class="ownership-start-date w-full px-2 py-1 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                  </div>
-                  <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">权属有效结束时间 <span class="text-red-500">*</span></label>
-                    <input type="date" class="ownership-end-date w-full px-2 py-1 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- 用户行为日志 -->
-            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50" data-resource-id="res_004">
-              <div class="flex items-center cursor-pointer" onclick="toggleResourceSelection(this, 'res_004')">
-                <input type="checkbox" class="mr-4 h-4 w-4 text-blue-600 resource-checkbox" onclick="event.stopPropagation(); toggleResourceSelection(this.parentElement, 'res_004')">
-                <div class="flex-1">
-                  <div class="flex items-center justify-between mb-2">
-                    <h4 class="text-sm font-medium text-gray-900">用户行为日志</h4>
-                    <span class="text-xs text-gray-500">res_004</span>
-                  </div>
-                  <div class="flex items-center space-x-4 text-xs text-gray-600">
-                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded">类型：半结构化</span>
-                    <span>大小：25.6GB</span>
-                    <span>记录数：12,500,000</span>
-                  </div>
-                </div>
-              </div>
-              <!-- 权属有效时间字段（选中后显示） -->
-              <div class="ownership-time-fields hidden mt-3 pl-10 border-t border-gray-200 pt-3">
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">权属有效开始时间 <span class="text-red-500">*</span></label>
-                    <input type="date" class="ownership-start-date w-full px-2 py-1 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                  </div>
-                  <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">权属有效结束时间 <span class="text-red-500">*</span></label>
-                    <input type="date" class="ownership-end-date w-full px-2 py-1 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- 客户服务记录 -->
-            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50" data-resource-id="res_005">
-              <div class="flex items-center cursor-pointer" onclick="toggleResourceSelection(this, 'res_005')">
-                <input type="checkbox" class="mr-4 h-4 w-4 text-blue-600 resource-checkbox" onclick="event.stopPropagation(); toggleResourceSelection(this.parentElement, 'res_005')">
-                <div class="flex-1">
-                  <div class="flex items-center justify-between mb-2">
-                    <h4 class="text-sm font-medium text-gray-900">客户服务记录</h4>
-                    <span class="text-xs text-gray-500">res_005</span>
-                  </div>
-                  <div class="flex items-center space-x-4 text-xs text-gray-600">
-                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded">类型：结构化</span>
-                    <span>大小：8.3GB</span>
-                    <span>记录数：2,100,000</span>
-                  </div>
-                </div>
-              </div>
-              <!-- 权属有效时间字段（选中后显示） -->
-              <div class="ownership-time-fields hidden mt-3 pl-10 border-t border-gray-200 pt-3">
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">权属有效开始时间 <span class="text-red-500">*</span></label>
-                    <input type="date" class="ownership-start-date w-full px-2 py-1 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                  </div>
-                  <div>
-                    <label class="block text-xs font-medium text-gray-700 mb-1">权属有效结束时间 <span class="text-red-500">*</span></label>
-                    <input type="date" class="ownership-end-date w-full px-2 py-1 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
-                  </div>
-                </div>
+              <div id="emptySelectedMessage" class="text-center text-gray-400 text-sm mt-8">
+                暂未选择数据资源
               </div>
             </div>
           </div>
@@ -3951,8 +3822,8 @@
           <button onclick="closeDataResourceModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
             取消
           </button>
-          <button onclick="confirmDataResourceSelection()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-            <i class="fas fa-check mr-1"></i>确认选择
+          <button onclick="confirmDataResourceSelection()" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+            确认选择
           </button>
         </div>
       </div>
@@ -5435,17 +5306,6 @@
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">数据集名称</label>
               <input type="text" class="dataset-name w-full px-3 py-2 text-sm border border-gray-300 rounded-md" placeholder="请输入数据集名称" onchange="saveDatasetData()">
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">数据来源</label>
-              <select class="dataset-source w-full px-3 py-2 text-sm border border-gray-300 rounded-md" onchange="saveDatasetData()">
-                <option value="">请选择数据来源</option>
-                <option value="guoneng-ecommerce">国能e购</option>
-                <option value="data-entry">数据填报</option>
-                <option value="external-api">外部API</option>
-                <option value="database">数据库</option>
-                <option value="file-upload">文件上传</option>
-              </select>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">数据结构</label>
@@ -7790,14 +7650,46 @@
   <script>
     // 数据资源弹窗相关函数（资产形成环节）
     let assetFormationSelectedResources = [];
+    
+    // 树形数据资源结构
+    const dataResourceTree = [
+      {
+        id: 'source_001',
+        name: '数据来源1',
+        expanded: true,
+        tables: [
+          { id: 'table_001', name: '合同数据表', type: '结构化', volume: '2.5GB', records: '1,250,000' },
+          { id: 'table_002', name: '供应商数据表', type: '结构化', volume: '1.2GB', records: '450,000' },
+          { id: 'table_003', name: '投标数据表', type: '结构化', volume: '0.8GB', records: '150,000' }
+        ]
+      },
+      {
+        id: 'source_002',
+        name: '数据来源222',
+        expanded: false,
+        tables: [
+          { id: 'table_004', name: '订单交易记录', type: '结构化', volume: '15.8GB', records: '8,750,000' },
+          { id: 'table_005', name: '用户基础信息表', type: '结构化', volume: '2.5GB', records: '1,250,000' }
+        ]
+      },
+      {
+        id: 'source_003',
+        name: '数据来源2533',
+        expanded: false,
+        tables: [
+          { id: 'table_006', name: '商品目录信息', type: '结构化', volume: '1.2GB', records: '450,000' },
+          { id: 'table_007', name: '用户行为日志', type: '半结构化', volume: '25.6GB', records: '12,500,000' },
+          { id: 'table_008', name: '客户服务记录', type: '非结构化', volume: '8.3GB', records: '2,100,000' }
+        ]
+      }
+    ];
 
     // 打开数据资源选择弹窗
     function openDataResourceModal() {
       document.getElementById('dataResourceSelectionModal').classList.remove('hidden');
       assetFormationSelectedResources = [];
-      // 清除所有选中状态
-      const checkboxes = document.querySelectorAll('#dataResourceList input[type="checkbox"]');
-      checkboxes.forEach(cb => cb.checked = false);
+      renderDataResourceTree();
+      updateSelectedResourcesList();
     }
 
     // 关闭数据资源选择弹窗
@@ -7805,62 +7697,174 @@
       document.getElementById('dataResourceSelectionModal').classList.add('hidden');
     }
 
-    // 切换资源选择状态
-    function toggleResourceSelection(element, resourceId) {
-      // 获取资源容器
-      const resourceContainer = element.closest('[data-resource-id]');
-      const checkbox = resourceContainer.querySelector('input[type="checkbox"]');
-      const ownershipTimeFields = resourceContainer.querySelector('.ownership-time-fields');
+    // 渲染树形结构
+    function renderDataResourceTree() {
+      const treeContainer = document.getElementById('dataResourceTree');
+      if (!treeContainer) return;
       
-      // 切换checkbox状态
-      checkbox.checked = !checkbox.checked;
+      let html = '';
+      dataResourceTree.forEach(source => {
+        html += `
+          <div class="tree-node mb-2">
+            <div class="flex items-center py-2 cursor-pointer hover:bg-gray-100 rounded px-2" onclick="toggleSourceNode('${source.id}')">
+              <i class="fas fa-chevron-${source.expanded ? 'down' : 'right'} text-xs text-gray-500 mr-2 w-4"></i>
+              <span class="text-sm font-medium text-gray-700">${source.name}</span>
+            </div>
+            <div class="tree-children ml-6 ${source.expanded ? '' : 'hidden'}" id="children_${source.id}">
+              ${source.tables.map(table => {
+                const isSelected = assetFormationSelectedResources.some(r => r.id === table.id);
+                return `
+                  <div class="flex items-center py-2 px-2 hover:bg-gray-50 rounded cursor-pointer" onclick="toggleTableSelection('${source.id}', '${table.id}')">
+                    <input type="checkbox" class="mr-3 h-4 w-4 text-blue-600" ${isSelected ? 'checked' : ''} 
+                           onclick="event.stopPropagation(); toggleTableSelection('${source.id}', '${table.id}')">
+                    <i class="fas fa-table text-xs text-gray-400 mr-2"></i>
+                    <span class="text-sm text-gray-700">${table.name}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      });
       
-      if (checkbox.checked) {
-        // 选中时显示权属有效时间字段
-        if (ownershipTimeFields) {
-          ownershipTimeFields.classList.remove('hidden');
+      treeContainer.innerHTML = html;
+    }
+
+    // 切换数据来源节点展开/折叠
+    function toggleSourceNode(sourceId) {
+      const source = dataResourceTree.find(s => s.id === sourceId);
+      if (!source) return;
+      
+      source.expanded = !source.expanded;
+      const children = document.getElementById(`children_${sourceId}`);
+      if (children) {
+        if (source.expanded) {
+          children.classList.remove('hidden');
+        } else {
+          children.classList.add('hidden');
         }
-        if (!assetFormationSelectedResources.includes(resourceId)) {
-          assetFormationSelectedResources.push(resourceId);
+        // 更新图标
+        const icon = children.previousElementSibling.querySelector('i');
+        if (icon) {
+          icon.className = `fas fa-chevron-${source.expanded ? 'down' : 'right'} text-xs text-gray-500 mr-2 w-4`;
         }
-      } else {
-        // 取消选中时隐藏权属有效时间字段并清空值
-        if (ownershipTimeFields) {
-          ownershipTimeFields.classList.add('hidden');
-          const startDate = ownershipTimeFields.querySelector('.ownership-start-date');
-          const endDate = ownershipTimeFields.querySelector('.ownership-end-date');
-          if (startDate) startDate.value = '';
-          if (endDate) endDate.value = '';
-        }
-        assetFormationSelectedResources = assetFormationSelectedResources.filter(id => id !== resourceId);
       }
+    }
+
+    // 切换数据表选择状态
+    function toggleTableSelection(sourceId, tableId) {
+      const source = dataResourceTree.find(s => s.id === sourceId);
+      if (!source) return;
+      
+      const table = source.tables.find(t => t.id === tableId);
+      if (!table) return;
+      
+      const existingIndex = assetFormationSelectedResources.findIndex(r => r.id === tableId);
+      
+      if (existingIndex >= 0) {
+        // 取消选择
+        assetFormationSelectedResources.splice(existingIndex, 1);
+      } else {
+        // 选择
+        assetFormationSelectedResources.push({
+          id: tableId,
+          name: table.name,
+          sourceId: sourceId,
+          sourceName: source.name
+        });
+      }
+      
+      renderDataResourceTree();
+      updateSelectedResourcesList();
+    }
+
+    // 更新已选资源列表
+    function updateSelectedResourcesList() {
+      const selectedList = document.getElementById('selectedResourcesList');
+      const emptyMessage = document.getElementById('emptySelectedMessage');
+      const selectedCount = document.getElementById('selectedCount');
+      
+      if (!selectedList || !emptyMessage || !selectedCount) return;
+      
+      selectedCount.textContent = assetFormationSelectedResources.length;
+      
+      if (assetFormationSelectedResources.length === 0) {
+        selectedList.innerHTML = '';
+        emptyMessage.classList.remove('hidden');
+      } else {
+        emptyMessage.classList.add('hidden');
+        selectedList.innerHTML = assetFormationSelectedResources.map(resource => `
+          <div class="flex items-center justify-between bg-white px-3 py-2 rounded border border-gray-200">
+            <span class="text-sm text-gray-700">${resource.name}</span>
+            <button onclick="removeSelectedResource('${resource.id}')" class="text-gray-400 hover:text-red-500 ml-2">
+              <i class="fas fa-times text-xs"></i>
+            </button>
+          </div>
+        `).join('');
+      }
+    }
+
+    // 移除已选资源
+    function removeSelectedResource(resourceId) {
+      assetFormationSelectedResources = assetFormationSelectedResources.filter(r => r.id !== resourceId);
+      renderDataResourceTree();
+      updateSelectedResourcesList();
+    }
+
+    // 清空已选资源
+    function clearSelectedResources() {
+      assetFormationSelectedResources = [];
+      renderDataResourceTree();
+      updateSelectedResourcesList();
+    }
+
+    // 搜索数据资源
+    function searchDataResources() {
+      const searchTerm = document.getElementById('dataResourceSearch').value.toLowerCase().trim();
+      
+      if (!searchTerm) {
+        // 如果搜索为空，显示所有节点
+        dataResourceTree.forEach(source => {
+          source.expanded = true;
+        });
+        renderDataResourceTree();
+        return;
+      }
+      
+      // 展开包含匹配项的节点，并隐藏不匹配的节点
+      dataResourceTree.forEach(source => {
+        const hasMatch = source.tables.some(table => 
+          table.name.toLowerCase().includes(searchTerm) || source.name.toLowerCase().includes(searchTerm)
+        );
+        source.expanded = hasMatch;
+      });
+      
+      renderDataResourceTree();
+      
+      // 高亮匹配项，隐藏不匹配的表
+      const allTables = document.querySelectorAll('.tree-children > div');
+      allTables.forEach(tableDiv => {
+        const tableName = tableDiv.querySelector('span').textContent.toLowerCase();
+        if (tableName.includes(searchTerm)) {
+          tableDiv.classList.add('bg-yellow-100');
+          tableDiv.style.display = 'flex';
+        } else {
+          tableDiv.classList.remove('bg-yellow-100');
+          // 如果父节点也不匹配，则隐藏
+          const sourceName = tableDiv.closest('.tree-node').querySelector('.font-medium').textContent.toLowerCase();
+          if (!sourceName.includes(searchTerm)) {
+            tableDiv.style.display = 'none';
+          } else {
+            tableDiv.style.display = 'flex';
+          }
+        }
+      });
     }
 
     // 确认选择数据资源
     function confirmDataResourceSelection() {
       if (assetFormationSelectedResources.length === 0) {
         alert('请至少选择一个数据资源');
-        return;
-      }
-      
-      // 验证所有选中的资源都填写了权属有效时间
-      let isValid = true;
-      let missingTimeResources = [];
-      
-      assetFormationSelectedResources.forEach(resourceId => {
-        const resourceContainer = document.querySelector(`[data-resource-id="${resourceId}"]`);
-        const startDate = resourceContainer.querySelector('.ownership-start-date').value;
-        const endDate = resourceContainer.querySelector('.ownership-end-date').value;
-        
-        if (!startDate || !endDate) {
-          isValid = false;
-          const resourceName = resourceContainer.querySelector('h4').textContent;
-          missingTimeResources.push(resourceName);
-        }
-      });
-      
-      if (!isValid) {
-        alert(`请为以下数据资源填写权属有效时间：\n${missingTimeResources.join('\n')}`);
         return;
       }
       
@@ -7875,23 +7879,6 @@
         alert('功能开发中：将从系统中获取上一个资产的权属证明信息并自动填充到当前表单。');
         // 实际实现时，这里会调用API获取上一个资产的权属证明信息并填充表单
       }
-    }
-
-    // 搜索过滤数据资源
-    function filterDataResources() {
-      const searchTerm = document.getElementById('dataResourceSearch').value.toLowerCase();
-      const resources = document.querySelectorAll('#dataResourceList > div');
-      
-      resources.forEach(resource => {
-        const title = resource.querySelector('h4').textContent.toLowerCase();
-        const id = resource.querySelector('.text-xs.text-gray-500').textContent.toLowerCase();
-        
-        if (title.includes(searchTerm) || id.includes(searchTerm)) {
-          resource.style.display = 'block';
-        } else {
-          resource.style.display = 'none';
-        }
-      });
     }
 
     // ==================== 项目编码同步逻辑 ====================
