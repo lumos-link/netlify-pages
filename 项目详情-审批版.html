@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>项目详情 - 数据资产管理系统</title>
+  <title>项目详情-审批版 - 数据资产管理系统</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -755,38 +755,15 @@
           </div>
         </div>
         
-          <!-- 审批历史 -->
-          <div class="mt-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">审批历史</label>
-            <div class="space-y-3">
-              <!-- 审批流程表格 -->
-              <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                <table class="min-w-full divide-y divide-gray-200">
-                  <thead class="bg-gray-50">
-                    <tr>
-                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">审批步骤</th>
-                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">审批人</th>
-                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">审批结果</th>
-                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">审批时间</th>
-                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">审批意见</th>
-                    </tr>
-                  </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
-                    <tr>
-                      <td class="px-4 py-3 text-sm font-medium text-gray-900">1. 研究环节审批</td>
-                      <td class="px-4 py-3 text-sm text-gray-600">王总监</td>
-                      <td class="px-4 py-3">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          通过
-                        </span>
-                      </td>
-                      <td class="px-4 py-3 text-sm text-gray-600">2024-12-20 10:30</td>
-                      <td class="px-4 py-3 text-sm text-gray-600">研究方案完善，同意立项</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+        </div>
+        
+        <!-- 审批进度 -->
+        <div class="mt-6">
+          <div class="bg-white border border-blue-100 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-blue-600 mb-3 flex items-center">
+              <i class="fas fa-project-diagram mr-2"></i>审批进度
+            </h4>
+            <div id="research-phase-progress" class="space-y-3"></div>
           </div>
         </div>
         
@@ -2229,39 +2206,16 @@
           </div>
         </div>
         
-          <!-- 审批历史 -->
-          <div class="mt-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">审批历史</label>
-            <div class="space-y-3">
-              <!-- 审批流程表格 -->
-              <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                <table class="min-w-full divide-y divide-gray-200">
-                  <thead class="bg-gray-50">
-                    <tr>
-                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">审批步骤</th>
-                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">审批人</th>
-                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">审批结果</th>
-                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">审批时间</th>
-                      <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">审批意见</th>
-                    </tr>
-                  </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
-                    <tr>
-                      <td class="px-4 py-3 text-sm font-medium text-gray-900">1. 开发环节审批</td>
-                      <td class="px-4 py-3 text-sm text-gray-600">李总监</td>
-                      <td class="px-4 py-3">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          通过
-                        </span>
-                      </td>
-                      <td class="px-4 py-3 text-sm text-gray-600">2024-12-25 15:30</td>
-                      <td class="px-4 py-3 text-sm text-gray-600">开发完成，验收合格</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+        
+        <!-- 审批进度 -->
+        <div class="mt-6">
+          <div class="bg-white border border-indigo-100 rounded-lg p-4">
+            <h4 class="text-sm font-semibold text-indigo-600 mb-3 flex items-center">
+              <i class="fas fa-project-diagram mr-2"></i>审批进度
+            </h4>
+            <div id="development-phase-progress" class="space-y-3"></div>
           </div>
+        </div>
         </div>
         
         <!-- 资产形成环节大页签 -->
@@ -3755,11 +3709,47 @@
               </div>
             </div>
 
+          <!-- 审批进度 -->
+          <div class="mt-6">
+            <div class="bg-white border border-green-100 rounded-lg p-4">
+              <h4 class="text-sm font-semibold text-green-600 mb-3 flex items-center">
+                <i class="fas fa-project-diagram mr-2"></i>审批进度
+              </h4>
+              <div id="asset-phase-progress" class="space-y-3"></div>
+            </div>
+          </div>
+
           </div>
         </div>
       </div>
     </div>
   </main>
+
+  <!-- 审批操作区域 -->
+  <div class="bg-white border-t border-gray-200 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+      <div class="flex items-center justify-between flex-wrap gap-4">
+        <div class="flex items-center space-x-4 flex-1 min-w-[300px]">
+          <span class="text-sm font-medium text-gray-700 whitespace-nowrap">审批意见：</span>
+          <textarea id="approvalComment" placeholder="请输入审批意见（可选）" 
+            class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-none" 
+            rows="2" style="min-width: 200px; max-width: 500px;"></textarea>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button onclick="handleApproval('reject')" class="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors font-medium">
+            <i class="fas fa-times mr-2"></i>拒绝
+          </button>
+          <button onclick="handleApproval('return')" class="px-6 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors font-medium">
+            <i class="fas fa-undo mr-2"></i>退回
+          </button>
+          <button onclick="handleApproval('approve')" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors font-medium">
+            <i class="fas fa-check mr-2"></i>同意
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <!-- 选择数据资源弹窗 -->
   <div id="dataResourceSelectionModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
@@ -3955,6 +3945,112 @@
   </div>
 
   <script>
+    const projectPhaseProgress = {
+      'research-phase': [
+        { name: '发起', status: 'completed', owner: '张敏', time: '2024-12-05 09:00', note: '研究环节资料已提交，审批流程已发起' },
+        { name: '审批', status: 'current', owner: '项目管理办', note: '审批中，预计1个工作日内完成' }
+      ],
+      'development-phase': [
+        { name: '发起', status: 'completed', owner: '产品经理', time: '2025-01-10 10:30', note: '开发环节审批流程已发起，待管理层确认' },
+        { name: '审批', status: 'current', owner: '研发管理委员会', note: '审批中，审批通过后进入开发执行' }
+      ],
+      'asset-phase': [
+        { name: '发起', status: 'completed', owner: '资产管理员', time: '2025-02-06 14:20', note: '资产形成环节审批流程已发起并归档申请资料' },
+        { name: '审批', status: 'current', owner: '数据资产委员会', note: '审批中，审批完成后发布资产成果' }
+      ]
+    };
+
+    function getTimelineStepStyles(status) {
+      const baseStyles = {
+        circle: 'bg-gray-200 text-gray-600',
+        text: 'text-gray-600',
+        badge: 'bg-gray-100 text-gray-600',
+        line: 'bg-gray-200'
+      };
+
+      const styleMap = {
+        completed: {
+          circle: 'bg-green-500 text-white',
+          text: 'text-green-600',
+          badge: 'bg-green-100 text-green-800',
+          line: 'bg-green-200'
+        },
+        current: {
+          circle: 'bg-blue-500 text-white',
+          text: 'text-blue-600',
+          badge: 'bg-blue-100 text-blue-800',
+          line: 'bg-blue-200'
+        },
+        pending: {
+          circle: 'bg-gray-200 text-gray-600',
+          text: 'text-gray-500',
+          badge: 'bg-gray-100 text-gray-700',
+          line: 'bg-gray-200'
+        }
+      };
+
+      return styleMap[status] || baseStyles;
+    }
+
+    function getTimelineStatusText(status) {
+      const statusTextMap = {
+        completed: '已完成',
+        current: '进行中',
+        pending: '待处理'
+      };
+      return statusTextMap[status] || '待处理';
+    }
+
+    function renderProcessTimeline(containerId, steps = []) {
+      const container = document.getElementById(containerId);
+      if (!container) {
+        return;
+      }
+
+      if (!Array.isArray(steps) || steps.length === 0) {
+        container.innerHTML = '<div class="text-xs text-gray-500">暂无进度信息</div>';
+        return;
+      }
+
+      container.innerHTML = steps.map((step, index) => {
+        const styles = getTimelineStepStyles(step.status);
+        const indicator = step.status === 'completed'
+          ? '<i class="fas fa-check text-xs"></i>'
+          : index + 1;
+        const showConnector = index < steps.length - 1;
+
+        return `
+          <div class="flex items-start">
+            <div class="flex flex-col items-center mr-3">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold ${styles.circle}">
+                ${indicator}
+              </div>
+              ${showConnector ? `<div class="flex-1 w-px mt-1 ${styles.line}" style="min-height: 18px;"></div>` : ''}
+            </div>
+            <div class="flex-1 pb-4 ${showConnector ? 'border-b border-gray-100' : ''}">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium ${styles.text}">${step.name || '未命名步骤'}</p>
+                  ${step.owner ? `<p class="text-xs text-gray-500 mt-1">负责人：${step.owner}</p>` : ''}
+                  ${step.time ? `<p class="text-xs text-gray-400 mt-1">${step.time}</p>` : ''}
+                </div>
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${styles.badge}">
+                  ${getTimelineStatusText(step.status)}
+                </span>
+              </div>
+              ${step.note ? `<p class="text-xs text-gray-500 mt-2 leading-relaxed">${step.note}</p>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateProjectPhaseTimeline(tabName) {
+      const steps = projectPhaseProgress[tabName] || [];
+      const containerId = `${tabName}-progress`;
+      renderProcessTimeline(containerId, steps);
+    }
+
     // 返回上一页功能
     function goBack() {
       // 添加点击反馈效果
@@ -4008,6 +4104,8 @@
         selectedTab.classList.add('active');
       }
       
+      updateProjectPhaseTimeline(tabName);
+
       // 激活对应的页签按钮
       const selectedButton = document.querySelector(`[data-tab="${tabName}"]`);
       if (selectedButton) {
@@ -7928,6 +8026,32 @@
         arrow.style.transform = 'rotate(0deg)';
       }
     });
+
+      // ==================== 审批功能 ====================
+    // 处理审批操作
+    function handleApproval(action) {
+      const comment = document.getElementById('approvalComment').value;
+      const actionText = {
+        'approve': '同意',
+        'reject': '拒绝',
+        'return': '退回'
+      }[action] || '处理';
+      
+      if (action === 'reject' || action === 'return') {
+        if (!comment.trim()) {
+          alert('请填写审批意见');
+          return;
+        }
+      }
+      
+      if (confirm(`确定要${actionText}该申请吗？`)) {
+        // 这里可以添加实际的审批逻辑，比如调用API
+        alert(`审批${actionText}成功！${comment ? '\n审批意见：' + comment : ''}`);
+        
+        // 审批后可以跳转回个人中心
+        // window.location.href = '个人中心.html';
+      }
+    }
 
   </script>
 </body>

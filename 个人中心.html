@@ -39,6 +39,110 @@
         .status-approved { background-color: #d1fae5; color: #059669; }
         .status-rejected { background-color: #fee2e2; color: #dc2626; }
         .status-completed { background-color: #e0e7ff; color: #7c3aed; }
+        .modal-scroll-content {
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+        .modal-tabs {
+            margin-top: 1.25rem;
+        }
+        .modal-tab-buttons {
+            display: flex;
+            gap: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .modal-tab-button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem 0.5rem 0 0;
+            background-color: #f9fafb;
+            color: #6b7280;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+            border-bottom: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .modal-tab-button:hover {
+            color: #1f2937;
+            background-color: #f3f4f6;
+        }
+        .modal-tab-button.active {
+            background-color: #ffffff;
+            color: #2563eb;
+            border-color: #d1d5db;
+            border-bottom: 1px solid #ffffff;
+            box-shadow: 0 -2px 8px rgba(37, 99, 235, 0.08);
+        }
+        .modal-tab-panel {
+            display: none;
+            padding-top: 1rem;
+        }
+        .modal-tab-panel.active {
+            display: block;
+        }
+        
+        /* 任务操作按钮主题 */
+        .task-btn-orange {
+            background: linear-gradient(135deg, #f97316, #fb923c);
+            color: #fff;
+            box-shadow: 0 6px 16px rgba(249, 115, 22, 0.35);
+        }
+        .task-btn-orange:hover {
+            background: linear-gradient(135deg, #ea580c, #f97316);
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(249, 115, 22, 0.45);
+        }
+        .task-btn-orange:active {
+            background: linear-gradient(135deg, #c2410c, #ea580c);
+            color: #fff;
+        }
+        
+        .task-btn-teal {
+            background: linear-gradient(135deg, #14b8a6, #2dd4bf);
+            color: #fff;
+            box-shadow: 0 6px 16px rgba(20, 184, 166, 0.35);
+        }
+        .task-btn-teal:hover {
+            background: linear-gradient(135deg, #0d9488, #14b8a6);
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(20, 184, 166, 0.45);
+        }
+        .task-btn-teal:active {
+            background: linear-gradient(135deg, #0f766e, #0d9488);
+            color: #fff;
+        }
+        
+        .task-btn-gray {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: #fff;
+            box-shadow: 0 6px 16px rgba(75, 85, 99, 0.35);
+        }
+        .task-btn-gray:hover {
+            background: linear-gradient(135deg, #4b5563, #374151);
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(55, 65, 81, 0.45);
+        }
+        .task-btn-gray:active {
+            background: linear-gradient(135deg, #374151, #1f2937);
+            color: #fff;
+        }
+        
+        .task-btn-cyan {
+            background: linear-gradient(135deg, #06b6d4, #22d3ee);
+            color: #fff;
+            box-shadow: 0 6px 16px rgba(6, 182, 212, 0.35);
+        }
+        .task-btn-cyan:hover {
+            background: linear-gradient(135deg, #0891b2, #06b6d4);
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(6, 182, 212, 0.45);
+        }
+        .task-btn-cyan:active {
+            background: linear-gradient(135deg, #0e7490, #0891b2);
+            color: #fff;
+        }
         
         /* 内容卡片样式 */
         .content-card { 
@@ -67,6 +171,18 @@
         /* 隐藏类 */
         .hidden {
             display: none !important;
+        }
+        
+        /* 任务详情弹窗内滚动区域 */
+        #taskDetailModal .task-detail-scroll-area {
+            max-height: calc(75vh - 168px);
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+        @media (max-width: 768px) {
+            #taskDetailModal .task-detail-scroll-area {
+                max-height: calc(80vh - 156px);
+            }
         }
         
         /* 强制显示我的任务页面 */
@@ -301,13 +417,19 @@
                     <div class="flex items-center justify-between mb-6">
                             <div class="flex items-center space-x-4">
                                 <select id="processFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="all">全部流程</option>
+                                    <option value="all">全部</option>
                                     <option value="permission">数据资产权限申请</option>
-                                    <option value="source">数据来源新建</option>
                                     <option value="content">资产内容变更</option>
-                                    <option value="resource">资源变更</option>
-                                    <option value="ownership">权属变更</option>
-                                    <option value="development">数据资产开发</option>
+                                    <option value="development-init">数据资产开发(立项)</option>
+                                    <option value="attribute">数据属性变更</option>
+                                    <option value="classification">数据分级变更</option>
+                                    <option value="category">数据分类变更</option>
+                                    <option value="catalog">资产目录变更</option>
+                                    <option value="development-dev">数据资产开发(开发)</option>
+                                    <option value="accounting">会计核算变更</option>
+                                    <option value="disposal">资产处置</option>
+                                    <option value="development-form">数据资产开发(形成)</option>
+                                    <option value="tag">资产标签变更</option>
                                 </select>
                                 <select id="statusFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     <option value="all">全部状态</option>
@@ -325,155 +447,659 @@
 
                     <!-- 流程列表 -->
                     <div class="space-y-6" id="processList">
-                        <!-- 流程项1 -->
-                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <!-- 流程列表内容将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 我的任务页面 -->
+            <div id="my-tasks-page" class="content-card p-6 hidden">
+                <!-- 任务列表 -->
+                <div class="space-y-4" id="taskList">
+                    <!-- 1. 数据资产权限申请 -->
+                    <div class="bg-white border-l-4 border-blue-500 rounded-lg p-5 hover:shadow-lg transition-all duration-200">
                             <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center shadow-sm">
+                                            <i class="fas fa-key text-blue-600 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-bold text-gray-900">数据资产权限申请</h3>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            待处理
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="mb-4 pl-16">
+                                    <div class="grid grid-cols-3 gap-4 mb-3">
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-user text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">申请人</span>
+                                                <span class="text-sm font-medium text-gray-900">张三</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-building text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">部门</span>
+                                                <span class="text-sm font-medium text-gray-900">数据分析部</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-file-alt text-gray-400 text-sm"></i>
+                                            <div class="min-w-0 flex-1">
+                                                <span class="text-xs text-gray-500 block">申请内容</span>
+                                                <span class="text-sm font-medium text-gray-900 truncate">申请访问客户数据资产</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-end pl-16">
                                 <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-database text-blue-600"></i>
+                                        <button onclick="showTaskDetail(1, 'process')" class="px-5 py-2.5 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 active:bg-blue-700 transition-all font-medium shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+                                            <i class="fas fa-check-circle mr-1.5"></i>处理任务
+                                        </button>
+                                        <button onclick="showTaskDetail(1, 'view')" class="px-4 py-2.5 text-sm text-gray-600 hover:text-blue-600 transition-colors font-medium border-0 bg-transparent hover:underline">
+                                            <i class="fas fa-eye mr-1.5"></i>查看详情
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 2. 资产内容变更 -->
+                            <div class="bg-white border-l-4 border-orange-500 rounded-lg p-5 hover:shadow-lg transition-all duration-200">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center shadow-sm">
+                                            <i class="fas fa-edit text-orange-600 text-xl"></i>
                                     </div>
                                     <div>
-                                        <h3 class="text-lg font-medium text-gray-900">数据资产权限申请</h3>
-                                        <p class="text-sm text-gray-500">申请时间：2024-01-15 09:30</p>
+                                            <h3 class="text-lg font-bold text-gray-900">资产内容变更</h3>
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                                         进行中
                                     </span>
                                 </div>
                             </div>
-                            <div class="mb-4">
-                                <p class="text-sm text-gray-600 mb-2">申请内容：申请访问客户数据资产，用于业务分析</p>
-                                <div class="flex items-center space-x-4 text-sm text-gray-500">
-                                    <span><i class="fas fa-user mr-1"></i>申请人：张三</span>
-                                    <span><i class="fas fa-building mr-1"></i>部门：数据分析部</span>
+                                <div class="mb-4 pl-16">
+                                    <div class="grid grid-cols-3 gap-4 mb-3">
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-user text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">申请人</span>
+                                                <span class="text-sm font-medium text-gray-900">王五</span>
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-2">
-                                    <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
-                                    <span class="text-sm text-gray-600">当前步骤：部门审批</span>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-building text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">部门</span>
+                                                <span class="text-sm font-medium text-gray-900">产品部</span>
                                 </div>
-                                <div class="flex items-center space-x-2">
-                                    <button class="px-3 py-1 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600">
-                                        查看详情
+                                        </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-file-alt text-gray-400 text-sm"></i>
+                                            <div class="min-w-0 flex-1">
+                                                <span class="text-xs text-gray-500 block">申请内容</span>
+                                                <span class="text-sm font-medium text-gray-900 truncate">申请更新客户画像数据资产内容</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-end pl-16">
+                                    <div class="flex items-center space-x-3">
+                                        <button onclick="showTaskDetail(2, 'process')" class="px-5 py-2.5 text-sm rounded-lg transition-all font-medium shadow-sm hover:shadow-md transform hover:-translate-y-0.5 task-btn-orange">
+                                            <i class="fas fa-check-circle mr-1.5"></i>处理任务
+                                        </button>
+                                        <button onclick="showTaskDetail(2, 'view')" class="px-4 py-2.5 text-sm text-gray-600 hover:text-orange-600 transition-colors font-medium border-0 bg-transparent hover:underline">
+                                            <i class="fas fa-eye mr-1.5"></i>查看详情
                                     </button>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 流程项2 -->
-                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                            <!-- 3. 数据资产开发(立项) -->
+                            <div class="bg-white border-l-4 border-purple-500 rounded-lg p-5 hover:shadow-lg transition-all duration-200">
                             <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center shadow-sm">
+                                            <i class="fas fa-project-diagram text-purple-600 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-bold text-gray-900">数据资产开发(立项)</h3>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            待处理
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="mb-4 pl-16">
+                                    <div class="grid grid-cols-3 gap-4 mb-3">
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-user text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">申请人</span>
+                                                <span class="text-sm font-medium text-gray-900">李四</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-building text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">部门</span>
+                                                <span class="text-sm font-medium text-gray-900">技术部</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-file-alt text-gray-400 text-sm"></i>
+                                            <div class="min-w-0 flex-1">
+                                                <span class="text-xs text-gray-500 block">申请内容</span>
+                                                <span class="text-sm font-medium text-gray-900 truncate">申请新建数据资产开发项目立项</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-end pl-16">
                                 <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-folder-plus text-green-600"></i>
+                                        <button onclick="showTaskDetail(3, 'process')" class="px-5 py-2.5 text-sm bg-purple-500 text-white rounded-lg hover:bg-purple-600 active:bg-purple-700 transition-all font-medium shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+                                            <i class="fas fa-check-circle mr-1.5"></i>处理任务
+                                        </button>
+                                        <button onclick="showTaskDetail(3, 'view')" class="px-4 py-2.5 text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium border-0 bg-transparent hover:underline">
+                                            <i class="fas fa-eye mr-1.5"></i>查看详情
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 4. 数据属性变更 -->
+                            <div class="bg-white border-l-4 border-cyan-500 rounded-lg p-5 hover:shadow-lg transition-all duration-200">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-cyan-100 rounded-xl flex items-center justify-center shadow-sm">
+                                            <i class="fas fa-tags text-cyan-600 text-xl"></i>
                                     </div>
                                     <div>
-                                        <h3 class="text-lg font-medium text-gray-900">数据来源新建</h3>
-                                        <p class="text-sm text-gray-500">申请时间：2024-01-14 14:20</p>
+                                            <h3 class="text-lg font-bold text-gray-900">数据属性变更</h3>
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                         已完成
                                     </span>
                                 </div>
                             </div>
-                            <div class="mb-4">
-                                <p class="text-sm text-gray-600 mb-2">申请内容：新建外部数据源接入，用于市场分析</p>
-                                <div class="flex items-center space-x-4 text-sm text-gray-500">
-                                    <span><i class="fas fa-user mr-1"></i>申请人：李四</span>
-                                    <span><i class="fas fa-building mr-1"></i>部门：市场部</span>
-                                    <span><i class="fas fa-calendar mr-1"></i>完成时间：2024-01-18</span>
+                                <div class="mb-4 pl-16">
+                                    <div class="grid grid-cols-3 gap-4 mb-3">
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-user text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">申请人</span>
+                                                <span class="text-sm font-medium text-gray-900">周八</span>
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-2">
-                                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                                    <span class="text-sm text-gray-600">已完成：数据源已接入</span>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-building text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">部门</span>
+                                                <span class="text-sm font-medium text-gray-900">数据管理部</span>
                                 </div>
-                                <div class="flex items-center space-x-2">
-                                    <button class="px-3 py-1 text-sm bg-green-500 text-white rounded-md hover:bg-green-600">
-                                        查看详情
+                                        </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-file-alt text-gray-400 text-sm"></i>
+                                            <div class="min-w-0 flex-1">
+                                                <span class="text-xs text-gray-500 block">申请内容</span>
+                                                <span class="text-sm font-medium text-gray-900 truncate">申请修改数据资产属性信息</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-end pl-16">
+                                    <div class="flex items-center space-x-3">
+                                        <button onclick="showTaskDetail(4, 'process')" class="px-5 py-2.5 text-sm rounded-lg transition-all font-medium shadow-sm hover:shadow-md transform hover:-translate-y-0.5 task-btn-cyan">
+                                            <i class="fas fa-check-circle mr-1.5"></i>处理任务
+                                        </button>
+                                        <button onclick="showTaskDetail(4, 'view')" class="px-4 py-2.5 text-sm text-gray-600 hover:text-cyan-600 transition-colors font-medium border-0 bg-transparent hover:underline">
+                                            <i class="fas fa-eye mr-1.5"></i>查看详情
                                     </button>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 流程项3 -->
-                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                            <!-- 5. 数据分级变更 -->
+                            <div class="bg-white border-l-4 border-red-500 rounded-lg p-5 hover:shadow-lg transition-all duration-200">
                             <div class="flex items-center justify-between mb-4">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-edit text-yellow-600"></i>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center shadow-sm">
+                                            <i class="fas fa-layer-group text-red-600 text-xl"></i>
                                     </div>
                                     <div>
-                                        <h3 class="text-lg font-medium text-gray-900">资产内容变更</h3>
-                                        <p class="text-sm text-gray-500">申请时间：2024-01-16 11:45</p>
+                                            <h3 class="text-lg font-bold text-gray-900">数据分级变更</h3>
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                         待处理
                                     </span>
                                 </div>
                             </div>
-                            <div class="mb-4">
-                                <p class="text-sm text-gray-600 mb-2">申请内容：更新客户画像数据资产，增加新的分析维度</p>
-                                <div class="flex items-center space-x-4 text-sm text-gray-500">
-                                    <span><i class="fas fa-user mr-1"></i>申请人：王五</span>
-                                    <span><i class="fas fa-building mr-1"></i>部门：产品部</span>
+                                <div class="mb-4 pl-16">
+                                    <div class="grid grid-cols-3 gap-4 mb-3">
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-user text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">申请人</span>
+                                                <span class="text-sm font-medium text-gray-900">孙七</span>
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-2">
-                                    <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                                    <span class="text-sm text-gray-600">当前步骤：等待技术评估</span>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-building text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">部门</span>
+                                                <span class="text-sm font-medium text-gray-900">安全部</span>
                                 </div>
-                                <div class="flex items-center space-x-2">
-                                    <button class="px-3 py-1 text-sm bg-yellow-500 text-white rounded-md hover:bg-yellow-600">
-                                        查看详情
+                                        </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-file-alt text-gray-400 text-sm"></i>
+                                            <div class="min-w-0 flex-1">
+                                                <span class="text-xs text-gray-500 block">申请内容</span>
+                                                <span class="text-sm font-medium text-gray-900 truncate">申请调整数据资产安全分级</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-end pl-16">
+                                    <div class="flex items-center space-x-3">
+                                        <button onclick="showTaskDetail(5, 'process')" class="px-5 py-2.5 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 active:bg-red-700 transition-all font-medium shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+                                            <i class="fas fa-check-circle mr-1.5"></i>处理任务
+                                        </button>
+                                        <button onclick="showTaskDetail(5, 'view')" class="px-4 py-2.5 text-sm text-gray-600 hover:text-red-600 transition-colors font-medium border-0 bg-transparent hover:underline">
+                                            <i class="fas fa-eye mr-1.5"></i>查看详情
                                     </button>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 流程项4 -->
-                        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                            <!-- 6. 数据分类变更 -->
+                            <div class="bg-white border-l-4 border-green-500 rounded-lg p-5 hover:shadow-lg transition-all duration-200">
                             <div class="flex items-center justify-between mb-4">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-exchange-alt text-purple-600"></i>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center shadow-sm">
+                                            <i class="fas fa-folder-tree text-green-600 text-xl"></i>
                                     </div>
                                     <div>
-                                        <h3 class="text-lg font-medium text-gray-900">资源变更</h3>
-                                        <p class="text-sm text-gray-500">申请时间：2024-01-13 16:30</p>
+                                            <h3 class="text-lg font-bold text-gray-900">数据分类变更</h3>
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                                        进行中
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            待处理
                                     </span>
                                 </div>
                             </div>
-                            <div class="mb-4">
-                                <p class="text-sm text-gray-600 mb-2">申请内容：调整数据存储资源配置，优化成本</p>
-                                <div class="flex items-center space-x-4 text-sm text-gray-500">
-                                    <span><i class="fas fa-user mr-1"></i>申请人：赵六</span>
-                                    <span><i class="fas fa-building mr-1"></i>部门：技术部</span>
+                                <div class="mb-4 pl-16">
+                                    <div class="grid grid-cols-3 gap-4 mb-3">
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-user text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">申请人</span>
+                                                <span class="text-sm font-medium text-gray-900">吴九</span>
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-2">
-                                    <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
-                                    <span class="text-sm text-gray-600">当前步骤：技术实施</span>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-building text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">部门</span>
+                                                <span class="text-sm font-medium text-gray-900">数据治理部</span>
                                 </div>
-                                <div class="flex items-center space-x-2">
-                                    <button class="px-3 py-1 text-sm bg-purple-500 text-white rounded-md hover:bg-purple-600">
-                                        查看详情
-                                    </button>
+                                </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-file-alt text-gray-400 text-sm"></i>
+                                            <div class="min-w-0 flex-1">
+                                                <span class="text-xs text-gray-500 block">申请内容</span>
+                                                <span class="text-sm font-medium text-gray-900 truncate">申请调整数据资产分类体系</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="flex items-center justify-end pl-16">
+                                    <div class="flex items-center space-x-3">
+                                        <button onclick="showTaskDetail(6, 'process')" class="px-5 py-2.5 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 active:bg-green-700 transition-all font-medium shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+                                            <i class="fas fa-check-circle mr-1.5"></i>处理任务
+                                        </button>
+                                        <button onclick="showTaskDetail(6, 'view')" class="px-4 py-2.5 text-sm text-gray-600 hover:text-green-600 transition-colors font-medium border-0 bg-transparent hover:underline">
+                                            <i class="fas fa-eye mr-1.5"></i>查看详情
+                                        </button>
+            </div>
+        </div>
+    </div>
+
+                            <!-- 7. 资产目录变更 -->
+                            <div class="bg-white border-l-4 border-yellow-500 rounded-lg p-5 hover:shadow-lg transition-all duration-200">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center shadow-sm">
+                                            <i class="fas fa-sitemap text-yellow-600 text-xl"></i>
+            </div>
+                                        <div>
+                                            <h3 class="text-lg font-bold text-gray-900">资产目录变更</h3>
+                </div>
+            </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            进行中
+                                        </span>
+            </div>
+                </div>
+                                <div class="mb-4 pl-16">
+                                    <div class="grid grid-cols-3 gap-4 mb-3">
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-user text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">申请人</span>
+                                                <span class="text-sm font-medium text-gray-900">冯十</span>
+                            </div>
+                            </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-building text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">部门</span>
+                                                <span class="text-sm font-medium text-gray-900">运营部</span>
+                        </div>
+                    </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-file-alt text-gray-400 text-sm"></i>
+                                            <div class="min-w-0 flex-1">
+                                                <span class="text-xs text-gray-500 block">申请内容</span>
+                                                <span class="text-sm font-medium text-gray-900 truncate">申请调整数据资产目录结构</span>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                                <div class="flex items-center justify-end pl-16">
+                                    <div class="flex items-center space-x-3">
+                                        <button onclick="showTaskDetail(7, 'process')" class="px-5 py-2.5 text-sm bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 active:bg-yellow-700 transition-all font-medium shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+                                            <i class="fas fa-check-circle mr-1.5"></i>处理任务
+                                        </button>
+                                        <button onclick="showTaskDetail(7, 'view')" class="px-4 py-2.5 text-sm text-gray-600 hover:text-yellow-600 transition-colors font-medium border-0 bg-transparent hover:underline">
+                                            <i class="fas fa-eye mr-1.5"></i>查看详情
+                                        </button>
+                            </div>
+                            </div>
+                        </div>
+
+                            <!-- 8. 数据资产开发(开发) -->
+                            <div class="bg-white border-l-4 border-indigo-500 rounded-lg p-5 hover:shadow-lg transition-all duration-200">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center shadow-sm">
+                                            <i class="fas fa-code text-indigo-600 text-xl"></i>
+                    </div>
+                                        <div>
+                                            <h3 class="text-lg font-bold text-gray-900">数据资产开发(开发)</h3>
+                            </div>
+                            </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            进行中
+                                        </span>
+                        </div>
+                    </div>
+                                <div class="mb-4 pl-16">
+                                    <div class="grid grid-cols-3 gap-4 mb-3">
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-user text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">申请人</span>
+                                                <span class="text-sm font-medium text-gray-900">陈十一</span>
+                </div>
+                            </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-building text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">部门</span>
+                                                <span class="text-sm font-medium text-gray-900">开发部</span>
+                            </div>
+                        </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-file-alt text-gray-400 text-sm"></i>
+                                            <div class="min-w-0 flex-1">
+                                                <span class="text-xs text-gray-500 block">申请内容</span>
+                                                <span class="text-sm font-medium text-gray-900 truncate">正在进行数据资产开发工作</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-end pl-16">
+                                    <div class="flex items-center space-x-3">
+                                        <button onclick="showTaskDetail(8, 'process')" class="px-5 py-2.5 text-sm bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 active:bg-indigo-700 transition-all font-medium shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+                                            <i class="fas fa-check-circle mr-1.5"></i>处理任务
+                                        </button>
+                                        <button onclick="showTaskDetail(8, 'view')" class="px-4 py-2.5 text-sm text-gray-600 hover:text-indigo-600 transition-colors font-medium border-0 bg-transparent hover:underline">
+                                            <i class="fas fa-eye mr-1.5"></i>查看详情
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 9. 会计核算变更 -->
+                            <div class="bg-white border-l-4 border-pink-500 rounded-lg p-5 hover:shadow-lg transition-all duration-200">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center shadow-sm">
+                                            <i class="fas fa-calculator text-pink-600 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-bold text-gray-900">会计核算变更</h3>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            待处理
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="mb-4 pl-16">
+                                    <div class="grid grid-cols-3 gap-4 mb-3">
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-user text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">申请人</span>
+                                                <span class="text-sm font-medium text-gray-900">褚十二</span>
+                                    </div>
+                                </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-building text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">部门</span>
+                                                <span class="text-sm font-medium text-gray-900">财务部</span>
+                                    </div>
+                                        </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-file-alt text-gray-400 text-sm"></i>
+                                            <div class="min-w-0 flex-1">
+                                                <span class="text-xs text-gray-500 block">申请内容</span>
+                                                <span class="text-sm font-medium text-gray-900 truncate">申请调整数据资产会计核算方式</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-end pl-16">
+                                    <div class="flex items-center space-x-3">
+                                        <button onclick="showTaskDetail(9, 'process')" class="px-5 py-2.5 text-sm bg-pink-500 text-white rounded-lg hover:bg-pink-600 active:bg-pink-700 transition-all font-medium shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+                                            <i class="fas fa-check-circle mr-1.5"></i>处理任务
+                                        </button>
+                                        <button onclick="showTaskDetail(9, 'view')" class="px-4 py-2.5 text-sm text-gray-600 hover:text-pink-600 transition-colors font-medium border-0 bg-transparent hover:underline">
+                                            <i class="fas fa-eye mr-1.5"></i>查看详情
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 10. 资产处置 -->
+                            <div class="bg-white border-l-4 border-gray-500 rounded-lg p-5 hover:shadow-lg transition-all duration-200">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center shadow-sm">
+                                            <i class="fas fa-trash-alt text-gray-600 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-bold text-gray-900">资产处置</h3>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            待处理
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="mb-4 pl-16">
+                                    <div class="grid grid-cols-3 gap-4 mb-3">
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-user text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">申请人</span>
+                                                <span class="text-sm font-medium text-gray-900">蒋十三</span>
+                                    </div>
+                                </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-building text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">部门</span>
+                                                <span class="text-sm font-medium text-gray-900">资产管理部</span>
+                                    </div>
+                                        </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-file-alt text-gray-400 text-sm"></i>
+                                            <div class="min-w-0 flex-1">
+                                                <span class="text-xs text-gray-500 block">申请内容</span>
+                                                <span class="text-sm font-medium text-gray-900 truncate">申请处置过期数据资产</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-end pl-16">
+                                    <div class="flex items-center space-x-3">
+                                        <button onclick="showTaskDetail(10, 'process')" class="px-5 py-2.5 text-sm rounded-lg transition-all font-medium shadow-sm hover:shadow-md transform hover:-translate-y-0.5 task-btn-gray">
+                                            <i class="fas fa-check-circle mr-1.5"></i>处理任务
+                                        </button>
+                                        <button onclick="showTaskDetail(10, 'view')" class="px-4 py-2.5 text-sm text-gray-600 hover:text-gray-600 transition-colors font-medium border-0 bg-transparent hover:underline">
+                                            <i class="fas fa-eye mr-1.5"></i>查看详情
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 11. 数据资产开发(形成) -->
+                            <div class="bg-white border-l-4 border-blue-600 rounded-lg p-5 hover:shadow-lg transition-all duration-200">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-blue-200 rounded-xl flex items-center justify-center shadow-sm">
+                                            <i class="fas fa-check-double text-blue-700 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-bold text-gray-900">数据资产开发(形成)</h3>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            已完成
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="mb-4 pl-16">
+                                    <div class="grid grid-cols-3 gap-4 mb-3">
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-user text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">申请人</span>
+                                                <span class="text-sm font-medium text-gray-900">韩十四</span>
+                                    </div>
+                                </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-building text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">部门</span>
+                                                <span class="text-sm font-medium text-gray-900">项目组</span>
+                                    </div>
+                                        </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-file-alt text-gray-400 text-sm"></i>
+                                            <div class="min-w-0 flex-1">
+                                                <span class="text-xs text-gray-500 block">申请内容</span>
+                                                <span class="text-sm font-medium text-gray-900 truncate">申请数据资产开发项目验收</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-end pl-16">
+                                    <div class="flex items-center space-x-3">
+                                        <button onclick="showTaskDetail(11, 'process')" class="px-5 py-2.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-all font-medium shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+                                            <i class="fas fa-check-circle mr-1.5"></i>处理任务
+                                        </button>
+                                        <button onclick="showTaskDetail(11, 'view')" class="px-4 py-2.5 text-sm text-gray-600 hover:text-blue-600 transition-colors font-medium border-0 bg-transparent hover:underline">
+                                            <i class="fas fa-eye mr-1.5"></i>查看详情
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 12. 资产标签变更 -->
+                            <div class="bg-white border-l-4 border-teal-500 rounded-lg p-5 hover:shadow-lg transition-all duration-200">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center shadow-sm">
+                                            <i class="fas fa-tag text-teal-600 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-bold text-gray-900">资产标签变更</h3>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            进行中
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="mb-4 pl-16">
+                                    <div class="grid grid-cols-3 gap-4 mb-3">
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-user text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">申请人</span>
+                                                <span class="text-sm font-medium text-gray-900">朱十五</span>
+                                    </div>
+                                </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-building text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">部门</span>
+                                                <span class="text-sm font-medium text-gray-900">标签管理部</span>
+                                    </div>
+                                        </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-file-alt text-gray-400 text-sm"></i>
+                                            <div class="min-w-0 flex-1">
+                                                <span class="text-xs text-gray-500 block">申请内容</span>
+                                                <span class="text-sm font-medium text-gray-900 truncate">申请更新数据资产标签信息</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-end pl-16">
+                                    <div class="flex items-center space-x-3">
+                                        <button onclick="showTaskDetail(12, 'process')" class="px-5 py-2.5 text-sm rounded-lg transition-all font-medium shadow-sm hover:shadow-md transform hover:-translate-y-0.5 task-btn-teal">
+                                            <i class="fas fa-check-circle mr-1.5"></i>处理任务
+                                        </button>
+                                        <button onclick="showTaskDetail(12, 'view')" class="px-4 py-2.5 text-sm text-gray-600 hover:text-teal-600 transition-colors font-medium border-0 bg-transparent hover:underline">
+                                            <i class="fas fa-eye mr-1.5"></i>查看详情
+                                        </button>
                                 </div>
                             </div>
                         </div>
@@ -481,7 +1107,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <!-- 消息详情弹窗 -->
     <div id="messageDetailModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
@@ -497,274 +1123,8 @@
                     <!-- 消息详情内容 -->
                 </div>
             </div>
-            </div>
-
-            <!-- 我的任务页面 -->
-            <div id="my-tasks-page" class="content-card p-6">
-                <!-- 页面标题 -->
-                <div class="mb-6">
-                    <h2 class="text-2xl font-bold text-gray-900">我的任务</h2>
-                    <p class="text-gray-600 mt-1">查看和管理您需要处理的任务</p>
-                </div>
-
-                <!-- 任务统计 -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <div class="bg-white rounded-lg shadow-sm p-6">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-blue-100 rounded-lg">
-                                <i class="fas fa-tasks text-blue-600 text-xl"></i>
-                            </div>
-                            <div class="ml-4">
-                                <p class="text-sm font-medium text-gray-600">待处理任务</p>
-                                <p class="text-2xl font-bold text-gray-900" id="pendingTasksCount">8</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-sm p-6">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-green-100 rounded-lg">
-                                <i class="fas fa-check-circle text-green-600 text-xl"></i>
-                            </div>
-                            <div class="ml-4">
-                                <p class="text-sm font-medium text-gray-600">已完成任务</p>
-                                <p class="text-2xl font-bold text-gray-900" id="completedTasksCount">12</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-sm p-6">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-yellow-100 rounded-lg">
-                                <i class="fas fa-clock text-yellow-600 text-xl"></i>
-                            </div>
-                            <div class="ml-4">
-                                <p class="text-sm font-medium text-gray-600">即将到期</p>
-                                <p class="text-2xl font-bold text-gray-900" id="urgentTasksCount">3</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-sm p-6">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-red-100 rounded-lg">
-                                <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
-                            </div>
-                            <div class="ml-4">
-                                <p class="text-sm font-medium text-gray-600">逾期任务</p>
-                                <p class="text-2xl font-bold text-gray-900" id="overdueTasksCount">1</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 任务筛选 -->
-                <div class="bg-white rounded-lg shadow-sm mb-6">
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-6">
-                            <div class="flex items-center space-x-4">
-                                <select id="taskFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="all">全部任务</option>
-                                    <option value="approval">审批任务</option>
-                                    <option value="review">审核任务</option>
-                                    <option value="processing">处理任务</option>
-                                    <option value="notification">通知任务</option>
-                                </select>
-                                <select id="taskStatusFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="all">全部状态</option>
-                                    <option value="pending">待处理</option>
-                                    <option value="processing">处理中</option>
-                                    <option value="completed">已完成</option>
-                                    <option value="overdue">已逾期</option>
-                                </select>
-                                <select id="taskPriorityFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <option value="all">全部优先级</option>
-                                    <option value="high">高优先级</option>
-                                    <option value="medium">中优先级</option>
-                                    <option value="low">低优先级</option>
-                                </select>
-                            </div>
-                            <div class="text-sm text-gray-500">
-                                共 <span id="totalTasks">21</span> 个任务
-                            </div>
-                        </div>
-
-                        <!-- 任务列表 -->
-                        <div class="space-y-4" id="taskList">
-                            <!-- 任务项1 -->
-                            <div class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                                <div class="flex items-center justify-between mb-3">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                            <i class="fas fa-check-circle text-blue-600 text-sm"></i>
-                                        </div>
-                                        <div>
-                                            <h3 class="text-lg font-medium text-gray-900">数据资产权限申请审批</h3>
-                                            <p class="text-sm text-gray-500">任务类型：审批任务</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                            待处理
-                                        </span>
-                                        <span class="text-sm text-red-600 font-medium">高优先级</span>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <p class="text-sm text-gray-600 mb-2">申请人：张三（数据分析部）申请访问客户数据资产</p>
-                                    <div class="flex items-center space-x-4 text-sm text-gray-500">
-                                        <span><i class="fas fa-calendar mr-1"></i>创建时间：2024-01-15 09:30</span>
-                                        <span><i class="fas fa-clock mr-1"></i>截止时间：2024-01-20 18:00</span>
-                                        <span><i class="fas fa-user mr-1"></i>分配人：李经理</span>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-2">
-                                        <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
-                                        <span class="text-sm text-gray-600">等待您的审批</span>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <button class="px-3 py-1 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600">
-                                            处理任务
-                                        </button>
-                                        <button class="px-3 py-1 text-sm border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">
-                                            查看详情
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 任务项2 -->
-                            <div class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                                <div class="flex items-center justify-between mb-3">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                                            <i class="fas fa-eye text-green-600 text-sm"></i>
-                                        </div>
-                                        <div>
-                                            <h3 class="text-lg font-medium text-gray-900">数据来源审核</h3>
-                                            <p class="text-sm text-gray-500">任务类型：审核任务</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                            处理中
-                                        </span>
-                                        <span class="text-sm text-yellow-600 font-medium">中优先级</span>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <p class="text-sm text-gray-600 mb-2">申请人：李四（市场部）申请新建外部数据源接入</p>
-                                    <div class="flex items-center space-x-4 text-sm text-gray-500">
-                                        <span><i class="fas fa-calendar mr-1"></i>创建时间：2024-01-14 14:20</span>
-                                        <span><i class="fas fa-clock mr-1"></i>截止时间：2024-01-22 18:00</span>
-                                        <span><i class="fas fa-user mr-1"></i>分配人：王主管</span>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-2">
-                                        <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                                        <span class="text-sm text-gray-600">正在审核中</span>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <button class="px-3 py-1 text-sm bg-yellow-500 text-white rounded-md hover:bg-yellow-600">
-                                            继续处理
-                                        </button>
-                                        <button class="px-3 py-1 text-sm border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">
-                                            查看详情
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 任务项3 -->
-                            <div class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                                <div class="flex items-center justify-between mb-3">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                                            <i class="fas fa-cog text-purple-600 text-sm"></i>
-                                        </div>
-                                        <div>
-                                            <h3 class="text-lg font-medium text-gray-900">资产内容变更处理</h3>
-                                            <p class="text-sm text-gray-500">任务类型：处理任务</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                            已完成
-                                        </span>
-                                        <span class="text-sm text-green-600 font-medium">低优先级</span>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <p class="text-sm text-gray-600 mb-2">申请人：王五（产品部）申请更新客户画像数据资产</p>
-                                    <div class="flex items-center space-x-4 text-sm text-gray-500">
-                                        <span><i class="fas fa-calendar mr-1"></i>创建时间：2024-01-16 11:45</span>
-                                        <span><i class="fas fa-check mr-1"></i>完成时间：2024-01-18 16:30</span>
-                                        <span><i class="fas fa-user mr-1"></i>分配人：赵经理</span>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-2">
-                                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                                        <span class="text-sm text-gray-600">任务已完成</span>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <button class="px-3 py-1 text-sm bg-green-500 text-white rounded-md hover:bg-green-600">
-                                            查看结果
-                                        </button>
-                                        <button class="px-3 py-1 text-sm border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">
-                                            查看详情
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 任务项4 -->
-                            <div class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                                <div class="flex items-center justify-between mb-3">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                                            <i class="fas fa-bell text-red-600 text-sm"></i>
-                                        </div>
-                                        <div>
-                                            <h3 class="text-lg font-medium text-gray-900">权属变更通知</h3>
-                                            <p class="text-sm text-gray-500">任务类型：通知任务</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                            已逾期
-                                        </span>
-                                        <span class="text-sm text-red-600 font-medium">高优先级</span>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <p class="text-sm text-gray-600 mb-2">申请人：孙七（法务部）申请数据资产权属转移</p>
-                                    <div class="flex items-center space-x-4 text-sm text-gray-500">
-                                        <span><i class="fas fa-calendar mr-1"></i>创建时间：2024-01-12 10:15</span>
-                                        <span><i class="fas fa-exclamation-triangle mr-1 text-red-500"></i>截止时间：2024-01-18 18:00（已逾期）</span>
-                                        <span><i class="fas fa-user mr-1"></i>分配人：陈总监</span>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-2">
-                                        <div class="w-2 h-2 bg-red-500 rounded-full"></div>
-                                        <span class="text-sm text-red-600">任务已逾期，请尽快处理</span>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <button class="px-3 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600">
-                                            紧急处理
-                                        </button>
-                                        <button class="px-3 py-1 text-sm border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">
-                                            查看详情
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
-    </main>
+    </div>
 
     <!-- 流程详情弹窗 -->
     <div id="processDetailModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
@@ -778,6 +1138,103 @@
             <div class="p-6">
                 <div id="processDetailContent">
                     <!-- 流程详情内容 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 任务详情弹窗 -->
+    <div id="taskDetailModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-4 max-h-[75vh] overflow-hidden flex flex-col">
+            <!-- 弹窗头部 -->
+            <div class="flex items-center justify-between p-6 border-b border-gray-200 flex-shrink-0">
+                <div class="flex items-center space-x-3">
+                    <div id="taskDetailIcon" class="w-10 h-10 rounded-full flex items-center justify-center">
+                        <i class="fas text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800" id="taskDetailTitle">任务详情</h3>
+                        <div class="flex items-center space-x-2 mt-1">
+                            <span id="taskDetailStatus" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"></span>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="hideTaskDetail()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- 弹窗内容区域（可滚动） -->
+            <div class="flex-1 p-6 flex flex-col min-h-0">
+                <div class="flex-1 min-h-0 space-y-6 task-detail-scroll-area" id="taskDetailScrollArea">
+                    <!-- 任务基本信息 -->
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-700 mb-4 flex items-center">
+                            <i class="fas fa-info-circle mr-2 text-blue-500"></i>基本信息
+                        </h4>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="text-xs font-medium text-gray-500 block mb-1">任务类型</label>
+                                    <p class="text-sm text-gray-900" id="taskDetailType">-</p>
+                                </div>
+                                <div>
+                                    <label class="text-xs font-medium text-gray-500 block mb-1">申请人</label>
+                                    <p class="text-sm text-gray-900" id="taskDetailApplicant">-</p>
+                                </div>
+                                <div>
+                                    <label class="text-xs font-medium text-gray-500 block mb-1">所属部门</label>
+                                    <p class="text-sm text-gray-900" id="taskDetailDepartment">-</p>
+                                </div>
+                                <div>
+                                    <label class="text-xs font-medium text-gray-500 block mb-1">创建时间</label>
+                                    <p class="text-sm text-gray-900" id="taskDetailCreateTime">-</p>
+                                </div>
+                                <div id="taskDetailCompleteTimeContainer" class="hidden">
+                                    <label class="text-xs font-medium text-gray-500 block mb-1">完成时间</label>
+                                    <p class="text-sm text-gray-900" id="taskDetailCompleteTime">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 操作历史/审批记录 -->
+                    <div class="hidden">
+                        <h4 class="text-sm font-semibold text-gray-700 mb-4 flex items-center">
+                            <i class="fas fa-history mr-2 text-blue-500"></i>操作历史
+                        </h4>
+                        <div class="bg-white border border-gray-200 rounded-lg">
+                            <div id="taskDetailHistory" class="divide-y divide-gray-200">
+                                <!-- 操作历史将通过JavaScript动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 任务专用内容 -->
+                    <div id="taskDetailCustomContent" class="space-y-6 hidden"></div>
+
+                    <!-- 流程进度（仅审批/审核类任务显示） -->
+                    <div id="taskDetailProcessContainer" class="hidden">
+                        <h4 class="text-sm font-semibold text-gray-700 mb-4 flex items-center">
+                            <i class="fas fa-project-diagram mr-2 text-blue-500"></i>流程进度
+                        </h4>
+                        <div class="bg-white border border-gray-200 rounded-lg p-4">
+                            <div id="taskDetailProcessSteps" class="space-y-3">
+                                <!-- 流程步骤将通过JavaScript动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 弹窗底部操作栏 -->
+            <div class="border-t border-gray-200 p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 flex-shrink-0 bg-gray-50">
+                <div class="w-full md:max-w-xl">
+                    <label for="taskDetailOpinion" class="block text-sm font-medium text-gray-700 mb-2">审批意见</label>
+                    <textarea id="taskDetailOpinion" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="3" placeholder="在此填写审批意见..."></textarea>
+                </div>
+                <div class="flex items-center justify-end space-x-3 flex-shrink-0" id="taskDetailActions">
+                    <!-- 操作按钮将通过JavaScript动态生成 -->
                 </div>
             </div>
         </div>
@@ -1168,13 +1625,488 @@
             }
         ];
 
+        // 任务数据
+        const taskData = [
+            {
+                id: 1,
+                type: 'approval',
+                title: '数据资产权限申请',
+                description: '申请人：张三（数据分析部）申请访问客户数据资产，用于业务分析和客户画像构建。申请的数据资产包括：客户基本信息表、客户交易记录表、客户行为分析表。',
+                status: 'pending',
+                applicant: '张三',
+                department: '数据分析部',
+                createTime: '2024-01-15 09:30',
+                deadline: '2024-01-20 18:00',
+                assignee: '李经理',
+                completeTime: null,
+                processSteps: [
+                    { name: '提交申请', status: 'completed', time: '2024-01-15 09:30', operator: '张三' },
+                    { name: '部门审批', status: 'current', time: null, operator: '李经理' },
+                    { name: '安全审查', status: 'pending', time: null, operator: '安全部' },
+                    { name: '最终审批', status: 'pending', time: null, operator: '部门总监' }
+                ],
+                history: [
+                    { action: '任务创建', operator: '系统', time: '2024-01-15 09:30', comment: '任务已创建并分配给李经理' },
+                    { action: '申请提交', operator: '张三', time: '2024-01-15 09:30', comment: '已提交数据资产权限申请' }
+                ],
+                attachments: []
+            },
+            {
+                id: 2,
+                type: 'processing',
+                title: '资产内容变更',
+                description: '申请人：王五（产品部）申请更新客户画像数据资产，增加新的分析维度。变更内容包括：新增用户活跃度分析维度、优化用户分群算法、更新数据更新频率。',
+                status: 'processing',
+                applicant: '王五',
+                department: '产品部',
+                createTime: '2024-01-16 11:45',
+                deadline: '2024-01-25 18:00',
+                assignee: '赵经理',
+                completeTime: null,
+                processSteps: [
+                    { name: '提交变更', status: 'completed', time: '2024-01-16 11:45', operator: '王五' },
+                    { name: '内容审核', status: 'current', time: '2024-01-17 14:20', operator: '赵经理' },
+                    { name: '发布更新', status: 'pending', time: null, operator: '技术部' }
+                ],
+                history: [
+                    { action: '任务创建', operator: '系统', time: '2024-01-16 11:45', comment: '任务已创建并分配给赵经理' },
+                    { action: '变更提交', operator: '王五', time: '2024-01-16 11:45', comment: '已提交资产内容变更申请' },
+                    { action: '开始审核', operator: '赵经理', time: '2024-01-17 14:20', comment: '正在审核变更内容' }
+                ],
+                attachments: [
+                    { name: '变更需求文档.docx', size: '856KB', url: '#' }
+                ]
+            },
+            {
+                id: 3,
+                type: 'review',
+                title: '数据资产开发(立项)',
+                description: '申请人：李四（技术部）申请新建数据资产开发项目立项。项目旨在开发新的数据资产，提升数据价值和应用能力。',
+                status: 'pending',
+                applicant: '李四',
+                department: '技术部',
+                createTime: '2024-01-16 10:00',
+                deadline: '2024-01-26 18:00',
+                assignee: '技术主管',
+                completeTime: null,
+                processSteps: [
+                    { name: '提交申请', status: 'completed', time: '2024-01-16 10:00', operator: '李四' },
+                    { name: '立项审核', status: 'current', time: null, operator: '技术主管' },
+                    { name: '项目启动', status: 'pending', time: null, operator: '项目组' }
+                ],
+                history: [
+                    { action: '任务创建', operator: '系统', time: '2024-01-16 10:00', comment: '任务已创建并分配给技术主管' },
+                    { action: '申请提交', operator: '李四', time: '2024-01-16 10:00', comment: '已提交数据资产开发项目立项申请' }
+                ],
+                attachments: [
+                    { name: '项目立项申请书.pdf', size: '3.5MB', url: '#' },
+                    { name: '技术方案.docx', size: '2.8MB', url: '#' }
+                ]
+            },
+            {
+                id: 4,
+                type: 'processing',
+                title: '数据属性变更',
+                description: '申请人：周八（数据管理部）申请修改数据资产属性信息。需要更新资产的基本属性、元数据信息，确保资产信息的准确性和完整性。',
+                status: 'completed',
+                applicant: '周八',
+                department: '数据管理部',
+                createTime: '2024-01-13 09:00',
+                deadline: '2024-01-20 18:00',
+                assignee: '数据主管',
+                completeTime: '2024-01-19 15:30',
+                processSteps: [
+                    { name: '提交申请', status: 'completed', time: '2024-01-13 09:00', operator: '周八' },
+                    { name: '属性审核', status: 'completed', time: '2024-01-15 14:00', operator: '数据主管' },
+                    { name: '属性更新', status: 'completed', time: '2024-01-19 15:30', operator: '技术部' }
+                ],
+                history: [
+                    { action: '任务创建', operator: '系统', time: '2024-01-13 09:00', comment: '任务已创建并分配给数据主管' },
+                    { action: '申请提交', operator: '周八', time: '2024-01-13 09:00', comment: '已提交数据属性变更申请' },
+                    { action: '审核通过', operator: '数据主管', time: '2024-01-15 14:00', comment: '属性变更审核通过' },
+                    { action: '更新完成', operator: '技术部', time: '2024-01-19 15:30', comment: '数据属性已成功更新' }
+                ],
+                customData: {
+                    type: 'attribute-change',
+                    attribute: {
+                        name: '客户画像准确率',
+                        description: '衡量近30天画像模型对目标客户群识别准确程度的指标，用于驱动精准营销与客户洞察分析。',
+                        enabled: true,
+                        parent: '客户画像指标体系'
+                    }
+                },
+                attachments: [
+                    { name: '属性变更清单.xlsx', size: '1.2MB', url: '#' }
+                ]
+            },
+            {
+                id: 5,
+                type: 'processing',
+                title: '数据分级变更',
+                description: '申请人：孙七（安全部）申请调整数据资产安全分级。需要将部分敏感数据从二级调整为三级，以符合新的安全标准。涉及资产：客户隐私数据、财务敏感数据、商业机密数据。',
+                status: 'pending',
+                applicant: '孙七',
+                department: '安全部',
+                createTime: '2024-01-17 09:00',
+                deadline: '2024-01-25 18:00',
+                assignee: '安全主管',
+                completeTime: null,
+                processSteps: [
+                    { name: '提交申请', status: 'completed', time: '2024-01-17 09:00', operator: '孙七' },
+                    { name: '安全评估', status: 'current', time: null, operator: '安全主管' },
+                    { name: '审批确认', status: 'pending', time: null, operator: '安全总监' }
+                ],
+                history: [
+                    { action: '任务创建', operator: '系统', time: '2024-01-17 09:00', comment: '任务已创建并分配给安全主管' },
+                    { action: '申请提交', operator: '孙七', time: '2024-01-17 09:00', comment: '已提交数据分级变更申请' }
+                ],
+                customData: {
+                    type: 'level-change',
+                    level: {
+                        code: 'LVL-102',
+                        name: '客户隐私数据资产包',
+                        parent: '重要数据（Level 2）',
+                        level: '2 → 1',
+                        status: '待审批',
+                        effectiveDate: '2024-02-01',
+                        description: '客户隐私数据资产包包含实名信息、交易行为及画像特征等敏感数据，需按照核心数据标准进行管控。',
+                        attachment: '分级变更申请表.pdf'
+                    },
+                    changeReason: '新增实名信息与交易行为联合分析字段，敏感度提升，需要执行更高等级的安全策略。'
+                },
+                attachments: [
+                    { name: '分级变更申请表.pdf', size: '1.5MB', url: '#' },
+                    { name: '安全评估报告.docx', size: '2.1MB', url: '#' }
+                ]
+            },
+            {
+                id: 6,
+                type: 'processing',
+                title: '数据分类变更',
+                description: '申请人：吴九（数据治理部）申请调整数据资产分类体系。需要优化现有分类结构，增加新的分类维度，提高数据资产管理的精细化程度。',
+                status: 'pending',
+                applicant: '吴九',
+                department: '数据治理部',
+                createTime: '2024-01-18 10:30',
+                deadline: '2024-01-28 18:00',
+                assignee: '治理主管',
+                completeTime: null,
+                processSteps: [
+                    { name: '提交申请', status: 'completed', time: '2024-01-18 10:30', operator: '吴九' },
+                    { name: '方案审核', status: 'current', time: null, operator: '治理主管' },
+                    { name: '实施部署', status: 'pending', time: null, operator: '技术部' }
+                ],
+                history: [
+                    { action: '任务创建', operator: '系统', time: '2024-01-18 10:30', comment: '任务已创建并分配给治理主管' },
+                    { action: '申请提交', operator: '吴九', time: '2024-01-18 10:30', comment: '已提交数据分类变更申请' }
+                ],
+                customData: {
+                    type: 'category-change',
+                    category: {
+                        code: 'CAT-210',
+                        name: '客户洞察标签',
+                        parent: '客户管理类数据',
+                        level: '二级分类',
+                        status: '启用',
+                        description: '用于归集客户洞察、画像、行为标签等资产，支撑精准营销与客户体验分析。',
+                        attachment: '客户洞察分类发文.pdf'
+                    },
+                    adjustmentFocus: '将零散标签统一纳入客户洞察分类，并同步更新分类引用关系及资产台账映射。'
+                },
+                attachments: [
+                    { name: '分类体系方案.docx', size: '3.2MB', url: '#' }
+                ]
+            },
+            {
+                id: 7,
+                type: 'processing',
+                title: '资产目录变更',
+                description: '申请人：冯十（运营部）申请调整数据资产目录结构。需要重新组织资产目录层级，优化资产查找和管理的效率。',
+                status: 'processing',
+                applicant: '冯十',
+                department: '运营部',
+                createTime: '2024-01-19 14:20',
+                deadline: '2024-01-30 18:00',
+                assignee: '运营主管',
+                completeTime: null,
+                processSteps: [
+                    { name: '提交申请', status: 'completed', time: '2024-01-19 14:20', operator: '冯十' },
+                    { name: '目录设计', status: 'current', time: '2024-01-20 09:00', operator: '运营主管' },
+                    { name: '实施更新', status: 'pending', time: null, operator: '技术部' }
+                ],
+                history: [
+                    { action: '任务创建', operator: '系统', time: '2024-01-19 14:20', comment: '任务已创建并分配给运营主管' },
+                    { action: '申请提交', operator: '冯十', time: '2024-01-19 14:20', comment: '已提交资产目录变更申请' },
+                    { action: '开始设计', operator: '运营主管', time: '2024-01-20 09:00', comment: '正在设计新的目录结构' }
+                ],
+                customData: {
+                    type: 'catalog-change',
+                    catalog: {
+                        name: '客户运营模型目录',
+                        parent: '内容管理',
+                        path: '/数据资产/内容管理/客户运营模型',
+                        status: '启用',
+                        owner: '赵经理',
+                        tags: ['运营数据', '客户服务'],
+                        description: '集中管理与客户运营相关的数据模型、指标体系与明细资源，支持客户旅程洞察与服务优化。',
+                        attachment: '目录结构方案.xlsx'
+                    },
+                    changeSummary: '新增实时画像分支，整合客户视图与权益目录，并按客服/运营场景细化访问权限。'
+                },
+                attachments: [
+                    { name: '目录结构方案.xlsx', size: '1.8MB', url: '#' }
+                ]
+            },
+            {
+                id: 8,
+                type: 'processing',
+                title: '数据资产开发(开发)',
+                description: '申请人：陈十一（开发部）正在进行数据资产开发工作。项目包括：数据清洗、数据建模、数据质量提升等开发任务。',
+                status: 'processing',
+                applicant: '陈十一',
+                department: '开发部',
+                createTime: '2024-01-15 08:00',
+                deadline: '2024-02-15 18:00',
+                assignee: '开发主管',
+                completeTime: null,
+                processSteps: [
+                    { name: '需求分析', status: 'completed', time: '2024-01-15 08:00', operator: '陈十一' },
+                    { name: '开发实施', status: 'current', time: '2024-01-20 09:00', operator: '开发主管' },
+                    { name: '测试验收', status: 'pending', time: null, operator: '测试部' }
+                ],
+                history: [
+                    { action: '任务创建', operator: '系统', time: '2024-01-15 08:00', comment: '任务已创建并分配给开发主管' },
+                    { action: '开始开发', operator: '陈十一', time: '2024-01-15 08:00', comment: '已开始数据资产开发工作' },
+                    { action: '开发进行中', operator: '开发主管', time: '2024-01-20 09:00', comment: '开发工作正在进行中，预计2周完成' }
+                ],
+                attachments: [
+                    { name: '开发需求文档.docx', size: '2.5MB', url: '#' },
+                    { name: '技术方案.pdf', size: '3.1MB', url: '#' }
+                ]
+            },
+            {
+                id: 9,
+                type: 'processing',
+                title: '会计核算变更',
+                description: '申请人：褚十二（财务部）申请调整数据资产会计核算方式。需要更新资产价值计算方法，优化会计核算流程。',
+                status: 'pending',
+                applicant: '褚十二',
+                department: '财务部',
+                createTime: '2024-01-21 11:00',
+                deadline: '2024-02-01 18:00',
+                assignee: '财务主管',
+                completeTime: null,
+                processSteps: [
+                    { name: '提交申请', status: 'completed', time: '2024-01-21 11:00', operator: '褚十二' },
+                    { name: '财务审核', status: 'current', time: null, operator: '财务主管' },
+                    { name: '系统更新', status: 'pending', time: null, operator: '技术部' }
+                ],
+                history: [
+                    { action: '任务创建', operator: '系统', time: '2024-01-21 11:00', comment: '任务已创建并分配给财务主管' },
+                    { action: '申请提交', operator: '褚十二', time: '2024-01-21 11:00', comment: '已提交会计核算变更申请' }
+                ],
+                customData: {
+                    type: 'accounting-change',
+                    asset: {
+                        code: 'ZC002',
+                        name: '供应商信用评价与合规性分析数据集',
+                        category: '存货',
+                        status: '正常',
+                        bookValue: '¥560,000',
+                        location: '财务共享平台',
+                        disclosureStatus: '未披露'
+                    },
+                    impairment: {
+                        originalValue: '¥800,000',
+                        accumulatedAmortization: '¥240,000',
+                        recoverableAmount: '¥680,000',
+                        proposedImpairment: '¥120,000',
+                        evaluationDate: '2024-01-18',
+                        attachments: [
+                            { name: '资产减值评估报告.pdf', size: '940KB' },
+                            { name: '现金流预测模型.xlsx', size: '520KB' }
+                        ],
+                        reason: '市场需求下降导致预计现金流减少，需要计提减值准备。',
+                        description: '依据近期供应链业务报告，数据资产预计产生的经济利益下降，需要计提减值，并同步调整折旧计划。'
+                    },
+                    priceDecline: {
+                        bookBalance: '¥560,000',
+                        existingProvision: '¥80,000',
+                        proposedProvision: '¥60,000',
+                        description: '库存类数据资产近两期利用率大幅下降，市场价值较账面价值低100,000元，拟计提跌价准备 60,000 元。',
+                        attachmentTips: '请上传审批文件、外部评估报告等，支持多附件。',
+                        attachments: [
+                            { name: '库存价值评估报告.pdf', size: '860KB' },
+                            { name: '市场价格监测明细.xlsx', size: '430KB' }
+                        ]
+                    },
+                    priceReversal: {
+                        history: [
+                            { date: '2023-09-12', amount: '¥45,000', reversed: '¥15,000', reversible: '¥30,000', remark: '阶段性市场调整，保留余量' },
+                            { date: '2023-11-30', amount: '¥35,000', reversed: '¥0', reversible: '¥35,000', remark: '新数据节点上线，准备转回' }
+                        ],
+                        plan: {
+                            selectedAmount: '¥30,000',
+                            reason: '近期上线的供应链监控模块提升资产利用率，预计市场价值恢复。',
+                            attachmentsHint: '需提供业务复盘记录及市场回升证明材料。',
+                            attachments: [
+                                { name: '业务复盘记录.docx', size: '410KB' },
+                                { name: '市场回升证明材料.pdf', size: '720KB' }
+                            ]
+                        }
+                    },
+                    disclosure: {
+                        type: '季度报告',
+                        date: '2024-02-28',
+                        title: '2024Q1 数据资产核算调整说明',
+                        content: '披露资产减值、跌价准备及转回的关键事实，包括计提依据、影响金额、管理措施等，并同步说明后续核算策略。',
+                        scope: '内部披露 - 财务管理层与审计部门',
+                        attachments: [
+                            { name: '2024Q1核算调整说明.pdf', size: '1.1MB' },
+                            { name: '跌价准备评估.xlsx', size: '620KB' }
+                        ]
+                    }
+                },
+                attachments: [
+                    { name: '会计核算方案.docx', size: '1.9MB', url: '#' }
+                ]
+            },
+            {
+                id: 10,
+                type: 'processing',
+                title: '资产处置',
+                description: '申请人：蒋十三（资产管理部）申请处置过期数据资产。需要清理不再使用的历史数据，释放存储资源。涉及资产：2018-2020年历史交易数据、已停用业务系统数据。',
+                status: 'pending',
+                applicant: '蒋十三',
+                department: '资产管理部',
+                createTime: '2024-01-22 09:30',
+                deadline: '2024-02-05 18:00',
+                assignee: '资产主管',
+                completeTime: null,
+                processSteps: [
+                    { name: '提交申请', status: 'completed', time: '2024-01-22 09:30', operator: '蒋十三' },
+                    { name: '处置审核', status: 'current', time: null, operator: '资产主管' },
+                    { name: '执行处置', status: 'pending', time: null, operator: '技术部' }
+                ],
+                history: [
+                    { action: '任务创建', operator: '系统', time: '2024-01-22 09:30', comment: '任务已创建并分配给资产主管' },
+                    { action: '申请提交', operator: '蒋十三', time: '2024-01-22 09:30', comment: '已提交资产处置申请' }
+                ],
+                customData: {
+                    type: 'asset-disposal',
+                    asset: {
+                        code: 'ASSET-2020-ARCHIVE',
+                        name: '2018-2020 历史交易数据备份',
+                        category: '结构化数据',
+                        department: '资产管理部',
+                        storage: '对象存储（归档层）',
+                        size: '3.4 TB',
+                        retentionPolicy: '原保留周期 36 个月，现已超过 18 个月'
+                    },
+                    plan: {
+                        type: '销毁（含安全擦除及日志留存）',
+                        targetDate: '2024-02-05',
+                        responsibleTeam: '技术运营中心',
+                        approvalRequirement: '需业务负责人+合规负责人联合签批',
+                        reason: '数据超过保留周期且已完成业务稽核，需及时处置释放存储资源，并确保删除前完成审计备份。',
+                        steps: [
+                            '确认审计留存备份并输出验证报告',
+                            '对敏感分区执行离线脱敏处理',
+                            '使用集中工具执行七次覆盖擦除并导出销毁报告',
+                            '在资产台账登记销毁结果并保留日志 12 个月'
+                        ]
+                    }
+                },
+                attachments: [
+                    { name: '资产处置清单.xlsx', size: '2.3MB', url: '#' },
+                    { name: '处置方案.pdf', size: '1.6MB', url: '#' }
+                ]
+            },
+            {
+                id: 11,
+                type: 'processing',
+                title: '数据资产开发(形成)',
+                description: '申请人：韩十四（项目组）申请数据资产开发项目验收。项目已完成开发工作，需要进行最终验收和资产形成确认。',
+                status: 'completed',
+                applicant: '韩十四',
+                department: '项目组',
+                createTime: '2024-01-10 08:00',
+                deadline: '2024-01-20 18:00',
+                assignee: '项目主管',
+                completeTime: '2024-01-19 16:00',
+                processSteps: [
+                    { name: '项目开发', status: 'completed', time: '2024-01-10 08:00', operator: '韩十四' },
+                    { name: '测试验收', status: 'completed', time: '2024-01-18 14:00', operator: '测试部' },
+                    { name: '资产形成', status: 'completed', time: '2024-01-19 16:00', operator: '项目主管' }
+                ],
+                history: [
+                    { action: '任务创建', operator: '系统', time: '2024-01-10 08:00', comment: '任务已创建并分配给项目主管' },
+                    { action: '项目完成', operator: '韩十四', time: '2024-01-10 08:00', comment: '数据资产开发项目已完成' },
+                    { action: '验收通过', operator: '测试部', time: '2024-01-18 14:00', comment: '测试验收通过' },
+                    { action: '资产形成', operator: '项目主管', time: '2024-01-19 16:00', comment: '数据资产已成功形成并入库' }
+                ],
+                attachments: [
+                    { name: '项目验收报告.pdf', size: '4.2MB', url: '#' },
+                    { name: '资产清单.xlsx', size: '1.5MB', url: '#' }
+                ]
+            },
+            {
+                id: 12,
+                type: 'processing',
+                title: '资产标签变更',
+                description: '申请人：朱十五（标签管理部）申请更新数据资产标签信息。需要为资产添加新的标签维度，优化标签体系，提高资产检索效率。',
+                status: 'processing',
+                applicant: '朱十五',
+                department: '标签管理部',
+                createTime: '2024-01-20 13:00',
+                deadline: '2024-02-10 18:00',
+                assignee: '标签主管',
+                completeTime: null,
+                processSteps: [
+                    { name: '提交申请', status: 'completed', time: '2024-01-20 13:00', operator: '朱十五' },
+                    { name: '标签设计', status: 'current', time: '2024-01-21 10:00', operator: '标签主管' },
+                    { name: '标签更新', status: 'pending', time: null, operator: '技术部' }
+                ],
+                history: [
+                    { action: '任务创建', operator: '系统', time: '2024-01-20 13:00', comment: '任务已创建并分配给标签主管' },
+                    { action: '申请提交', operator: '朱十五', time: '2024-01-20 13:00', comment: '已提交资产标签变更申请' },
+                    { action: '开始设计', operator: '标签主管', time: '2024-01-21 10:00', comment: '正在设计新的标签体系' }
+                ],
+                customData: {
+                    type: 'tag-change',
+                    tag: {
+                        name: '高价值客户识别',
+                        description: '用于标识近12个月贡献毛利前10%的客户群体，支撑精准营销与权益运营。',
+                        color: '#14B8A6',
+                        enabled: true,
+                        parent: '客户标签体系 / 价值标签'
+                    },
+                    addSubTags: [
+                        { name: '高交易频次客户', remark: '月交易次数超过行业基准 2 倍' },
+                        { name: '权益活动高参与度客户', remark: '权益活动参与率 > 60%' }
+                    ],
+                    retireSubTags: [
+                        { name: 'VIP_legacy', remark: '旧版 VIP 规则已与新规则整合' }
+                    ],
+                    governanceChecklist: [
+                        '同步更新标签血缘关系与引用清单',
+                        '通知模型使用方更新字段配置',
+                        '在标签中心发布变更公告并记录审批意见'
+                    ]
+                },
+                attachments: [
+                    { name: '标签体系方案.docx', size: '2.7MB', url: '#' }
+                ]
+            }
+        ];
+
         // 流程数据
         const processData = [
             {
                 id: 1,
                 type: 'permission',
                 title: '数据资产权限申请',
-                description: '申请使用"采购数据专题分析模型"',
+                description: '申请使用"采购数据专题分析模型"进行业务分析',
                 status: 'processing',
                 currentStep: 2,
                 totalSteps: 4,
@@ -1186,13 +2118,13 @@
             },
             {
                 id: 2,
-                type: 'source',
-                title: '数据来源新建',
-                description: '新建"客户行为数据"数据来源',
+                type: 'content',
+                title: '资产内容变更',
+                description: '更新"销售数据分析模型"的数据内容和业务规则',
                 status: 'pending',
                 currentStep: 1,
                 totalSteps: 3,
-                steps: ['提交申请', '技术审核', '业务审批'],
+                steps: ['提交变更', '内容审核', '发布更新'],
                 createTime: '2024-01-15 09:45',
                 updateTime: '2024-01-15 09:45',
                 assignee: '李四',
@@ -1200,45 +2132,143 @@
             },
             {
                 id: 3,
-                type: 'content',
-                title: '资产内容变更',
-                description: '更新"销售数据分析模型"内容',
-                status: 'completed',
-                currentStep: 3,
+                type: 'development-init',
+                title: '数据资产开发(立项)',
+                description: '立项开发"用户画像分析模型"数据资产项目',
+                status: 'processing',
+                currentStep: 2,
                 totalSteps: 3,
-                steps: ['提交变更', '内容审核', '发布更新'],
+                steps: ['项目申请', '立项审批', '项目启动'],
                 createTime: '2024-01-14 14:20',
-                updateTime: '2024-01-14 16:20',
+                updateTime: '2024-01-15 10:20',
                 assignee: '王五',
                 approver: '赵经理'
             },
             {
                 id: 4,
-                type: 'development',
-                title: '数据资产开发',
-                description: '开发"用户画像分析模型"',
-                status: 'processing',
-                currentStep: 3,
-                totalSteps: 5,
-                steps: ['项目立项', '需求分析', '开发实现', '测试验证', '上线部署'],
+                type: 'attribute',
+                title: '数据属性变更',
+                description: '修改"客户信息数据表"的属性定义和字段说明',
+                status: 'approved',
+                currentStep: 2,
+                totalSteps: 2,
+                steps: ['提交变更', '属性审核'],
                 createTime: '2024-01-13 15:30',
-                updateTime: '2024-01-15 11:45',
+                updateTime: '2024-01-14 09:15',
                 assignee: '张三',
                 approver: '技术总监'
             },
             {
                 id: 5,
-                type: 'ownership',
-                title: '权属变更',
-                description: '变更"财务数据模型"权属信息',
+                type: 'classification',
+                title: '数据分级变更',
+                description: '调整"财务核心数据"的安全分级等级',
+                status: 'processing',
+                currentStep: 2,
+                totalSteps: 3,
+                steps: ['提交申请', '安全评估', '分级确认'],
+                createTime: '2024-01-12 11:20',
+                updateTime: '2024-01-15 08:30',
+                assignee: '刘六',
+                approver: '安全部'
+            },
+            {
+                id: 6,
+                type: 'category',
+                title: '数据分类变更',
+                description: '重新分类"营销活动数据"的业务类别',
+                status: 'pending',
+                currentStep: 1,
+                totalSteps: 2,
+                steps: ['提交申请', '分类审核'],
+                createTime: '2024-01-15 11:00',
+                updateTime: '2024-01-15 11:00',
+                assignee: '陈七',
+                approver: '业务部'
+            },
+            {
+                id: 7,
+                type: 'catalog',
+                title: '资产目录变更',
+                description: '调整"数据分析模型库"的目录结构和组织方式',
+                status: 'completed',
+                currentStep: 3,
+                totalSteps: 3,
+                steps: ['提交变更', '目录审核', '更新完成'],
+                createTime: '2024-01-11 09:30',
+                updateTime: '2024-01-12 16:45',
+                assignee: '周八',
+                approver: '数据管理部'
+            },
+            {
+                id: 8,
+                type: 'development-dev',
+                title: '数据资产开发(开发)',
+                description: '开发"供应链数据分析模型"的技术实现',
+                status: 'processing',
+                currentStep: 3,
+                totalSteps: 5,
+                steps: ['需求分析', '设计评审', '开发实现', '测试验证', '代码审查'],
+                createTime: '2024-01-10 08:00',
+                updateTime: '2024-01-15 15:20',
+                assignee: '吴九',
+                approver: '开发经理'
+            },
+            {
+                id: 9,
+                type: 'accounting',
+                title: '会计核算变更',
+                description: '更新"数据资产价值评估"的会计核算方法',
                 status: 'approved',
                 currentStep: 2,
                 totalSteps: 2,
-                steps: ['提交申请', '权属确认'],
-                createTime: '2024-01-12 11:20',
-                updateTime: '2024-01-13 09:15',
-                assignee: '刘六',
-                approver: '法务部'
+                steps: ['提交申请', '财务审核'],
+                createTime: '2024-01-09 14:15',
+                updateTime: '2024-01-10 10:30',
+                assignee: '郑十',
+                approver: '财务部'
+            },
+            {
+                id: 10,
+                type: 'disposal',
+                title: '资产处置',
+                description: '处置已过期的"历史交易数据备份"资产',
+                status: 'processing',
+                currentStep: 2,
+                totalSteps: 4,
+                steps: ['提交申请', '安全评估', '审批确认', '执行处置'],
+                createTime: '2024-01-08 10:45',
+                updateTime: '2024-01-15 09:00',
+                assignee: '钱十一',
+                approver: '资产管理部'
+            },
+            {
+                id: 11,
+                type: 'development-form',
+                title: '数据资产开发(形成)',
+                description: '将"客户行为分析报告"正式形成数据资产',
+                status: 'pending',
+                currentStep: 1,
+                totalSteps: 4,
+                steps: ['提交申请', '质量评估', '资产登记', '正式发布'],
+                createTime: '2024-01-15 13:20',
+                updateTime: '2024-01-15 13:20',
+                assignee: '孙十二',
+                approver: '资产管理员'
+            },
+            {
+                id: 12,
+                type: 'tag',
+                title: '资产标签变更',
+                description: '为"销售预测模型"添加新的业务标签和分类标签',
+                status: 'processing',
+                currentStep: 2,
+                totalSteps: 2,
+                steps: ['提交变更', '标签审核'],
+                createTime: '2024-01-14 16:00',
+                updateTime: '2024-01-15 11:15',
+                assignee: '李十三',
+                approver: '标签管理员'
             }
         ];
 
@@ -1377,7 +2407,6 @@
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getMessageTypeClass(message.type)}">
                                     ${getMessageTypeText(message.type)}
                                 </span>
-                                ${message.priority === 'high' ? '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">重要</span>' : ''}
                                 ${!message.isRead ? '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">未读</span>' : ''}
                             </div>
                             <h4 class="text-sm font-medium text-gray-900 mb-1">${message.title}</h4>
@@ -1505,6 +2534,22 @@
             const process = processData.find(p => p.id === processId);
             if (!process) return;
             
+            // 如果是复杂流程，跳转到对应的专门页面
+            if (shouldNavigateToDetailPage(process)) {
+                const navInfo = getTaskNavigationInfo(process);
+                if (navInfo) {
+                    // 构建URL参数
+                    const params = new URLSearchParams();
+                    Object.keys(navInfo.params).forEach(key => {
+                        params.append(key, navInfo.params[key]);
+                    });
+                    // 跳转到审批版页面
+                    window.location.href = `${navInfo.page}?${params.toString()}`;
+                    return;
+                }
+            }
+            
+            // 简单流程：在弹窗中处理
             const modal = document.getElementById('processDetailModal');
             const content = document.getElementById('processDetailContent');
             
@@ -1613,8 +2658,7 @@
                 title: title,
                 content: content,
                 time: new Date().toLocaleString('zh-CN'),
-                isRead: false,
-                priority: 'normal'
+                isRead: false
             };
             
             messageData.unshift(newMessage);
@@ -1684,11 +2728,17 @@
         function getProcessTypeClass(type) {
             const classes = {
                 'permission': 'bg-blue-100 text-blue-800',
-                'source': 'bg-green-100 text-green-800',
                 'content': 'bg-yellow-100 text-yellow-800',
-                'resource': 'bg-purple-100 text-purple-800',
-                'ownership': 'bg-red-100 text-red-800',
-                'development': 'bg-indigo-100 text-indigo-800'
+                'development-init': 'bg-indigo-100 text-indigo-800',
+                'attribute': 'bg-purple-100 text-purple-800',
+                'classification': 'bg-pink-100 text-pink-800',
+                'category': 'bg-teal-100 text-teal-800',
+                'catalog': 'bg-cyan-100 text-cyan-800',
+                'development-dev': 'bg-indigo-100 text-indigo-800',
+                'accounting': 'bg-green-100 text-green-800',
+                'disposal': 'bg-red-100 text-red-800',
+                'development-form': 'bg-indigo-100 text-indigo-800',
+                'tag': 'bg-orange-100 text-orange-800'
             };
             return classes[type] || 'bg-gray-100 text-gray-800';
         }
@@ -1697,11 +2747,17 @@
         function getProcessTypeText(type) {
             const texts = {
                 'permission': '数据资产权限申请',
-                'source': '数据来源新建',
                 'content': '资产内容变更',
-                'resource': '资源变更',
-                'ownership': '权属变更',
-                'development': '数据资产开发'
+                'development-init': '数据资产开发(立项)',
+                'attribute': '数据属性变更',
+                'classification': '数据分级变更',
+                'category': '数据分类变更',
+                'catalog': '资产目录变更',
+                'development-dev': '数据资产开发(开发)',
+                'accounting': '会计核算变更',
+                'disposal': '资产处置',
+                'development-form': '数据资产开发(形成)',
+                'tag': '资产标签变更'
             };
             return texts[type] || '其他';
         }
@@ -1776,6 +2832,970 @@
             }
         });
 
+        // ==================== 任务详情相关函数 ====================
+        
+        // 判断任务是否需要跳转到专门页面（复杂任务）
+        function shouldNavigateToDetailPage(task) {
+            // 需要跳转的复杂任务类型（根据title判断）
+            const title = task.title || '';
+            
+            // 数据资产开发相关
+            if (title.includes('数据资产开发(立项)')) return true;
+            if (title.includes('数据资产开发(开发)')) return true;
+            if (title.includes('数据资产开发(形成)')) return true;
+            
+            // 权限申请
+            if (title.includes('数据资产权限申请')) return true;
+            
+            // 资产内容变更
+            if (title.includes('资产内容变更')) return true;
+            
+            return false;
+        }
+        
+        // 获取任务跳转的目标页面和参数
+        function getTaskNavigationInfo(task) {
+            const title = task.title || '';
+            
+            // 数据资产开发(立项) → 项目详情页 - 立项阶段
+            if (title.includes('数据资产开发(立项)')) {
+                return {
+                    page: '项目详情-审批版.html',
+                    params: { id: task.id, tab: 'research-phase' }
+                };
+            }
+            
+            // 数据资产开发(开发) → 项目详情页 - 开发阶段
+            if (title.includes('数据资产开发(开发)')) {
+                return {
+                    page: '项目详情-审批版.html',
+                    params: { id: task.id, tab: 'development-phase' }
+                };
+            }
+            
+            // 数据资产开发(形成) → 项目详情页 - 资产阶段
+            if (title.includes('数据资产开发(形成)')) {
+                return {
+                    page: '项目详情-审批版.html',
+                    params: { id: task.id, tab: 'asset-phase' }
+                };
+            }
+            
+            // 数据资产权限申请 → 申请使用页
+            if (title.includes('数据资产权限申请')) {
+                return {
+                    page: '申请使用-审批版.html',
+                    params: { id: task.id }
+                };
+            }
+            
+            // 资产内容变更 → 资产内容管理页
+            if (title.includes('资产内容变更')) {
+                return {
+                    page: '资产内容管理-审批版.html',
+                    params: { id: task.id }
+                };
+            }
+            
+            return null;
+        }
+
+        // 显示任务详情
+        // mode: 'view' 查看详情模式（只查看，不能操作） | 'process' 处理任务模式（可以操作）
+        function showTaskDetail(taskId, mode = 'view') {
+            // 确保 taskId 是数字类型
+            const id = typeof taskId === 'string' ? parseInt(taskId, 10) : taskId;
+            const task = taskData.find(t => t.id === id);
+            if (!task) {
+                alert('任务不存在');
+                return;
+            }
+
+            const customContentContainer = document.getElementById('taskDetailCustomContent');
+
+            // 如果是复杂任务，跳转到对应的专门页面
+            if (shouldNavigateToDetailPage(task)) {
+                const navInfo = getTaskNavigationInfo(task);
+                if (navInfo) {
+                    // 构建URL参数
+                    const params = new URLSearchParams();
+                    Object.keys(navInfo.params).forEach(key => {
+                        params.append(key, navInfo.params[key]);
+                    });
+                    // 跳转到审批版页面
+                    window.location.href = `${navInfo.page}?${params.toString()}`;
+                    return;
+                }
+            }
+
+            // 简单任务：在弹窗中处理
+            const modal = document.getElementById('taskDetailModal');
+            
+            // 设置任务标题和状态
+            document.getElementById('taskDetailTitle').textContent = task.title;
+            
+            // 设置图标和颜色
+            const iconDiv = document.getElementById('taskDetailIcon');
+            const iconClass = getTaskIconClass(task.type);
+            iconDiv.className = `w-10 h-10 rounded-full flex items-center justify-center ${iconClass.bg}`;
+            iconDiv.querySelector('i').className = `fas ${iconClass.icon} text-lg ${iconClass.text}`;
+            
+            // 设置状态标签
+            const statusSpan = document.getElementById('taskDetailStatus');
+            statusSpan.className = `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getTaskStatusClass(task.status)}`;
+            statusSpan.textContent = getTaskStatusText(task.status);
+            
+            // 设置基本信息
+            document.getElementById('taskDetailType').textContent = getTaskTypeText(task.type);
+            document.getElementById('taskDetailApplicant').textContent = task.applicant;
+            document.getElementById('taskDetailDepartment').textContent = task.department;
+            document.getElementById('taskDetailCreateTime').textContent = task.createTime;
+            
+            // 设置完成时间（如果已完成）
+            const completeTimeContainer = document.getElementById('taskDetailCompleteTimeContainer');
+            if (task.completeTime) {
+                document.getElementById('taskDetailCompleteTime').textContent = task.completeTime;
+                completeTimeContainer.classList.remove('hidden');
+            } else {
+                completeTimeContainer.classList.add('hidden');
+            }
+            
+            // 设置流程进度（如果有）
+            const processContainer = document.getElementById('taskDetailProcessContainer');
+            if (task.processSteps && task.processSteps.length > 0) {
+                const processStepsDiv = document.getElementById('taskDetailProcessSteps');
+                processStepsDiv.innerHTML = task.processSteps.map((step, index) => {
+                    const stepClass = getTaskStepClass(step.status);
+                    return `
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${stepClass.circle}">
+                                    ${step.status === 'completed' ? '<i class="fas fa-check text-xs"></i>' : index + 1}
+                                </div>
+                            </div>
+                            <div class="ml-3 flex-1">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm font-medium ${stepClass.text}">${step.name}</p>
+                                        <p class="text-xs text-gray-500 mt-1">负责人：${step.operator}</p>
+                                        ${step.time ? `<p class="text-xs text-gray-400 mt-1">${step.time}</p>` : ''}
+                                    </div>
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${stepClass.badge}">
+                                        ${getTaskStepStatusText(step.status)}
+                                    </span>
+                                </div>
+                                ${index < task.processSteps.length - 1 ? '<div class="h-4 w-0.5 bg-gray-200 ml-4 mt-2"></div>' : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                processContainer.classList.remove('hidden');
+            } else {
+                processContainer.classList.add('hidden');
+            }
+            
+            // 操作历史已隐藏，不再设置
+            
+            // 设置附件列表
+            // 设置任务专用内容模板
+            if (customContentContainer) {
+                const customTemplate = getTaskCustomTemplate(task, mode);
+                if (customTemplate) {
+                    customContentContainer.innerHTML = customTemplate;
+                    customContentContainer.classList.remove('hidden');
+                    if (task.customData && task.customData.type === 'accounting-change') {
+                        initializeAccountingChangeTabs(customContentContainer);
+                    }
+                } else {
+                    customContentContainer.innerHTML = '';
+                    customContentContainer.classList.add('hidden');
+                }
+            }
+            
+            // 根据模式设置操作按钮
+            const actionsDiv = document.getElementById('taskDetailActions');
+            const opinionInput = document.getElementById('taskDetailOpinion');
+            if (opinionInput) {
+                opinionInput.value = '';
+                if (mode === 'process') {
+                    opinionInput.removeAttribute('readonly');
+                    opinionInput.classList.remove('bg-gray-100', 'cursor-not-allowed');
+                    opinionInput.placeholder = '在此填写审批意见...';
+                } else {
+                    opinionInput.value = '';
+                    opinionInput.setAttribute('readonly', 'true');
+                    opinionInput.classList.add('bg-gray-100', 'cursor-not-allowed');
+                    opinionInput.placeholder = '当前为查看模式，无法填写审批意见';
+                }
+            }
+            
+            if (mode === 'process') {
+                // 处理任务模式：显示操作按钮
+                actionsDiv.innerHTML = getTaskActionButtons(task);
+            } else {
+                // 查看详情模式：只显示关闭按钮
+                actionsDiv.innerHTML = `
+                    <button onclick="hideTaskDetail()" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+                        关闭
+                    </button>
+                `;
+            }
+            
+            // 显示弹窗
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // 隐藏任务详情
+        function hideTaskDetail() {
+            document.getElementById('taskDetailModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            const opinionInput = document.getElementById('taskDetailOpinion');
+            if (opinionInput) {
+                opinionInput.value = '';
+            }
+        }
+        
+        // 获取任务图标样式
+        function getTaskIconClass(type) {
+            const icons = {
+                'approval': { icon: 'fa-check-circle', bg: 'bg-blue-100', text: 'text-blue-600' },
+                'review': { icon: 'fa-eye', bg: 'bg-green-100', text: 'text-green-600' },
+                'processing': { icon: 'fa-cog', bg: 'bg-purple-100', text: 'text-purple-600' },
+                'notification': { icon: 'fa-bell', bg: 'bg-red-100', text: 'text-red-600' }
+            };
+            return icons[type] || { icon: 'fa-tasks', bg: 'bg-gray-100', text: 'text-gray-600' };
+        }
+        
+        // 获取任务类型文本
+        function getTaskTypeText(type) {
+            const texts = {
+                'approval': '审批任务',
+                'review': '审核任务',
+                'processing': '处理任务',
+                'notification': '通知任务'
+            };
+            return texts[type] || '其他任务';
+        }
+        
+        // 获取任务状态样式
+        function getTaskStatusClass(status) {
+            const classes = {
+                'pending': 'bg-blue-100 text-blue-800',
+                'processing': 'bg-yellow-100 text-yellow-800',
+                'approved': 'bg-green-100 text-green-800',
+                'rejected': 'bg-red-100 text-red-800',
+                'completed': 'bg-green-100 text-green-800'
+            };
+            return classes[status] || 'bg-gray-100 text-gray-800';
+        }
+        
+        // 获取任务状态文本
+        function getTaskStatusText(status) {
+            const texts = {
+                'pending': '待处理',
+                'processing': '进行中',
+                'approved': '已通过',
+                'rejected': '已拒绝',
+                'completed': '已完成'
+            };
+            return texts[status] || '未知';
+        }
+        
+        // 获取任务步骤样式
+        function getTaskStepClass(status) {
+            const classes = {
+                'completed': {
+                    circle: 'bg-green-500 text-white',
+                    text: 'text-green-600',
+                    badge: 'bg-green-100 text-green-800'
+                },
+                'current': {
+                    circle: 'bg-blue-500 text-white',
+                    text: 'text-blue-600',
+                    badge: 'bg-blue-100 text-blue-800'
+                },
+                'pending': {
+                    circle: 'bg-gray-300 text-gray-600',
+                    text: 'text-gray-500',
+                    badge: 'bg-gray-100 text-gray-800'
+                }
+            };
+            return classes[status] || classes.pending;
+        }
+        
+        // 获取任务步骤状态文本
+        function getTaskStepStatusText(status) {
+            const texts = {
+                'completed': '已完成',
+                'current': '进行中',
+                'pending': '待处理'
+            };
+            return texts[status] || '待处理';
+        }
+        
+        // 获取任务操作按钮
+        function getTaskActionButtons(task) {
+            return `
+                <button onclick="handleTask('approve', ${task.id})" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors">
+                    <i class="fas fa-check mr-2"></i>同意
+                </button>
+                <button onclick="handleTask('return', ${task.id})" class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors">
+                    <i class="fas fa-undo mr-2"></i>退回
+                </button>
+                <button onclick="handleTask('reject', ${task.id})" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors">
+                    <i class="fas fa-times mr-2"></i>拒绝
+                </button>
+                <button onclick="hideTaskDetail()" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+                    关闭
+                </button>
+            `;
+        }
+        
+        // 处理任务操作
+        function handleTask(action, taskId) {
+            const task = taskData.find(t => t.id === taskId);
+            if (!task) return;
+            const opinionInput = document.getElementById('taskDetailOpinion');
+            const opinion = opinionInput ? opinionInput.value.trim() : '';
+            
+            switch(action) {
+                case 'approve':
+                    if (confirm('确定要同意该任务吗？')) {
+                        const approveMessage = opinion ? `任务已同意，审批意见：${opinion}` : '任务已同意，流程将继续进行';
+                        alert(approveMessage);
+                        if (opinionInput) opinionInput.value = '';
+                        hideTaskDetail();
+                    }
+                    break;
+                case 'return':
+                    if (!opinion) {
+                        alert('请输入审批意见后再退回任务');
+                        return;
+                    }
+                    alert('任务已退回：' + opinion);
+                    if (opinionInput) opinionInput.value = '';
+                    hideTaskDetail();
+                    break;
+                case 'reject':
+                    if (!opinion) {
+                        alert('请输入审批意见后再拒绝任务');
+                        return;
+                    }
+                    alert('任务已拒绝：' + opinion);
+                    if (opinionInput) opinionInput.value = '';
+                    hideTaskDetail();
+                    break;
+                case 'process':
+                case 'continue':
+                    alert('正在跳转到任务处理页面...');
+                    // 这里可以跳转到实际的处理页面
+                    hideTaskDetail();
+                    break;
+                case 'submit':
+                    if (confirm('确定要提交审核吗？')) {
+                        const submitMessage = opinion ? `任务已提交审核，审批意见：${opinion}` : '任务已提交审核';
+                        alert(submitMessage);
+                        if (opinionInput) opinionInput.value = '';
+                        hideTaskDetail();
+                    }
+                    break;
+                case 'view':
+                    alert(opinion ? `正在查看任务结果，当前审批意见：${opinion}` : '正在查看任务结果...');
+                    // 这里可以跳转到结果页面
+                    break;
+            }
+        }
+        
+        // 点击弹窗外部关闭弹窗
+        document.addEventListener('click', function(event) {
+            const taskModal = document.getElementById('taskDetailModal');
+            if (event.target === taskModal) {
+                hideTaskDetail();
+            }
+        });
+        
+        // ==================== 任务自定义模板渲染 ====================
+        function safeValue(value, fallback = '-') {
+            if (Array.isArray(value)) {
+                return value.length ? value.join('；') : fallback;
+            }
+            return value !== undefined && value !== null && value !== '' ? value : fallback;
+        }
+
+        function renderAttachmentsList(attachments) {
+            if (!attachments || !attachments.length) {
+                return '<li class="text-sm text-gray-500">暂无附件</li>';
+            }
+            return attachments.map(file => `
+                <li class="flex items-center gap-2 text-sm text-gray-700">
+                    <i class="fas fa-file-alt text-blue-500"></i>
+                    <span>${safeValue(file.name)} ${file.size ? `<span class="text-xs text-gray-400">(${safeValue(file.size)})</span>` : ''}</span>
+                </li>
+            `).join('');
+        }
+
+        function getTaskCustomTemplate(task, mode) {
+            if (!task || !task.customData) return '';
+            const data = task.customData;
+            switch (data.type) {
+                case 'attribute-change':
+                    return renderAttributeChangeTemplate(data, task);
+                case 'level-change':
+                    return renderLevelChangeTemplate(data, task);
+                case 'category-change':
+                    return renderCategoryChangeTemplate(data, task);
+                case 'catalog-change':
+                    return renderCatalogChangeTemplate(data, task);
+                case 'tag-change':
+                    return renderTagChangeTemplate(data, task);
+                case 'accounting-change':
+                    return renderAccountingChangeTemplate(data, task);
+                case 'asset-disposal':
+                    return renderAssetDisposalTemplate(data, task);
+                default:
+                    return '';
+            }
+        }
+
+        function renderAttributeChangeTemplate(data) {
+            const attr = data.attribute || {};
+            return `
+                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                    <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
+                        <h4 class="text-sm font-semibold text-gray-800">属性信息</h4>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-600">资产属性管理</span>
+                    </div>
+                    <div class="p-4 space-y-5">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">属性名称</label>
+                            <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(attr.name)}" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">属性描述</label>
+                            <textarea class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm leading-6" rows="3" readonly>${safeValue(attr.description)}</textarea>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">是否启用</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${attr.enabled ? '是' : '否'}" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">父节点</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(attr.parent)}" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderLevelChangeTemplate(data) {
+            const level = data.level || {};
+            const enabledText = level.enabled === undefined ? '-' : (level.enabled ? '是' : '否');
+            return `
+                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                    <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
+                        <h4 class="text-sm font-semibold text-gray-800">分级信息</h4>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-600">数据分级管理</span>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">分级名称</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(level.name)}" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">父节点</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(level.parent)}" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">是否启用</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${enabledText}" readonly>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">分级描述</label>
+                            <textarea class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm leading-6" rows="3" readonly>${safeValue(level.description)}</textarea>
+                        </div>
+                        ${level.attachment ? `
+                        <div class="bg-blue-50 border border-blue-100 rounded-lg p-3 text-xs text-blue-800">
+                            <span class="font-semibold mr-2">附件</span>${safeValue(level.attachment)}
+                        </div>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCategoryChangeTemplate(data) {
+            const category = data.category || {};
+            const enabledText = category.enabled === undefined ? '-' : (category.enabled ? '是' : '否');
+            return `
+                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                    <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
+                        <h4 class="text-sm font-semibold text-gray-800">分类信息</h4>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-600">数据分类管理</span>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">分类名称</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(category.name)}" readonly>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-medium text-gray-500 mb-1">分类描述</label>
+                                <textarea class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm leading-6" rows="3" readonly>${safeValue(category.description)}</textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">分级</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(category.level)}" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">是否启用</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${enabledText}" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">父节点</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(category.parent)}" readonly>
+                            </div>
+                        </div>
+                        ${category.attachment ? `
+                        <div class="bg-blue-50 border border-blue-100 rounded-lg p-3 text-xs text-blue-800">
+                            <span class="font-semibold mr-2">附件</span>${safeValue(category.attachment)}
+                        </div>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCatalogChangeTemplate(data) {
+            const catalog = data.catalog || {};
+            const enabledText = catalog.enabled === undefined ? '-' : (catalog.enabled ? '是' : '否');
+            return `
+                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                    <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
+                        <h4 class="text-sm font-semibold text-gray-800">目录信息</h4>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-50 text-cyan-600">资产目录管理</span>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">目录名称</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(catalog.name)}" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">父节点</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(catalog.parent)}" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">是否启用</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${enabledText}" readonly>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1">目录描述</label>
+                            <textarea class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm leading-6" rows="3" readonly>${safeValue(catalog.description)}</textarea>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTagChangeTemplate(data) {
+            const tag = data.tag || {};
+            const colorValue = tag.color || '#14B8A6';
+            const colorText = tag.color || '-';
+            const enabledText = tag.enabled === undefined ? '-' : (tag.enabled ? '是' : '否');
+            return `
+                <div class="modal-scroll-content space-y-4">
+                    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                        <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
+                            <h4 class="text-sm font-semibold text-gray-800">标签信息</h4>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-50 text-teal-600">资产标签管理</span>
+                        </div>
+                        <div class="p-4 space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">标签名称</label>
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(tag.name)}" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">父节点</label>
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(tag.parent)}" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">标签颜色</label>
+                                    <div class="flex items-center gap-3">
+                                        <span class="w-8 h-8 rounded-full border border-gray-200 shadow-inner" style="background-color: ${colorValue};"></span>
+                                        <input type="text" class="flex-1 px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm font-mono uppercase tracking-wide" value="${colorText}" readonly>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">是否启用</label>
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${enabledText}" readonly>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">标签描述</label>
+                                <textarea class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm leading-6" rows="3" readonly>${safeValue(tag.description)}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAccountingChangeTemplate(data) {
+            const asset = data.asset || {};
+            const impairment = data.impairment || {};
+            const decline = data.priceDecline || {};
+            const reversalHistory = (data.priceReversal?.history || []).map(row => `
+                <tr class="border-b last:border-b-0">
+                    <td class="px-4 py-2 text-sm text-gray-500">${safeValue(row.date)}</td>
+                    <td class="px-4 py-2 text-sm text-gray-900">${safeValue(row.amount)}</td>
+                    <td class="px-4 py-2 text-sm text-gray-900">${safeValue(row.reversed)}</td>
+                    <td class="px-4 py-2 text-sm text-gray-900">${safeValue(row.reversible)}</td>
+                    <td class="px-4 py-2 text-sm text-gray-500">${safeValue(row.remark)}</td>
+                </tr>
+            `).join('');
+            const disclosureAttachments = (data.disclosure?.attachments || []).map(file => `
+                <li class="flex items-center gap-2 text-sm text-gray-700">
+                    <i class="fas fa-file-alt text-blue-500"></i>
+                    <span>${safeValue(file.name)} <span class="text-xs text-gray-400">(${safeValue(file.size)})</span></span>
+                </li>
+            `).join('');
+            return `
+                <div class="space-y-4">
+                    <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                        <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
+                            <h4 class="text-sm font-semibold text-gray-800">资产台账概览</h4>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-50 text-orange-600">会计核算</span>
+                        </div>
+                        <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">资产编号</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm font-mono" value="${safeValue(asset.code)}" readonly>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-medium text-gray-500 mb-1">资产名称</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(asset.name)}" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">资产类别</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(asset.category)}" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">账面价值</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(asset.bookValue)}" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">披露状态</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(asset.disclosureStatus)}" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-tabs" data-accounting-tabs>
+                        <div class="modal-tab-buttons">
+                            <button class="modal-tab-button active" data-tab-target="impairment">减值</button>
+                            <button class="modal-tab-button" data-tab-target="decline">跌价</button>
+                            <button class="modal-tab-button" data-tab-target="reversal">转回</button>
+                            <button class="modal-tab-button" data-tab-target="disclosure">披露</button>
+                        </div>
+                        <div class="modal-tab-panels">
+                            <div class="modal-tab-panel active" data-tab-panel="impairment">
+                                <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                                    <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
+                                        <h4 class="text-sm font-semibold text-gray-800">减值管理</h4>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-700">减值</span>
+                                    </div>
+                                    <div class="p-4 space-y-3">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-500 mb-1">原值</label>
+                                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(impairment.originalValue)}" readonly>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-500 mb-1">累计摊销</label>
+                                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(impairment.accumulatedAmortization)}" readonly>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-500 mb-1">现有账面价值</label>
+                                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(impairment.recoverableAmount)}" readonly>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-500 mb-1">拟计提减值金额</label>
+                                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm font-semibold text-orange-600" value="${safeValue(impairment.proposedImpairment)}" readonly>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-500 mb-1">评估日期</label>
+                                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(impairment.evaluationDate)}" readonly>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-700 mb-2">减值原因</label>
+                                            <textarea class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm leading-6" rows="2" readonly>${safeValue(impairment.reason)}</textarea>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-700 mb-2">减值说明</label>
+                                            <textarea class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm leading-6" rows="3" readonly>${safeValue(impairment.description)}</textarea>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-700 mb-2">附件清单</label>
+                                            <ul class="space-y-1">
+                                                ${renderAttachmentsList(impairment.attachments)}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-tab-panel" data-tab-panel="decline">
+                                <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                                    <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
+                                        <h4 class="text-sm font-semibold text-gray-800">存货跌价准备</h4>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">跌价</span>
+                                    </div>
+                                    <div class="p-4 space-y-3">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-500 mb-1">账面余额</label>
+                                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(decline.bookBalance)}" readonly>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-500 mb-1">已计提跌价准备</label>
+                                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(decline.existingProvision)}" readonly>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-500 mb-1">拟计提金额</label>
+                                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm font-semibold text-blue-600" value="${safeValue(decline.proposedProvision)}" readonly>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-700 mb-2">跌价说明</label>
+                                            <textarea class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm leading-6" rows="3" readonly>${safeValue(decline.description)}</textarea>
+                                        </div>
+                                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                                            <span class="text-xs font-semibold text-gray-600">附件要求</span>
+                                            <p class="text-sm text-gray-700 mt-1">${safeValue(decline.attachmentTips)}</p>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-700 mb-2">附件清单</label>
+                                            <ul class="space-y-1">
+                                                ${renderAttachmentsList(decline.attachments)}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-tab-panel" data-tab-panel="reversal">
+                                <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                                    <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
+                                        <h4 class="text-sm font-semibold text-gray-800">跌价准备转回</h4>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">转回</span>
+                                    </div>
+                                    <div class="p-4 space-y-4">
+                                        <div class="border border-gray-200 rounded-lg overflow-hidden">
+                                            <table class="min-w-full divide-y divide-gray-200">
+                                                <thead class="bg-gray-50">
+                                                    <tr>
+                                                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500">计提日期</th>
+                                                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500">计提金额</th>
+                                                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500">已转回</th>
+                                                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500">可转回</th>
+                                                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500">说明</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="bg-white">
+                                                    ${reversalHistory || '<tr><td colspan="5" class="px-4 py-3 text-sm text-gray-500 text-center">暂无历史记录</td></tr>'}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-500 mb-1">拟转回金额</label>
+                                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm font-semibold text-emerald-600" value="${safeValue(data.priceReversal?.plan?.selectedAmount)}" readonly>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-500 mb-1">附件说明</label>
+                                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(data.priceReversal?.plan?.attachmentsHint)}" readonly>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-700 mb-2">转回原因</label>
+                                            <textarea class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm leading-6" rows="3" readonly>${safeValue(data.priceReversal?.plan?.reason)}</textarea>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-700 mb-2">附件清单</label>
+                                            <ul class="space-y-1">
+                                                ${renderAttachmentsList(data.priceReversal?.attachments)}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-tab-panel" data-tab-panel="disclosure">
+                                <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                                    <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
+                                        <h4 class="text-sm font-semibold text-gray-800">披露方案</h4>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700">披露</span>
+                                    </div>
+                                    <div class="p-4 space-y-3">
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-500 mb-1">披露类型</label>
+                                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(data.disclosure?.type)}" readonly>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-500 mb-1">披露日期</label>
+                                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(data.disclosure?.date)}" readonly>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-500 mb-1">披露范围</label>
+                                                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(data.disclosure?.scope)}" readonly>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-700 mb-2">披露标题</label>
+                                            <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(data.disclosure?.title)}" readonly>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-700 mb-2">披露内容摘要</label>
+                                            <textarea class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm leading-6" rows="3" readonly>${safeValue(data.disclosure?.content)}</textarea>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-700 mb-2">附件清单</label>
+                                            <ul class="space-y-1">
+                                                ${disclosureAttachments || '<li class="text-sm text-gray-500">暂无附件</li>'}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAssetDisposalTemplate(data, task) {
+            const asset = data.asset || {};
+            const plan = data.plan || {};
+            const disposalDate = plan.targetDate ? plan.targetDate.replace(/-/g, '/') : '';
+            const steps = Array.isArray(plan.steps) ? plan.steps : [];
+            const attachments = (task && Array.isArray(task.attachments)) ? task.attachments : (Array.isArray(data.attachments) ? data.attachments : []);
+            return `
+                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                    <div class="px-5 py-4 border-b bg-gray-50">
+                        <h4 class="text-sm font-semibold text-gray-800">资产处置信息</h4>
+                    </div>
+                    <div class="p-6 space-y-6">
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm text-gray-700">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-medium text-gray-500 tracking-wide">资产编号：</span>
+                                    <span class="text-gray-900 font-medium">${safeValue(asset.code)}</span>
+                                </div>
+                                <div class="flex items-center gap-2 md:col-span-2">
+                                    <span class="text-xs font-medium text-gray-500 tracking-wide whitespace-nowrap">资产名称：</span>
+                                    <span class="text-gray-900 font-medium truncate" title="${safeValue(asset.name)}">${safeValue(asset.name)}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-medium text-gray-500 tracking-wide">资产类型：</span>
+                                    <span class="text-gray-900 font-medium">${safeValue(asset.category)}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-medium text-gray-500 tracking-wide">项目编码：</span>
+                                    <span class="text-gray-900 font-medium">${safeValue(asset.projectCode)}</span>
+                                </div>
+                                <div class="flex items-center gap-2 md:col-span-2">
+                                    <span class="text-xs font-medium text-gray-500 tracking-wide">数据大小：</span>
+                                    <span class="text-gray-900 font-medium">${safeValue(asset.size)}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div class="bg-white border border-gray-200 rounded-lg px-4 py-3">
+                                <p class="text-xs font-medium text-gray-500 mb-1">处置方式</p>
+                                <p class="text-sm text-gray-900">${safeValue(plan.type)}</p>
+                            </div>
+                            <div class="bg-white border border-gray-200 rounded-lg px-4 py-3">
+                                <p class="text-xs font-medium text-gray-500 mb-1">处置原因</p>
+                                <p class="text-sm text-gray-900">${safeValue(plan.reason)}</p>
+                            </div>
+                            <div class="bg-white border border-gray-200 rounded-lg px-4 py-3">
+                                <p class="text-xs font-medium text-gray-500 mb-1">预计处置日期</p>
+                                <p class="text-sm text-gray-900">${safeValue(disposalDate)}</p>
+                            </div>
+                            <div class="bg-white border border-gray-200 rounded-lg px-4 py-3">
+                                <p class="text-xs font-medium text-gray-500 mb-1">处置负责人</p>
+                                <p class="text-sm text-gray-900">${safeValue(plan.responsibleTeam)}</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border border-gray-200 rounded-lg px-4 py-3">
+                            <p class="text-xs font-medium text-gray-500 mb-2">处置说明</p>
+                            <p class="text-sm text-gray-900 leading-6 whitespace-pre-line">${safeValue(plan.reason)}</p>
+                        </div>
+
+                        <div class="bg-white border border-gray-200 rounded-lg px-4 py-4">
+                            <p class="text-xs font-medium text-gray-500 mb-2 flex items-center gap-2">
+                                <i class="fas fa-paperclip text-gray-400"></i>
+                                附件
+                            </p>
+                            ${attachments.length ? `
+                                <ul class="space-y-2 text-sm text-gray-700">
+                                    ${attachments.map(file => `
+                                        <li class="flex items-center gap-2">
+                                            <i class="fas fa-file-alt text-blue-500 text-sm"></i>
+                                            <span>${safeValue(file.name)}${file.size ? `<span class="text-xs text-gray-400 ml-2">(${safeValue(file.size)})</span>` : ''}</span>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            ` : `<p class="text-sm text-gray-500">暂无附件</p>`}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 为所有"查看详情"按钮绑定事件（在页面加载后）
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为静态HTML中的查看详情按钮绑定事件
+            const detailButtons = document.querySelectorAll('button');
+            detailButtons.forEach(button => {
+                if (button.textContent.includes('查看详情')) {
+                    // 从onclick属性中提取任务ID
+                    const onclickAttr = button.getAttribute('onclick');
+                    if (onclickAttr) {
+                        const match = onclickAttr.match(/showTaskDetail\((\d+)/);
+                        if (match) {
+                            const taskId = parseInt(match[1]);
+                            button.setAttribute('onclick', `showTaskDetail(${taskId}, 'view')`);
+                        }
+                    }
+                } else if (button.textContent.includes('处理任务')) {
+                    // 从onclick属性中提取任务ID
+                    const onclickAttr = button.getAttribute('onclick');
+                    if (onclickAttr) {
+                        const match = onclickAttr.match(/showTaskDetail\((\d+)/);
+                        if (match) {
+                            const taskId = parseInt(match[1]);
+                            const task = taskData.find(t => t.id === taskId);
+                            if (task) {
+                                // 只有待处理状态的任务才显示"处理任务"按钮
+                                if (task.status === 'pending') {
+                                    button.setAttribute('onclick', `showTaskDetail(${taskId}, 'process')`);
+                                } else {
+                                    // 隐藏"处理任务"按钮
+                                    button.style.display = 'none';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
         // 页面加载时默认显示我的任务页面
         window.addEventListener('DOMContentLoaded', function() {
             // 确保个人中心页面（我的任务）显示，其他隐藏
@@ -1789,6 +3809,26 @@
             // 设置我的任务导航为激活状态
             updateNavigationState('personal');
         });
+
+        function initializeAccountingChangeTabs(container) {
+            const tabsRoot = container.querySelector('[data-accounting-tabs]');
+            if (!tabsRoot) {
+                return;
+            }
+            const buttons = tabsRoot.querySelectorAll('.modal-tab-button');
+            const panels = tabsRoot.querySelectorAll('.modal-tab-panel');
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const target = button.getAttribute('data-tab-target');
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    panels.forEach(panel => {
+                        panel.classList.toggle('active', panel.getAttribute('data-tab-panel') === target);
+                    });
+                    button.classList.add('active');
+                });
+            });
+        }
     </script>
 </body>
 </html>
+

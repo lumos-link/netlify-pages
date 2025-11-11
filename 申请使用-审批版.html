@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>申请使用 - 数据资产管理系统</title>
+  <title>申请使用-审批版 - 数据资产管理系统</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -59,7 +59,7 @@
   </header>
 
   <!-- 主体内容区 -->
-  <main class="flex-1 w-full max-w-7xl mx-auto py-8 px-4">
+  <main class="flex-1 w-full max-w-7xl mx-auto py-8 px-4" style="padding-bottom: 120px;">
     <!-- 页面标题 -->
     <div class="mb-8">
       <h1 class="text-3xl font-bold text-gray-900 mb-2">申请使用数据资产</h1>
@@ -988,9 +988,200 @@
         </div>
       </form>
     </div>
+
+    <!-- 审批流程进度 -->
+    <div class="content-card p-6 mt-8">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+            <i class="fas fa-project-diagram text-blue-500 mr-2"></i>审批流程进度
+          </h2>
+          <p class="text-sm text-gray-500 mt-1">实时掌握申请审批状态，支持多环节协作与跟进</p>
+        </div>
+        <button type="button" onclick="resetApplyProgress()" class="text-xs text-blue-600 hover:text-blue-800 inline-flex items-center">
+          <i class="fas fa-sync-alt mr-1"></i>重置为默认进度
+        </button>
+      </div>
+      <div id="apply-approval-progress" class="mt-5 space-y-3"></div>
+    </div>
   </main>
 
+  <!-- 审批操作区域 -->
+  <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <span class="text-sm font-medium text-gray-700">审批意见：</span>
+          <textarea id="approvalComment" placeholder="请输入审批意见（可选）" 
+            class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-none" 
+            rows="2" style="min-width: 300px; max-width: 500px;"></textarea>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button onclick="handleApproval('reject')" class="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors font-medium">
+            <i class="fas fa-times mr-2"></i>拒绝
+          </button>
+          <button onclick="handleApproval('return')" class="px-6 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors font-medium">
+            <i class="fas fa-undo mr-2"></i>退回
+          </button>
+          <button onclick="handleApproval('approve')" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors font-medium">
+            <i class="fas fa-check mr-2"></i>同意
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <script>
+    const defaultApplyApprovalProgress = [
+      { name: '提交申请', status: 'completed', owner: '张三', time: '2025-01-16 09:30', note: '申请人提交数据使用申请并选择资产范围' },
+      { name: '部门审批', status: 'current', owner: '李经理', time: '2025-01-16 14:20', note: '业务部门审批中，预计1个工作日' },
+      { name: '安全审查', status: 'pending', owner: '安全部', note: '安全合规团队将核验数据分级与使用范围' },
+      { name: '最终审批', status: 'pending', owner: '数据资产委员会', note: '综合评估后完成授权发放' }
+    ];
+
+    let applyApprovalProgress = JSON.parse(localStorage.getItem('applyApprovalProgress') || 'null') || defaultApplyApprovalProgress.slice();
+
+    function saveApplyApprovalProgress() {
+      localStorage.setItem('applyApprovalProgress', JSON.stringify(applyApprovalProgress));
+    }
+
+    function formatDateTime(date = new Date()) {
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      const hh = String(date.getHours()).padStart(2, '0');
+      const mi = String(date.getMinutes()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd} ${hh}:${mi}`;
+    }
+
+    function getTimelineStepStyles(status) {
+      const baseStyles = {
+        circle: 'bg-gray-200 text-gray-600',
+        text: 'text-gray-600',
+        badge: 'bg-gray-100 text-gray-700',
+        line: 'bg-gray-200'
+      };
+
+      const styleMap = {
+        completed: {
+          circle: 'bg-green-500 text-white',
+          text: 'text-green-600',
+          badge: 'bg-green-100 text-green-800',
+          line: 'bg-green-200'
+        },
+        current: {
+          circle: 'bg-blue-500 text-white',
+          text: 'text-blue-600',
+          badge: 'bg-blue-100 text-blue-800',
+          line: 'bg-blue-200'
+        },
+        pending: {
+          circle: 'bg-gray-200 text-gray-600',
+          text: 'text-gray-500',
+          badge: 'bg-gray-100 text-gray-600',
+          line: 'bg-gray-200'
+        },
+        rejected: {
+          circle: 'bg-red-500 text-white',
+          text: 'text-red-600',
+          badge: 'bg-red-100 text-red-800',
+          line: 'bg-red-200'
+        },
+        approved: {
+          circle: 'bg-emerald-500 text-white',
+          text: 'text-emerald-600',
+          badge: 'bg-emerald-100 text-emerald-800',
+          line: 'bg-emerald-200'
+        }
+      };
+
+      return styleMap[status] || baseStyles;
+    }
+
+    function getTimelineStatusText(status) {
+      const textMap = {
+        completed: '已完成',
+        current: '进行中',
+        pending: '待处理',
+        rejected: '已驳回',
+        approved: '已通过'
+      };
+      return textMap[status] || '待处理';
+    }
+
+    function renderProcessTimeline(containerId, steps = []) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      if (!Array.isArray(steps) || steps.length === 0) {
+        container.innerHTML = '<div class="text-xs text-gray-500">暂无审批进度</div>';
+        return;
+      }
+
+      container.innerHTML = steps.map((step, index) => {
+        const styles = getTimelineStepStyles(step.status);
+        const indicator = step.status === 'completed' || step.status === 'approved'
+          ? '<i class="fas fa-check text-xs"></i>'
+          : (step.status === 'rejected' ? '<i class="fas fa-times text-xs"></i>' : index + 1);
+        const showConnector = index < steps.length - 1;
+
+        return `
+          <div class="flex items-start">
+            <div class="flex flex-col items-center mr-3">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold ${styles.circle}">
+                ${indicator}
+              </div>
+              ${showConnector ? `<div class="flex-1 w-px mt-1 ${styles.line}" style="min-height: 18px;"></div>` : ''}
+            </div>
+            <div class="flex-1 pb-4 ${showConnector ? 'border-b border-gray-100' : ''}">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium ${styles.text}">${step.name || '未命名步骤'}</p>
+                  ${step.owner ? `<p class="text-xs text-gray-500 mt-1">负责人：${step.owner}</p>` : ''}
+                  ${step.time ? `<p class="text-xs text-gray-400 mt-1">${step.time}</p>` : ''}
+                </div>
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${styles.badge}">
+                  ${getTimelineStatusText(step.status)}
+                </span>
+              </div>
+              ${step.note ? `<p class="text-xs text-gray-500 mt-2 leading-relaxed">${step.note}</p>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function resetApplyProgress() {
+      applyApprovalProgress = defaultApplyApprovalProgress.slice();
+      saveApplyApprovalProgress();
+      renderProcessTimeline('apply-approval-progress', applyApprovalProgress);
+    }
+
+    function advanceApplyProgress() {
+      const currentIndex = applyApprovalProgress.findIndex(step => step.status === 'current');
+      const now = formatDateTime();
+
+      if (currentIndex >= 0) {
+        applyApprovalProgress[currentIndex].status = 'completed';
+        applyApprovalProgress[currentIndex].time = now;
+      }
+
+      const nextIndex = currentIndex + 1;
+      if (nextIndex < applyApprovalProgress.length) {
+        applyApprovalProgress[nextIndex].status = 'current';
+        if (!applyApprovalProgress[nextIndex].time) {
+          applyApprovalProgress[nextIndex].time = now;
+        }
+      } else if (currentIndex === applyApprovalProgress.length - 1) {
+        applyApprovalProgress[currentIndex].status = 'approved';
+        applyApprovalProgress[currentIndex].time = now;
+      }
+
+      saveApplyApprovalProgress();
+      renderProcessTimeline('apply-approval-progress', applyApprovalProgress);
+    }
+
     // 资产信息映射
     const assetInfoMap = {
       'non-bidding': '非招标业务全流程管理系统，涵盖非招标申请、审批、执行、监控等核心业务环节',
@@ -1312,6 +1503,8 @@
         }
       }
       
+      advanceApplyProgress();
+
       // 模拟提交申请
       console.log('提交申请数据:', {
         applyType,
@@ -1365,6 +1558,8 @@
 
     // 页面加载时设置默认申请日期和生成编号
     document.addEventListener('DOMContentLoaded', function() {
+      renderProcessTimeline('apply-approval-progress', applyApprovalProgress);
+
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('applicationDate').value = today;
       document.getElementById('external-applicationDate').value = today;
@@ -1376,12 +1571,49 @@
       document.getElementById('external-serialNumber').value = generateExternalSerialNumber();
       document.getElementById('transfer-serialNumber').value = generateTransferSerialNumber();
       
+      // 默认选中"集团内申请"
+      selectApplyType('internal');
+      
       // 隐藏提交按钮（审批模式下）
       const submitButtons = document.getElementById('submitButtons');
       if (submitButtons) {
         submitButtons.style.display = 'none';
       }
+      
+      // 禁用所有表单元素（审批模式下只读）
+      const allInputs = document.querySelectorAll('input, select, textarea, button[type="button"]:not([onclick*="handleApproval"])');
+      allInputs.forEach(input => {
+        if (input.type !== 'file' && !input.id.includes('approvalComment')) {
+          input.disabled = true;
+        }
+      });
     });
+      // ==================== 审批功能 ====================
+    // 处理审批操作
+    function handleApproval(action) {
+      const comment = document.getElementById('approvalComment').value;
+      const actionText = {
+        'approve': '同意',
+        'reject': '拒绝',
+        'return': '退回'
+      }[action] || '处理';
+      
+      if (action === 'reject' || action === 'return') {
+        if (!comment.trim()) {
+          alert('请填写审批意见');
+          return;
+        }
+      }
+      
+      if (confirm(`确定要${actionText}该申请吗？`)) {
+        // 这里可以添加实际的审批逻辑，比如调用API
+        alert(`审批${actionText}成功！${comment ? '\n审批意见：' + comment : ''}`);
+        
+        // 审批后可以跳转回个人中心
+        // window.location.href = '个人中心.html';
+      }
+    }
+
   </script>
 </body>
 </html>
