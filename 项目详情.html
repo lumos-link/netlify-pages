@@ -664,14 +664,18 @@
                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">取费说明</th>
                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">预算费用(单位:元)</th>
                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">备注</th>
+                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
                       </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                       <!-- 直接费 -->
                       <tr class="bg-orange-50">
                         <td class="px-3 py-2 text-sm font-medium text-gray-900">I</td>
-                        <td class="px-3 py-2 text-sm font-medium text-gray-900">直接费</td>
+                        <td class="px-3 py-2 text-sm font-medium text-gray-900">材料/设备费用</td>
                         <td class="px-3 py-2 text-sm text-gray-500"></td>
+                        <td class="px-3 py-2 text-sm text-gray-700">
+                          <button type="button" class="delete-row px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600" onclick="deleteRow(this)">删除</button>
+                        </td>
                         <td class="px-3 py-2">
                             <input type="number" class="w-full px-2 py-1 text-xs border border-gray-300 rounded" placeholder="0">
                         </td>
@@ -681,34 +685,56 @@
                       <!-- 人员费 -->
                       <tr class="bg-orange-50">
                         <td class="px-3 py-2 text-sm font-medium text-gray-900">1</td>
-                        <td class="px-3 py-2 text-sm font-medium text-gray-900">人员费</td>
+                        <td class="px-3 py-2 text-sm font-medium text-gray-900">折旧/摊销</td>
                         <td class="px-3 py-2 text-sm text-gray-500"></td>
                         <td class="px-3 py-2">
                             <input type="number" class="w-full px-2 py-1 text-xs border border-gray-300 rounded" placeholder="0">
                         </td>
                         <td class="px-3 py-2 text-sm font-medium text-gray-900">150,000</td>
+                        <td class="px-3 py-2 text-sm text-gray-700">
+                          <button type="button" class="delete-row px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600" onclick="deleteRow(this)">删除</button>
+                        </td>
                       </tr>
                       
                       <!-- 设备费 -->
                       <tr class="bg-orange-50">
                         <td class="px-3 py-2 text-sm font-medium text-gray-900">2</td>
-                        <td class="px-3 py-2 text-sm font-medium text-gray-900">设备费</td>
+                        <td class="px-3 py-2 text-sm font-medium text-gray-900">研发人员</td>
                         <td class="px-3 py-2 text-sm text-gray-500"></td>
                         <td class="px-3 py-2">
                             <input type="number" class="w-full px-2 py-1 text-xs border border-gray-300 rounded" placeholder="0">
                         </td>
                         <td class="px-3 py-2 text-sm font-medium text-gray-900">80,000</td>
+                        <td class="px-3 py-2 text-sm text-gray-700">
+                          <button type="button" class="delete-row px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600" onclick="deleteRow(this)">删除</button>
+                        </td>
                       </tr>
                       
                       <!-- 材料费 -->
                       <tr class="bg-orange-50">
                         <td class="px-3 py-2 text-sm font-medium text-gray-900">3</td>
-                        <td class="px-3 py-2 text-sm font-medium text-gray-900">材料费</td>
+                        <td class="px-3 py-2 text-sm font-medium text-gray-900">服务费</td>
                         <td class="px-3 py-2 text-sm text-gray-500"></td>
                         <td class="px-3 py-2">
-                            <input type="number" class="w-full px-2 py-1 text-xs border border-gray-300 rounded" placeholder="0">
+                          <input type="number" class="w-full px-2 py-1 text-xs border border-gray-300 rounded" placeholder="0">
                         </td>
                         <td class="px-3 py-2 text-sm font-medium text-gray-900">30,000</td>
+                        <td class="px-3 py-2 text-sm text-gray-700">
+                          <button type="button" class="delete-row px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600" onclick="deleteRow(this)">删除</button>
+                        </td>
+                      </tr>
+                      
+                      <tr class="bg-orange-50">
+                        <td class="px-3 py-2 text-sm font-medium text-gray-900">4</td>
+                        <td class="px-3 py-2 text-sm font-medium text-gray-900">其他费用</td>
+                        <td class="px-3 py-2 text-sm text-gray-500"></td>
+                        <td class="px-3 py-2">
+                          <input type="number" class="w-full px-2 py-1 text-xs border border-gray-300 rounded" placeholder="0">
+                        </td>
+                        <td class="px-3 py-2 text-sm font-medium text-gray-900"></td>
+                        <td class="px-3 py-2 text-sm text-gray-700">
+                          <button type="button" class="delete-row px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600" onclick="deleteRow(this)">删除</button>
+                        </td>
                       </tr>
                       
                       <tr class="bg-gray-50">
@@ -716,6 +742,7 @@
                         <td class="px-3 py-2 text-sm font-medium text-gray-900"></td>
                         <td class="px-3 py-2 text-sm font-medium text-gray-900"></td>
                         <td class="px-3 py-2 text-sm font-medium text-gray-900">260,000</td>
+                        <td class="px-3 py-2 text-sm font-medium text-gray-900"></td>
                         <td class="px-3 py-2 text-sm font-medium text-gray-900"></td>
                       </tr>
                     </tbody>
@@ -984,6 +1011,7 @@
                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">分摊比例</th>
                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">分摊金额(不含税额)</th>
                         <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">备注</th>
+                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
                       </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200" id="cost-tbody">
@@ -2525,21 +2553,117 @@
               </div>
 
               <!-- 资产基础信息配置 -->
-              <div class="mb-6">
-                <div class="flex items-center justify-between mb-3">
-                  <h4 class="text-md font-medium text-gray-700">资产基础信息配置</h4>
-                  <button class="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700">
-                    <i class="fas fa-cog mr-1"></i>配置标签属性
-                  </button>
-                </div>
-                <div class="bg-white border border-gray-200 rounded-lg p-4">
-                  <div class="space-y-2 text-sm text-gray-600">
-                    <div><span class="font-medium">技术标签：</span>未配置</div>
-                    <div><span class="font-medium">业务标签：</span>未配置</div>
-                    <div><span class="font-medium">安全标签：</span>未配置</div>
-                    <div><span class="font-medium">资产属性：</span>未配置</div>
-                    <div><span class="font-medium">所属目录：</span>未配置</div>
+              <div class="mb-8 space-y-6">
+                <h4 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                  <i class="fas fa-sitemap text-blue-500"></i>资产基础信息配置
+                </h4>
+
+                <!-- 所属目录 -->
+                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+                  <div class="flex items-start justify-between mb-4 gap-4">
+                    <div>
+                      <h5 class="text-md font-medium text-gray-800">所属目录</h5>
+                      <p class="text-sm text-gray-500 mt-1">请选择资产目录，支持多层级树形结构，帮助确定资产在企业资产目录中的位置。</p>
+                    </div>
+                    <span id="assetCatalogBreadcrumb" class="text-sm text-blue-600 font-medium">尚未选择</span>
                   </div>
+                  <div class="relative max-w-xl">
+                    <button id="assetCatalogDropdownBtn" type="button" class="w-full px-4 py-2 border border-gray-300 rounded-lg text-left bg-gray-50 hover:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center justify-between">
+                      <span id="assetCatalogSelectedText" class="text-gray-600">请选择所属目录...</span>
+                      <i class="fas fa-chevron-down text-gray-400 text-sm"></i>
+                    </button>
+                    <div id="assetCatalogDropdownMenu" class="hidden absolute z-30 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-xl max-h-80 overflow-y-auto">
+                      <div id="assetCatalogTree" class="py-2 text-sm text-gray-700"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 资产属性 -->
+                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+                  <div class="flex items-center justify-between mb-4">
+                    <div>
+                      <h5 class="text-md font-medium text-gray-800">资产属性</h5>
+                      <p class="text-sm text-gray-500 mt-1">参照资产内容管理的属性管理，可选择属性类别并补充属性值，支持多条属性配置。</p>
+                    </div>
+                    <button onclick="clearAssetAttributes()" class="text-sm text-blue-600 hover:text-blue-800">清空属性</button>
+                  </div>
+                  <div class="grid md:grid-cols-3 gap-4 mb-4">
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">属性分类</label>
+                      <select id="assetAttrCategorySelect" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="基础属性">基础属性</option>
+                        <option value="质量属性">质量属性</option>
+                        <option value="业务属性">业务属性</option>
+                        <option value="技术属性">技术属性</option>
+                        <option value="自定义属性">自定义属性</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">属性名称</label>
+                      <select id="assetAttrNameSelect" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
+                    </div>
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">属性值</label>
+                      <div class="flex gap-2">
+                        <input id="assetAttrValueInput" type="text" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="请输入属性值">
+                        <button onclick="addAssetAttributeEntry()" class="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700">
+                          <i class="fas fa-plus mr-1"></i>添加
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <table class="min-w-full text-sm">
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <th class="px-4 py-2 text-left text-gray-500 font-medium">属性分类</th>
+                          <th class="px-4 py-2 text-left text-gray-500 font-medium">属性名称</th>
+                          <th class="px-4 py-2 text-left text-gray-500 font-medium">属性值</th>
+                          <th class="px-4 py-2 text-left text-gray-500 font-medium">操作</th>
+                        </tr>
+                      </thead>
+                      <tbody id="assetAttributesTableBody" class="divide-y divide-gray-100 bg-white">
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- 资产标签 -->
+                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
+                  <div class="flex items-center justify-between mb-4">
+                    <div>
+                      <h5 class="text-md font-medium text-gray-800">资产标签</h5>
+                      <p class="text-sm text-gray-500 mt-1">参照资产内容管理的标签体系，可添加业务、技术、安全等不同类型的标签。</p>
+                    </div>
+                    <button onclick="clearAssetTags()" class="text-sm text-blue-600 hover:text-blue-800">清空标签</button>
+                  </div>
+                <div class="flex flex-col lg:flex-row gap-4 mb-4">
+                  <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">选择标签</label>
+                    <div class="flex items-center gap-2">
+                      <button id="assetTagTreeBtn" type="button" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 hover:bg-white text-left text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" onclick="openTagTreeModal()">
+                        <span id="assetTagTreeSelectedPath">请选择标签...</span>
+                      </button>
+                      <button onclick="addAssetTagEntryFromTree()" class="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 whitespace-nowrap">
+                        <i class="fas fa-plus mr-1"></i>添加
+                      </button>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">点击可展开树形标签目录，底层节点为可选标签，路径将自动记录。</p>
+                  </div>
+                </div>
+                <div class="border border-gray-200 rounded-lg overflow-hidden">
+                  <table class="min-w-full divide-y divide-gray-200 text-sm">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="px-4 py-2 text-left text-gray-500 font-medium">标签类型</th>
+                        <th class="px-4 py-2 text-left text-gray-500 font-medium">标签名称</th>
+                        <th class="px-4 py-2 text-left text-gray-500 font-medium">完整路径</th>
+                        <th class="px-4 py-2 text-left text-gray-500 font-medium">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody id="assetTagsTableBody" class="bg-white divide-y divide-gray-100"></tbody>
+                  </table>
+                </div>
                 </div>
               </div>
 
@@ -4775,6 +4899,11 @@
       loadAssetsForAcceptance();
       calculateAllCosts();
       
+      // 初始化资产基础信息配置模块
+      initAssetCatalogDropdown();
+      initAssetAttributeForm();
+      initAssetTagsModule();
+      
       // 初始化验收环节费用数据
       initializeTestingCosts();
       
@@ -4935,6 +5064,9 @@
         </td>
         <td class="px-3 py-2 text-sm text-gray-700">
           <input type="text" class="cost-remark w-full px-2 py-1 text-xs border border-gray-300 rounded" placeholder="备注信息">
+        </td>
+        <td class="px-3 py-2 text-sm text-gray-700">
+          <button type="button" class="delete-row px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600" onclick="deleteRow(this)">删除</button>
         </td>
       `;
       
@@ -5312,6 +5444,9 @@
         <td class="px-3 py-2 text-sm text-gray-700">
           <input type="text" class="cost-remark w-full px-2 py-1 text-xs border border-gray-300 rounded" placeholder="备注信息" value="${cost.remark || ''}">
         </td>
+        <td class="px-3 py-2 text-sm text-gray-700">
+          <button type="button" class="delete-row px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600" onclick="deleteRow(this)">删除</button>
+        </td>
       `;
       
       tbody.appendChild(row);
@@ -5414,6 +5549,9 @@
         </td>
         <td class="px-3 py-2 text-sm text-gray-700">
           <input type="text" class="cost-remark w-full px-2 py-1 text-xs border border-gray-300 rounded" placeholder="备注信息" value="${cost.remark || ''}">
+        </td>
+        <td class="px-3 py-2 text-sm text-gray-700">
+          <button type="button" class="delete-row px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600" onclick="deleteRow(this)">删除</button>
         </td>
       `;
       
@@ -5557,6 +5695,385 @@
         showToast(`已选择数据资源: ${resource.name}`);
         // 这里可以添加选择逻辑，比如高亮显示或添加到已选择列表
       }
+    }
+
+    // ==================== 资产基础信息配置（资产形成环节） ====================
+
+    const assetCatalogTreeData = [
+      {
+        name: '业务发展',
+        children: [
+          {
+            name: '业务运营',
+            children: [
+              { name: '采购业务', children: [{ name: '供应链保障' }, { name: '合同管理' }] },
+              { name: '零售运营' }
+            ]
+          },
+          {
+            name: '市场营销',
+            children: [{ name: '客户洞察' }, { name: '数字营销' }]
+          }
+        ]
+      },
+      {
+        name: '绿色发展',
+        children: [{ name: '双碳管理' }, { name: '能耗监测' }]
+      },
+      {
+        name: '智能发展',
+        children: [{ name: 'AI赋能' }, { name: '数字孪生' }, { name: '数据中台' }]
+      },
+      {
+        name: '业务监督',
+        children: [{ name: '审计监督' }, { name: '风险合规' }]
+      }
+    ];
+
+    const assetAttributeOptions = {
+      '基础属性': ['数据格式', '存储类型', '数据量级', '更新频率', '数据结构', '字段数量'],
+      '质量属性': ['数据质量', '完整性', '准确性', '时效性', '一致性', '唯一性'],
+      '业务属性': ['数据源', '业务域', '业务负责人', '应用系统', '数据用途'],
+      '技术属性': ['技术栈', '存储路径', '接口协议', '加密方式', '备份策略'],
+      '自定义属性': ['自定义字段1', '自定义字段2', '自定义字段3']
+    };
+
+    let assetAttributesData = [
+      { category: '基础属性', name: '数据格式', value: 'JSON' },
+      { category: '质量属性', name: '数据质量', value: '优秀' },
+      { category: '业务属性', name: '数据源', value: '采购管理系统' }
+    ];
+
+    function initAssetCatalogDropdown() {
+      const btn = document.getElementById('assetCatalogDropdownBtn');
+      const menu = document.getElementById('assetCatalogDropdownMenu');
+      const treeContainer = document.getElementById('assetCatalogTree');
+      if (!btn || !menu || !treeContainer) return;
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menu.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!menu.contains(event.target) && !btn.contains(event.target)) {
+          menu.classList.add('hidden');
+        }
+      });
+
+      treeContainer.innerHTML = assetCatalogTreeData.map(node => renderCatalogNode(node, [])).join('');
+      treeContainer.querySelectorAll('[data-catalog-path]').forEach(item => {
+        item.addEventListener('click', () => {
+          const path = item.getAttribute('data-catalog-path');
+          selectAssetCatalog(path);
+        });
+      });
+    }
+
+    function renderCatalogNode(node, parentPath) {
+      const fullPath = [...parentPath, node.name];
+      const padding = 12 + parentPath.length * 16;
+      let markup = `
+        <div class="flex items-center cursor-pointer hover:bg-blue-50 px-3 py-1 rounded transition-colors"
+             data-catalog-path="${fullPath.join(' / ')}"
+             style="padding-left:${padding}px;">
+          <i class="fas fa-folder-open text-blue-500 text-xs mr-2"></i>
+          <span class="text-gray-700">${node.name}</span>
+        </div>
+      `;
+      if (node.children && node.children.length) {
+        markup += node.children.map(child => renderCatalogNode(child, fullPath)).join('');
+      }
+      return markup;
+    }
+
+    function selectAssetCatalog(path) {
+      const textEl = document.getElementById('assetCatalogSelectedText');
+      const breadcrumbEl = document.getElementById('assetCatalogBreadcrumb');
+      const menu = document.getElementById('assetCatalogDropdownMenu');
+      if (textEl) textEl.textContent = path;
+      if (breadcrumbEl) breadcrumbEl.textContent = path;
+      if (menu) menu.classList.add('hidden');
+    }
+
+    function initAssetAttributeForm() {
+      const categorySelect = document.getElementById('assetAttrCategorySelect');
+      const nameSelect = document.getElementById('assetAttrNameSelect');
+      if (!categorySelect || !nameSelect) return;
+
+      categorySelect.addEventListener('change', () => populateAssetAttributeNames(categorySelect.value));
+      populateAssetAttributeNames(categorySelect.value);
+      renderAssetAttributesTable();
+    }
+
+    function populateAssetAttributeNames(category) {
+      const nameSelect = document.getElementById('assetAttrNameSelect');
+      if (!nameSelect) return;
+      const names = assetAttributeOptions[category] || [];
+      nameSelect.innerHTML = names.map(name => `<option value="${name}">${name}</option>`).join('');
+    }
+
+    function addAssetAttributeEntry() {
+      const categorySelect = document.getElementById('assetAttrCategorySelect');
+      const nameSelect = document.getElementById('assetAttrNameSelect');
+      const valueInput = document.getElementById('assetAttrValueInput');
+      if (!categorySelect || !nameSelect || !valueInput) return;
+      const category = categorySelect.value;
+      const name = nameSelect.value;
+      const value = valueInput.value.trim();
+      if (!name || !value) return;
+      assetAttributesData.push({ category, name, value });
+      valueInput.value = '';
+      renderAssetAttributesTable();
+    }
+
+    function renderAssetAttributesTable() {
+      const tbody = document.getElementById('assetAttributesTableBody');
+      if (!tbody) return;
+      if (!assetAttributesData.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" class="px-4 py-3 text-center text-sm text-gray-400">暂未配置属性</td>
+          </tr>
+        `;
+        return;
+      }
+      tbody.innerHTML = assetAttributesData.map((attr, index) => `
+        <tr class="hover:bg-gray-50">
+          <td class="px-4 py-3 text-sm text-gray-900">${attr.category}</td>
+          <td class="px-4 py-3 text-sm text-gray-900">${attr.name}</td>
+          <td class="px-4 py-3 text-sm text-gray-600">${attr.value}</td>
+          <td class="px-4 py-3 text-sm">
+            <button onclick="removeAssetAttribute(${index})" class="text-red-600 hover:text-red-800 text-xs">
+              <i class="fas fa-trash mr-1"></i>删除
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function removeAssetAttribute(index) {
+      assetAttributesData.splice(index, 1);
+      renderAssetAttributesTable();
+    }
+
+    function clearAssetAttributes() {
+      assetAttributesData = [];
+      renderAssetAttributesTable();
+    }
+
+    // 标签树节点示例
+    const tagTreeData = [
+      {
+        name: '业务标签',
+        children: [
+          {
+            name: '客户运营',
+            children: [
+              { name: '高净值客户' },
+              { name: '零售客群' },
+              { name: '供应商伙伴' }
+            ]
+          },
+          {
+            name: '营销场景',
+            children: [
+              { name: '活动洞察' },
+              { name: '客群细分' }
+            ]
+          }
+        ]
+      },
+      {
+        name: '技术标签',
+        children: [
+          {
+            name: '数据形态',
+            children: [{ name: '结构化数据' }, { name: '半结构化数据' }, { name: '非结构化数据' }]
+          },
+          {
+            name: '处理方式',
+            children: [{ name: '实时处理' }, { name: '离线批处理' }]
+          }
+        ]
+      },
+      {
+        name: '安全标签',
+        children: [
+          { name: '内部使用' },
+          { name: '外部共享' },
+          {
+            name: '安全等级',
+            children: [{ name: 'P1级' }, { name: 'P2级' }, { name: 'P3级' }]
+          }
+        ]
+      }
+    ];
+
+    let selectedTagPath = null;
+    let assetTagsTableData = [
+      { category: '客户运营', name: '高净值客户', path: '业务标签 / 客户运营 / 高净值客户' },
+      { category: '数据形态', name: '结构化数据', path: '技术标签 / 数据形态 / 结构化数据' },
+      { category: '安全等级', name: 'P2级', path: '安全标签 / 安全等级 / P2级' }
+    ];
+
+    function initAssetTagsModule() {
+      renderAssetTagsTable();
+      const selectorText = document.getElementById('assetTagTreeSelectedPath');
+      if (selectorText) {
+        selectorText.textContent = '请选择标签...';
+      }
+    }
+
+    function openTagTreeModal() {
+      const modal = document.getElementById('tagTreeModal');
+      if (!modal) {
+        createTagTreeModal();
+      }
+      document.getElementById('tagTreeModal').classList.remove('hidden');
+      renderTagTree();
+    }
+
+    function createTagTreeModal() {
+      const modalHtml = `
+        <div id="tagTreeModal" class="fixed inset-0 bg-black bg-opacity-40 z-40 hidden">
+          <div class="bg-white w-full max-w-3xl mx-auto my-12 rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
+            <div class="px-6 py-4 border-b flex items-center justify-between">
+              <h3 class="text-lg font-semibold text-gray-800">选择标签</h3>
+              <button onclick="closeTagTreeModal()" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6">
+              <div id="tagTreeContainer" class="space-y-1"></div>
+            </div>
+            <div class="px-6 py-4 border-t flex items-center justify-between">
+              <div class="text-sm text-gray-600">
+                当前选择：<span id="tagTreeSelectedPath" class="text-blue-600 font-medium">暂无</span>
+              </div>
+              <div class="space-x-3">
+                <button onclick="clearTagTreeSelection()" class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">清空选择</button>
+                <button onclick="confirmTagTreeSelection()" class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50" id="tagTreeConfirmBtn" disabled>确定</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+
+    function renderTagTree() {
+      const container = document.getElementById('tagTreeContainer');
+      if (!container) return;
+      container.innerHTML = tagTreeData.map(node => renderTagTreeNode(node, [])).join('');
+    }
+
+    function renderTagTreeNode(node, path) {
+      const fullPath = [...path, node.name];
+      const isLeaf = !node.children || !node.children.length;
+      const depth = path.length;
+      const padding = 12 + depth * 16;
+      const selectableClass = isLeaf ? 'hover:bg-blue-50 cursor-pointer' : 'bg-gray-50';
+      let html = `
+        <div class="rounded border border-transparent ${selectableClass}" style="padding-left:${padding}px;" data-tag-path="${isLeaf ? fullPath.join(' / ') : ''}">
+          <div class="flex items-center py-1">
+            ${isLeaf ? '<i class="far fa-dot-circle text-blue-400 text-xs mr-2"></i>' : '<i class="fas fa-folder text-yellow-500 text-sm mr-2"></i>'}
+            <span class="text-sm text-gray-800">${node.name}</span>
+          </div>
+        </div>
+      `;
+      if (node.children && node.children.length) {
+        html += node.children.map(child => renderTagTreeNode(child, fullPath)).join('');
+      }
+      return html;
+    }
+
+    document.addEventListener('click', function (event) {
+      const target = event.target.closest('[data-tag-path]');
+      if (target) {
+        const path = target.getAttribute('data-tag-path');
+        if (path) {
+          selectedTagPath = path;
+          const display = document.getElementById('tagTreeSelectedPath');
+          if (display) display.textContent = path;
+          const btn = document.getElementById('tagTreeConfirmBtn');
+          if (btn) btn.disabled = false;
+        }
+      }
+    });
+
+    function closeTagTreeModal() {
+      const modal = document.getElementById('tagTreeModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function clearTagTreeSelection() {
+      selectedTagPath = null;
+      const pathDisplay = document.getElementById('tagTreeSelectedPath');
+      const textBtn = document.getElementById('assetTagTreeSelectedPath');
+      const confirmBtn = document.getElementById('tagTreeConfirmBtn');
+      if (pathDisplay) pathDisplay.textContent = '暂无';
+      if (textBtn) textBtn.textContent = '请选择标签...';
+      if (confirmBtn) confirmBtn.disabled = true;
+    }
+
+    function confirmTagTreeSelection() {
+      if (!selectedTagPath) return;
+      const inputDisplay = document.getElementById('assetTagTreeSelectedPath');
+      if (inputDisplay) inputDisplay.textContent = selectedTagPath;
+      closeTagTreeModal();
+    }
+
+    function addAssetTagEntryFromTree() {
+      if (!selectedTagPath) return;
+      const segments = selectedTagPath.split(' / ');
+      if (!segments.length) return;
+      const name = segments[segments.length - 1];
+      const category = segments.length > 1 ? segments[segments.length - 2] : segments[0];
+      if (!assetTagsTableData.some(item => item.path === selectedTagPath)) {
+        assetTagsTableData.push({ category, name, path: selectedTagPath });
+      }
+      selectedTagPath = null;
+      const display = document.getElementById('assetTagTreeSelectedPath');
+      if (display) display.textContent = '请选择标签...';
+      renderAssetTagsTable();
+      closeTagTreeModal();
+    }
+
+    function renderAssetTagsTable() {
+      const tbody = document.getElementById('assetTagsTableBody');
+      if (!tbody) return;
+      if (!assetTagsTableData.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" class="px-4 py-3 text-center text-sm text-gray-400">暂无标签，请从标签树中选择</td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = assetTagsTableData.map((tag, index) => `
+        <tr class="hover:bg-gray-50">
+          <td class="px-4 py-2 text-sm text-gray-900">${tag.category}</td>
+          <td class="px-4 py-2 text-sm text-gray-900">${tag.name}</td>
+          <td class="px-4 py-2 text-sm text-gray-600">${tag.path}</td>
+          <td class="px-4 py-2 text-sm">
+            <button onclick="removeAssetTagEntry(${index})" class="text-red-600 hover:text-red-800 text-xs">
+              <i class="fas fa-trash mr-1"></i>删除
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function removeAssetTagEntry(index) {
+      assetTagsTableData.splice(index, 1);
+      renderAssetTagsTable();
+    }
+
+    function clearAssetTags() {
+      assetTagsTableData = [];
+      renderAssetTagsTable();
     }
     
     // 添加数据集

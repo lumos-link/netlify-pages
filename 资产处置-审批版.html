@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>资产处置-审批版 - 数据资产管理系统</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    body { background: #f6f8fa; }
+    .content-card { background: white; border-radius: 1rem; box-shadow: 0 2px 16px 0 #2563eb22; }
+    .btn-primary { background: #2563eb; color: #fff; border-radius: 0.5rem; padding: 0.5rem 1.5rem; font-weight: 600; transition: background 0.2s; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-secondary { background: #6b7280; color: #fff; border-radius: 0.5rem; padding: 0.5rem 1.5rem; font-weight: 600; transition: background 0.2s; }
+    .btn-secondary:hover { background: #4b5563; }
+    .required::after { content: " *"; color: #dc2626; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- 顶部主导航栏 -->
+  <header class="bg-gradient-to-r from-red-900 via-red-800 to-red-900 shadow flex items-center justify-between px-10 h-16 sticky top-0 z-20">
+    <div class="flex items-center space-x-4">
+      <div class="h-10 w-10 rounded-full border-2 border-red-400 shadow bg-white flex items-center justify-center">
+        <svg class="h-6 w-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <span class="text-xl font-bold text-white tracking-wide whitespace-nowrap">数据资产管理系统</span>
+    </div>
+    <nav class="flex-1 flex items-center justify-center space-x-8">
+    </nav>
+    <div class="flex items-center space-x-4">
+      <a href="首页.html" class="text-red-100 hover:text-red-400 font-medium px-3 py-1 rounded border border-red-400 hover:bg-red-700 transition">
+        <i class="fas fa-home mr-2"></i>返回首页
+      </a>
+      <div class="relative" id="user-dropdown">
+        <div class="flex items-center space-x-2 cursor-pointer hover:bg-red-700 px-2 py-1 rounded-lg transition" onclick="toggleUserDropdown()">
+          <img src="https://i.pravatar.cc/32?img=3" class="rounded-full w-8 h-8 border-2 border-red-200" alt="用户头像">
+          <span class="text-red-100 text-sm">张三</span>
+          <i class="fas fa-chevron-down text-xs text-red-300 transition-transform" id="dropdown-arrow"></i>
+        </div>
+        <div id="user-dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 hidden z-50">
+          <a href="个人中心.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+            <i class="fas fa-user-circle mr-3 text-red-500"></i>
+            个人中心
+          </a>
+          <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+            <i class="fas fa-cog mr-3 text-red-500"></i>
+            系统管理
+          </a>
+          <div class="border-t border-gray-200 my-1"></div>
+          <a href="#" class="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 transition">
+            <i class="fas fa-sign-out-alt mr-3"></i>
+            退出
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主体内容区 -->
+  <main class="flex-1 w-full max-w-7xl mx-auto py-8 px-4" style="padding-bottom: 120px;">
+    <!-- 页面标题 -->
+    <div class="mb-8">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 mb-2 sm:mb-1">资产处置</h1>
+          <p class="text-gray-600">审批数据资产处置申请</p>
+        </div>
+        <a href="个人中心.html#personal-center-page" class="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-600 border border-blue-500 rounded-lg hover:bg-blue-50 transition-colors whitespace-nowrap">
+          <i class="fas fa-arrow-left mr-2"></i>返回我的任务
+        </a>
+      </div>
+    </div>
+
+    <!-- 任务详情 -->
+    <div class="content-card p-8">
+      <div id="taskDetailContent" class="space-y-6">
+        <!-- 任务基本信息 -->
+        <div class="bg-gray-50 rounded-lg p-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            <div>
+              <span class="text-gray-500">申请人：</span>
+              <span class="font-medium text-gray-900" id="taskApplicant">蒋十三</span>
+            </div>
+            <div>
+              <span class="text-gray-500">部门：</span>
+              <span class="font-medium text-gray-900" id="taskDepartment">资产管理部</span>
+            </div>
+            <div>
+              <span class="text-gray-500">申请时间：</span>
+              <span class="font-medium text-gray-900" id="taskCreateTime">2024-01-22 10:00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 资产信息 -->
+        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+          <div class="px-5 py-4 border-b bg-gray-50">
+            <h4 class="text-sm font-semibold text-gray-800">资产信息</h4>
+          </div>
+          <div class="p-6 space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">资产编号</label>
+                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="ASSET-2024-001" readonly>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">项目编码</label>
+                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="PRJ-2024-001" readonly>
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-2">资产名称</label>
+                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="采购专题分析数据集" readonly>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">资产类型</label>
+                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="结构化数据" readonly>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">数据大小</label>
+                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="2.5GB" readonly>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 处置信息 -->
+        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+          <div class="px-5 py-4 border-b bg-gray-50">
+            <h4 class="text-sm font-semibold text-gray-800">处置信息</h4>
+          </div>
+          <div class="p-6 space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">处置方式 <span class="text-red-500">*</span></label>
+                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="报废" readonly>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">处置原因 <span class="text-red-500">*</span></label>
+                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="数据过期" readonly>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">预计处置日期 <span class="text-red-500">*</span></label>
+                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="2025/11/18" readonly>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">处置负责人</label>
+                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="张三" readonly>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">处置说明 <span class="text-red-500">*</span></label>
+              <textarea class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm leading-6" rows="4" readonly>该数据资产已超过有效期，且无继续使用价值，按照公司资产管理制度，申请报废处置。处置后将从资产台账中移除。</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- 附件清单 -->
+        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+          <div class="px-5 py-4 border-b bg-gray-50">
+            <h4 class="text-sm font-semibold text-gray-800">附件清单</h4>
+          </div>
+          <div class="p-6">
+            <ul class="space-y-2">
+              <li class="flex items-center gap-2 text-sm text-gray-700">
+                <i class="fas fa-file-alt text-blue-500"></i>
+                <span>资产处置申请表.pdf <span class="text-xs text-gray-400">(520KB)</span></span>
+              </li>
+              <li class="flex items-center gap-2 text-sm text-gray-700">
+                <i class="fas fa-file-alt text-blue-500"></i>
+                <span>资产评估报告.pdf <span class="text-xs text-gray-400">(1.2MB)</span></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 审批流程进度 -->
+    <div class="content-card p-6 mt-8">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+            <i class="fas fa-project-diagram text-blue-500 mr-2"></i>审批流程进度
+          </h2>
+          <p class="text-sm text-gray-500 mt-1">实时掌握申请审批状态，支持多环节协作与跟进</p>
+        </div>
+      </div>
+      <div id="approval-progress" class="mt-5 space-y-3"></div>
+    </div>
+  </main>
+
+  <!-- 审批操作区域 -->
+  <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <span class="text-sm font-medium text-gray-700">审批意见：</span>
+          <textarea id="approvalComment" placeholder="请输入审批意见（可选）" 
+            class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-none" 
+            rows="2" style="min-width: 300px; max-width: 500px;"></textarea>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button onclick="handleApproval('reject')" class="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors font-medium">
+            <i class="fas fa-times mr-2"></i>拒绝
+          </button>
+          <button onclick="handleApproval('return')" class="px-6 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors font-medium">
+            <i class="fas fa-undo mr-2"></i>退回
+          </button>
+          <button onclick="handleApproval('approve')" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors font-medium">
+            <i class="fas fa-check mr-2"></i>同意
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const taskId = urlParams.get('id');
+
+    const defaultApprovalProgress = [
+      { name: '提交申请', status: 'completed', owner: '蒋十三', time: '2024-01-22 10:00', note: '申请人提交资产处置申请' },
+      { name: '资产评估', status: 'current', owner: '资产主管', note: '资产主管评估资产价值' },
+      { name: '执行处置', status: 'pending', owner: '技术部', note: '技术部执行资产处置操作' }
+    ];
+
+    let approvalProgress = JSON.parse(localStorage.getItem(`disposalApprovalProgress_${taskId}`) || 'null') || defaultApprovalProgress.slice();
+
+    function saveApprovalProgress() {
+      localStorage.setItem(`disposalApprovalProgress_${taskId}`, JSON.stringify(approvalProgress));
+    }
+
+    function formatDateTime(date = new Date()) {
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      const hh = String(date.getHours()).padStart(2, '0');
+      const mi = String(date.getMinutes()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd} ${hh}:${mi}`;
+    }
+
+    function getTimelineStepStyles(status) {
+      const styleMap = {
+        completed: { circle: 'bg-green-500 text-white', text: 'text-green-600', badge: 'bg-green-100 text-green-800', line: 'bg-green-200' },
+        current: { circle: 'bg-blue-500 text-white', text: 'text-blue-600', badge: 'bg-blue-100 text-blue-800', line: 'bg-blue-200' },
+        pending: { circle: 'bg-gray-200 text-gray-600', text: 'text-gray-500', badge: 'bg-gray-100 text-gray-600', line: 'bg-gray-200' },
+        rejected: { circle: 'bg-red-500 text-white', text: 'text-red-600', badge: 'bg-red-100 text-red-800', line: 'bg-red-200' },
+        approved: { circle: 'bg-emerald-500 text-white', text: 'text-emerald-600', badge: 'bg-emerald-100 text-emerald-800', line: 'bg-emerald-200' }
+      };
+      return styleMap[status] || styleMap.pending;
+    }
+
+    function getTimelineStatusText(status) {
+      const textMap = { completed: '已完成', current: '进行中', pending: '待处理', rejected: '已驳回', approved: '已通过' };
+      return textMap[status] || '待处理';
+    }
+
+    function renderProcessTimeline(containerId, steps = []) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      if (!Array.isArray(steps) || steps.length === 0) {
+        container.innerHTML = '<div class="text-xs text-gray-500">暂无审批进度</div>';
+        return;
+      }
+      container.innerHTML = steps.map((step, index) => {
+        const styles = getTimelineStepStyles(step.status);
+        const indicator = step.status === 'completed' || step.status === 'approved' ? '<i class="fas fa-check text-xs"></i>' : (step.status === 'rejected' ? '<i class="fas fa-times text-xs"></i>' : index + 1);
+        const showConnector = index < steps.length - 1;
+        return `
+          <div class="flex items-start">
+            <div class="flex flex-col items-center mr-3">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold ${styles.circle}">${indicator}</div>
+              ${showConnector ? `<div class="flex-1 w-px mt-1 ${styles.line}" style="min-height: 18px;"></div>` : ''}
+            </div>
+            <div class="flex-1 pb-4 ${showConnector ? 'border-b border-gray-100' : ''}">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium ${styles.text}">${step.name || '未命名步骤'}</p>
+                  ${step.owner ? `<p class="text-xs text-gray-500 mt-1">负责人：${step.owner}</p>` : ''}
+                  ${step.time ? `<p class="text-xs text-gray-400 mt-1">${step.time}</p>` : ''}
+                </div>
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${styles.badge}">${getTimelineStatusText(step.status)}</span>
+              </div>
+              ${step.note ? `<p class="text-xs text-gray-500 mt-2 leading-relaxed">${step.note}</p>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleApproval(action) {
+      const comment = document.getElementById('approvalComment').value;
+      const actionText = { 'approve': '同意', 'reject': '拒绝', 'return': '退回' }[action] || '处理';
+      if (action === 'reject' || action === 'return') {
+        if (!comment.trim()) {
+          alert('请填写审批意见');
+          return;
+        }
+      }
+      if (confirm(`确定要${actionText}该申请吗？`)) {
+        const now = formatDateTime();
+        const currentIndex = approvalProgress.findIndex(step => step.status === 'current');
+        if (action === 'approve' && currentIndex >= 0) {
+          approvalProgress[currentIndex].status = 'completed';
+          approvalProgress[currentIndex].time = now;
+          approvalProgress[currentIndex].note = comment || approvalProgress[currentIndex].note;
+          const nextIndex = currentIndex + 1;
+          if (nextIndex < approvalProgress.length) {
+            approvalProgress[nextIndex].status = 'current';
+            approvalProgress[nextIndex].time = now;
+          } else {
+            approvalProgress[currentIndex].status = 'approved';
+          }
+        } else if (action === 'reject') {
+          if (currentIndex >= 0) {
+            approvalProgress[currentIndex].status = 'rejected';
+            approvalProgress[currentIndex].time = now;
+            approvalProgress[currentIndex].note = comment;
+          }
+        } else if (action === 'return') {
+          if (currentIndex >= 0 && currentIndex > 0) {
+            approvalProgress[currentIndex].status = 'pending';
+            approvalProgress[currentIndex - 1].status = 'current';
+            approvalProgress[currentIndex - 1].note = comment;
+          }
+        }
+        saveApprovalProgress();
+        renderProcessTimeline('approval-progress', approvalProgress);
+        alert(`审批${actionText}成功！${comment ? '\n审批意见：' + comment : ''}`);
+      }
+    }
+
+    function toggleUserDropdown() {
+      const dropdownMenu = document.getElementById('user-dropdown-menu');
+      const arrow = document.getElementById('dropdown-arrow');
+      if (dropdownMenu.classList.contains('hidden')) {
+        dropdownMenu.classList.remove('hidden');
+        arrow.style.transform = 'rotate(180deg)';
+      } else {
+        dropdownMenu.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+      }
+    }
+    
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('user-dropdown');
+      const dropdownMenu = document.getElementById('user-dropdown-menu');
+      const arrow = document.getElementById('dropdown-arrow');
+      if (!dropdown.contains(event.target)) {
+        dropdownMenu.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      renderProcessTimeline('approval-progress', approvalProgress);
+    });
+  </script>
+</body>
+</html>
+
