@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>扫描资源更新至资产-审批版 - 数据资产管理系统</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    body { background: #f6f8fa; }
+    .content-card { background: white; border-radius: 1rem; box-shadow: 0 2px 16px 0 #2563eb22; }
+    .btn-primary { background: #2563eb; color: #fff; border-radius: 0.5rem; padding: 0.5rem 1.5rem; font-weight: 600; transition: background 0.2s; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-secondary { background: #6b7280; color: #fff; border-radius: 0.5rem; padding: 0.5rem 1.5rem; font-weight: 600; transition: background 0.2s; }
+    .btn-secondary:hover { background: #4b5563; }
+    .required::after { content: " *"; color: #dc2626; }
+    .modal-overlay { background: rgba(0, 0, 0, 0.5); }
+    .modal-content { max-height: 90vh; overflow-y: auto; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- 顶部主导航栏 -->
+  <header class="bg-gradient-to-r from-red-900 via-red-800 to-red-900 shadow flex items-center justify-between px-10 h-16 sticky top-0 z-20">
+    <div class="flex items-center space-x-4">
+      <div class="h-10 w-10 rounded-full border-2 border-red-400 shadow bg-white flex items-center justify-center">
+        <svg class="h-6 w-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <span class="text-xl font-bold text-white tracking-wide whitespace-nowrap">数据资产管理系统</span>
+    </div>
+    <nav class="flex-1 flex items-center justify-center space-x-8">
+    </nav>
+    <div class="flex items-center space-x-4">
+      <a href="首页.html" class="text-red-100 hover:text-red-400 font-medium px-3 py-1 rounded border border-red-400 hover:bg-red-700 transition">
+        <i class="fas fa-home mr-2"></i>返回首页
+      </a>
+      <div class="relative" id="user-dropdown">
+        <div class="flex items-center space-x-2 cursor-pointer hover:bg-red-700 px-2 py-1 rounded-lg transition" onclick="toggleUserDropdown()">
+          <img src="https://i.pravatar.cc/32?img=3" class="rounded-full w-8 h-8 border-2 border-red-200" alt="用户头像">
+          <span class="text-red-100 text-sm">张三</span>
+          <i class="fas fa-chevron-down text-xs text-red-300 transition-transform" id="dropdown-arrow"></i>
+        </div>
+        <div id="user-dropdown-menu" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 hidden z-50">
+          <a href="个人中心.html" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+            <i class="fas fa-user-circle mr-3 text-red-500"></i>
+            个人中心
+          </a>
+          <a href="#" class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+            <i class="fas fa-cog mr-3 text-red-500"></i>
+            系统管理
+          </a>
+          <div class="border-t border-gray-200 my-1"></div>
+          <a href="#" class="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 transition">
+            <i class="fas fa-sign-out-alt mr-3"></i>
+            退出
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主体内容区 -->
+  <main class="flex-1 w-full max-w-7xl mx-auto py-8 px-4" style="padding-bottom: 120px;">
+    <!-- 页面标题 -->
+    <div class="mb-8">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 mb-2 sm:mb-1">扫描资源更新至资产</h1>
+          <p class="text-gray-600">审批扫描资源更新至资产申请</p>
+        </div>
+        <a href="个人中心.html#personal-center-page" class="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-600 border border-blue-500 rounded-lg hover:bg-blue-50 transition-colors whitespace-nowrap">
+          <i class="fas fa-arrow-left mr-2"></i>返回我的任务
+        </a>
+      </div>
+    </div>
+
+    <!-- 任务详情 -->
+    <div class="content-card p-8">
+      <div id="taskDetailContent" class="space-y-6">
+        <!-- 任务基本信息 -->
+        <div class="bg-gray-50 rounded-lg p-4">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            <div>
+              <span class="text-gray-500">申请人：</span>
+              <span class="font-medium text-gray-900" id="taskApplicant">系统自动</span>
+            </div>
+            <div>
+              <span class="text-gray-500">部门：</span>
+              <span class="font-medium text-gray-900" id="taskDepartment">数据管理部</span>
+            </div>
+            <div>
+              <span class="text-gray-500">申请时间：</span>
+              <span class="font-medium text-gray-900" id="taskCreateTime">2024-01-24 10:15</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 资产基本信息 -->
+        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+          <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
+            <h4 class="text-sm font-semibold text-gray-800">资产基本信息</h4>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-600">扫描资源更新至资产</span>
+          </div>
+          <div class="p-4 space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">资产编号</label>
+                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="ASSET-2024-003" readonly>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">资产名称</label>
+                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="订单数据表" readonly>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">资产类型</label>
+                <input type="text" id="assetType" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="无形资产" readonly>
+              </div>
+              <div id="sizeOrPurposeField">
+                <label class="block text-xs font-medium text-gray-500 mb-1" id="sizeOrPurposeLabel">持有目的</label>
+                <input type="text" id="sizeOrPurposeValue" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="用于支撑业务运营和决策分析" readonly>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 扫描报告信息 -->
+        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+          <div class="px-4 py-3 border-b bg-gray-50">
+            <h4 class="text-sm font-semibold text-gray-800">扫描报告信息</h4>
+          </div>
+          <div class="p-4 space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">扫描报告ID</label>
+                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="SCAN-2024-001" readonly>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">扫描时间</label>
+                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="2024-01-24 09:30" readonly>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 资源变动信息 -->
+        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+          <div class="px-4 py-3 border-b bg-gray-50">
+            <h4 class="text-sm font-semibold text-gray-800">资源变动信息</h4>
+          </div>
+          <div class="p-4">
+            <div class="border border-gray-200 rounded-lg overflow-hidden overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">表名</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">表描述 (表中文名)</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">所属库</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">product_catalog</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">客户数据表</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">主数据库</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">字段变动</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <a href="#" onclick="showTableDetail('product_catalog', '客户数据表', '字段变动'); return false;" class="text-blue-600 hover:text-blue-800 hover:underline">查看</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">user_info</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">订单数据表</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">业务数据库</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">字段变动</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <a href="#" onclick="showTableDetail('user_info', '订单数据表', '字段变动'); return false;" class="text-blue-600 hover:text-blue-800 hover:underline">查看</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">financial_report</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">配置设置表</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">日志数据库</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">删除表</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <a href="#" onclick="showTableDetail('financial_report', '配置设置表', '删除表'); return false;" class="text-blue-600 hover:text-blue-800 hover:underline">查看</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">order_data</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">用户信息表</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">业务数据库</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">字段变动</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <a href="#" onclick="showTableDetail('order_data', '用户信息表', '字段变动'); return false;" class="text-blue-600 hover:text-blue-800 hover:underline">查看</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">inventory_management</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">客户数据表</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">业务数据库</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">字段变动</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <a href="#" onclick="showTableDetail('inventory_management', '客户数据表', '字段变动'); return false;" class="text-blue-600 hover:text-blue-800 hover:underline">查看</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">user_info</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">订单数据表</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">主数据库</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">新增表</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <a href="#" onclick="showTableDetail('user_info', '订单数据表', '新增表'); return false;" class="text-blue-600 hover:text-blue-800 hover:underline">查看</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">financial_report</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">用户信息表</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">分析数据库</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">删除表</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <a href="#" onclick="showTableDetail('financial_report', '用户信息表', '删除表'); return false;" class="text-blue-600 hover:text-blue-800 hover:underline">查看</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">product_catalog</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">日志分析表</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">日志数据库</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">字段变动</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <a href="#" onclick="showTableDetail('product_catalog', '日志分析表', '字段变动'); return false;" class="text-blue-600 hover:text-blue-800 hover:underline">查看</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">financial_report</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">配置设置表</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">主数据库</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">新增表</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <a href="#" onclick="showTableDetail('financial_report', '配置设置表', '新增表'); return false;" class="text-blue-600 hover:text-blue-800 hover:underline">查看</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">log_analysis</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">日志分析表</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">主数据库</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">删除表</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <a href="#" onclick="showTableDetail('log_analysis', '日志分析表', '删除表'); return false;" class="text-blue-600 hover:text-blue-800 hover:underline">查看</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 审批流程进度 -->
+    <div class="content-card p-6 mt-8">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+            <i class="fas fa-project-diagram text-blue-500 mr-2"></i>审批流程进度
+          </h2>
+          <p class="text-sm text-gray-500 mt-1">实时掌握申请审批状态，支持多环节协作与跟进</p>
+        </div>
+      </div>
+      <div id="approval-progress" class="mt-5 space-y-3"></div>
+    </div>
+  </main>
+
+  <!-- 表详情弹窗 -->
+  <div id="tableDetailModal" class="fixed inset-0 z-50 hidden items-center justify-center modal-overlay">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-6xl mx-4 modal-content">
+      <!-- 弹窗标题栏 -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-900" id="modalTableTitle">表详情</h2>
+        <button onclick="closeTableDetail()" class="text-gray-400 hover:text-gray-600 transition-colors">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+
+      <!-- 弹窗内容 -->
+      <div class="p-6">
+        <!-- 表摘要 -->
+        <div class="bg-gray-50 rounded-lg p-4 mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-gray-500 mb-1">表名</label>
+              <div class="text-sm font-medium text-gray-900" id="modalTableName">-</div>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-500 mb-1">表描述</label>
+              <div class="text-sm font-medium text-gray-900" id="modalTableDescription">-</div>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-500 mb-1">状态</label>
+              <div id="modalTableStatus">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 字段详情表格 -->
+        <div class="border border-gray-200 rounded-lg overflow-hidden overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">字段名</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">字段描述(字段英文名)</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">字段类型</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">字段长度</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">顺序</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">是否主键</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">是否非空</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+              </tr>
+            </thead>
+            <tbody id="modalTableFields" class="bg-white divide-y divide-gray-200">
+              <!-- 动态填充 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 弹窗底部按钮 -->
+      <div class="flex justify-end px-6 py-4 border-t border-gray-200">
+        <button onclick="closeTableDetail()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+          <i class="fas fa-times"></i>
+          关闭
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 审批操作区域 -->
+  <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <span class="text-sm font-medium text-gray-700">审批意见：</span>
+          <textarea id="approvalComment" placeholder="请输入审批意见（可选）" 
+            class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-none" 
+            rows="2" style="min-width: 300px; max-width: 500px;"></textarea>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button onclick="handleApproval('reject')" class="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors font-medium">
+            <i class="fas fa-times mr-2"></i>拒绝
+          </button>
+          <button onclick="handleApproval('return')" class="px-6 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors font-medium">
+            <i class="fas fa-undo mr-2"></i>退回
+          </button>
+          <button onclick="handleApproval('approve')" class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors font-medium">
+            <i class="fas fa-check mr-2"></i>同意
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const taskId = urlParams.get('id');
+
+    const defaultApprovalProgress = [
+      { name: '提交申请', status: 'completed', owner: '系统自动', time: '2024-01-24 10:15', note: '系统自动提交扫描资源更新至资产申请' },
+      { name: '资源审核', status: 'current', owner: '数据主管', note: '数据主管审核扫描资源更新内容' },
+      { name: '资产同步', status: 'pending', owner: '技术部', note: '技术部执行资产信息同步操作' }
+    ];
+
+    let approvalProgress = JSON.parse(localStorage.getItem(`scanResourceUpdateApprovalProgress_${taskId}`) || 'null') || defaultApprovalProgress.slice();
+
+    function saveApprovalProgress() {
+      localStorage.setItem(`scanResourceUpdateApprovalProgress_${taskId}`, JSON.stringify(approvalProgress));
+    }
+
+    function formatDateTime(date = new Date()) {
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      const hh = String(date.getHours()).padStart(2, '0');
+      const mi = String(date.getMinutes()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd} ${hh}:${mi}`;
+    }
+
+    function getTimelineStepStyles(status) {
+      const styleMap = {
+        completed: {
+          circle: 'bg-green-500 text-white',
+          text: 'text-green-600',
+          badge: 'bg-green-100 text-green-800',
+          line: 'bg-green-200'
+        },
+        current: {
+          circle: 'bg-blue-500 text-white',
+          text: 'text-blue-600',
+          badge: 'bg-blue-100 text-blue-800',
+          line: 'bg-blue-200'
+        },
+        pending: {
+          circle: 'bg-gray-200 text-gray-600',
+          text: 'text-gray-500',
+          badge: 'bg-gray-100 text-gray-600',
+          line: 'bg-gray-200'
+        },
+        rejected: {
+          circle: 'bg-red-500 text-white',
+          text: 'text-red-600',
+          badge: 'bg-red-100 text-red-800',
+          line: 'bg-red-200'
+        },
+        approved: {
+          circle: 'bg-emerald-500 text-white',
+          text: 'text-emerald-600',
+          badge: 'bg-emerald-100 text-emerald-800',
+          line: 'bg-emerald-200'
+        }
+      };
+      return styleMap[status] || styleMap.pending;
+    }
+
+    function getTimelineStatusText(status) {
+      const textMap = {
+        completed: '已完成',
+        current: '进行中',
+        pending: '待处理',
+        rejected: '已驳回',
+        approved: '已通过'
+      };
+      return textMap[status] || '待处理';
+    }
+
+    function renderProcessTimeline(containerId, steps = []) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      if (!Array.isArray(steps) || steps.length === 0) {
+        container.innerHTML = '<div class="text-xs text-gray-500">暂无审批进度</div>';
+        return;
+      }
+
+      container.innerHTML = steps.map((step, index) => {
+        const styles = getTimelineStepStyles(step.status);
+        const indicator = step.status === 'completed' || step.status === 'approved'
+          ? '<i class="fas fa-check text-xs"></i>'
+          : (step.status === 'rejected' ? '<i class="fas fa-times text-xs"></i>' : index + 1);
+        const showConnector = index < steps.length - 1;
+
+        return `
+          <div class="flex items-start">
+            <div class="flex flex-col items-center mr-3">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold ${styles.circle}">
+                ${indicator}
+              </div>
+              ${showConnector ? `<div class="flex-1 w-px mt-1 ${styles.line}" style="min-height: 18px;"></div>` : ''}
+            </div>
+            <div class="flex-1 pb-4 ${showConnector ? 'border-b border-gray-100' : ''}">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium ${styles.text}">${step.name || '未命名步骤'}</p>
+                  ${step.owner ? `<p class="text-xs text-gray-500 mt-1">负责人：${step.owner}</p>` : ''}
+                  ${step.time ? `<p class="text-xs text-gray-400 mt-1">${step.time}</p>` : ''}
+                </div>
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${styles.badge}">
+                  ${getTimelineStatusText(step.status)}
+                </span>
+              </div>
+              ${step.note ? `<p class="text-xs text-gray-500 mt-2 leading-relaxed">${step.note}</p>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleApproval(action) {
+      const comment = document.getElementById('approvalComment').value;
+      const actionText = {
+        'approve': '同意',
+        'reject': '拒绝',
+        'return': '退回'
+      }[action] || '处理';
+      
+      if (action === 'reject' || action === 'return') {
+        if (!comment.trim()) {
+          alert('请填写审批意见');
+          return;
+        }
+      }
+      
+      if (confirm(`确定要${actionText}该申请吗？`)) {
+        const now = formatDateTime();
+        const currentIndex = approvalProgress.findIndex(step => step.status === 'current');
+        
+        if (action === 'approve' && currentIndex >= 0) {
+          approvalProgress[currentIndex].status = 'completed';
+          approvalProgress[currentIndex].time = now;
+          approvalProgress[currentIndex].note = comment || approvalProgress[currentIndex].note;
+          
+          const nextIndex = currentIndex + 1;
+          if (nextIndex < approvalProgress.length) {
+            approvalProgress[nextIndex].status = 'current';
+            approvalProgress[nextIndex].time = now;
+          } else {
+            approvalProgress[currentIndex].status = 'approved';
+          }
+        } else if (action === 'reject') {
+          if (currentIndex >= 0) {
+            approvalProgress[currentIndex].status = 'rejected';
+            approvalProgress[currentIndex].time = now;
+            approvalProgress[currentIndex].note = comment;
+          }
+        } else if (action === 'return') {
+          if (currentIndex >= 0 && currentIndex > 0) {
+            approvalProgress[currentIndex].status = 'pending';
+            approvalProgress[currentIndex - 1].status = 'current';
+            approvalProgress[currentIndex - 1].note = comment;
+          }
+        }
+        
+        saveApprovalProgress();
+        renderProcessTimeline('approval-progress', approvalProgress);
+        
+        alert(`审批${actionText}成功！${comment ? '\n审批意见：' + comment : ''}`);
+        
+        // 审批后可以跳转回个人中心
+        // window.location.href = '个人中心.html#personal-center-page';
+      }
+    }
+
+    function toggleUserDropdown() {
+      const dropdownMenu = document.getElementById('user-dropdown-menu');
+      const arrow = document.getElementById('dropdown-arrow');
+      
+      if (dropdownMenu.classList.contains('hidden')) {
+        dropdownMenu.classList.remove('hidden');
+        arrow.style.transform = 'rotate(180deg)';
+      } else {
+        dropdownMenu.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+      }
+    }
+    
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('user-dropdown');
+      const dropdownMenu = document.getElementById('user-dropdown-menu');
+      const arrow = document.getElementById('dropdown-arrow');
+      
+      if (!dropdown.contains(event.target)) {
+        dropdownMenu.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+      }
+    });
+
+    // 根据资产类型动态显示字段
+    function updateAssetFields() {
+      const assetTypeInput = document.getElementById('assetType');
+      const sizeOrPurposeLabel = document.getElementById('sizeOrPurposeLabel');
+      const sizeOrPurposeValue = document.getElementById('sizeOrPurposeValue');
+      
+      if (!assetTypeInput || !sizeOrPurposeLabel || !sizeOrPurposeValue) return;
+      
+      const assetType = assetTypeInput.value;
+      
+      if (assetType === '无形资产') {
+        sizeOrPurposeLabel.textContent = '持有目的';
+        sizeOrPurposeValue.value = '用于支撑业务运营和决策分析';
+      } else {
+        sizeOrPurposeLabel.textContent = '持有目的';
+        sizeOrPurposeValue.value = '用于支撑业务运营和决策分析';
+      }
+    }
+
+    // 表字段数据
+    const tableFieldsData = {
+      'product_catalog': [
+        { name: 'product_id', description: '产品ID (product_id)', type: 'INT', length: '11', order: 1, isPrimaryKey: true, isNotNull: true, status: '无变动' },
+        { name: 'product_name', description: '产品名称 (product_name)', type: 'VARCHAR', length: '100', order: 2, isPrimaryKey: false, isNotNull: true, status: '无变动' },
+        { name: 'category', description: '产品分类 (category)', type: 'VARCHAR', length: '50', order: 3, isPrimaryKey: false, isNotNull: true, status: '修改' },
+        { name: 'price', description: '价格 (price)', type: 'DECIMAL', length: '10,2', order: 4, isPrimaryKey: false, isNotNull: true, status: '无变动' },
+        { name: 'description', description: '产品描述 (description)', type: 'TEXT', length: '', order: 5, isPrimaryKey: false, isNotNull: false, status: '新增' },
+        { name: 'stock_quantity', description: '库存数量 (stock_quantity)', type: 'INT', length: '10', order: 6, isPrimaryKey: false, isNotNull: true, status: '无变动' }
+      ],
+      'user_info': [
+        { name: 'user_id', description: '用户ID (user_id)', type: 'INT', length: '11', order: 1, isPrimaryKey: true, isNotNull: true, status: '无变动' },
+        { name: 'username', description: '用户名 (username)', type: 'VARCHAR', length: '50', order: 2, isPrimaryKey: false, isNotNull: true, status: '修改' },
+        { name: 'email', description: '邮箱 (email)', type: 'VARCHAR', length: '100', order: 3, isPrimaryKey: false, isNotNull: true, status: '无变动' }
+      ],
+      'order_data': [
+        { name: 'order_id', description: '订单ID (order_id)', type: 'INT', length: '11', order: 1, isPrimaryKey: true, isNotNull: true, status: '无变动' },
+        { name: 'order_date', description: '订单日期 (order_date)', type: 'DATE', length: '', order: 2, isPrimaryKey: false, isNotNull: true, status: '修改' }
+      ],
+      'inventory_management': [
+        { name: 'inventory_id', description: '库存ID (inventory_id)', type: 'INT', length: '11', order: 1, isPrimaryKey: true, isNotNull: true, status: '无变动' },
+        { name: 'product_id', description: '产品ID (product_id)', type: 'INT', length: '11', order: 2, isPrimaryKey: false, isNotNull: true, status: '新增' }
+      ],
+      'financial_report': [
+        { name: 'report_id', description: '报告ID (report_id)', type: 'INT', length: '11', order: 1, isPrimaryKey: true, isNotNull: true, status: '无变动' },
+        { name: 'report_date', description: '报告日期 (report_date)', type: 'DATE', length: '', order: 2, isPrimaryKey: false, isNotNull: true, status: '无变动' }
+      ],
+      'log_analysis': [
+        { name: 'log_id', description: '日志ID (log_id)', type: 'INT', length: '11', order: 1, isPrimaryKey: true, isNotNull: true, status: '无变动' },
+        { name: 'log_time', description: '日志时间 (log_time)', type: 'DATETIME', length: '', order: 2, isPrimaryKey: false, isNotNull: true, status: '无变动' }
+      ]
+    };
+
+    // 显示表详情弹窗
+    function showTableDetail(tableName, tableDescription, tableStatus) {
+      const modal = document.getElementById('tableDetailModal');
+      const title = document.getElementById('modalTableTitle');
+      const name = document.getElementById('modalTableName');
+      const description = document.getElementById('modalTableDescription');
+      const status = document.getElementById('modalTableStatus');
+      const fieldsBody = document.getElementById('modalTableFields');
+
+      // 设置标题和摘要信息
+      title.textContent = `表详情 - ${tableName}`;
+      name.textContent = tableName;
+      description.textContent = tableDescription;
+
+      // 设置状态徽章
+      let statusClass = 'bg-gray-100 text-gray-800';
+      if (tableStatus === '字段变动') {
+        statusClass = 'bg-yellow-100 text-yellow-800';
+      } else if (tableStatus === '新增表') {
+        statusClass = 'bg-blue-100 text-blue-800';
+      } else if (tableStatus === '删除表') {
+        statusClass = 'bg-red-100 text-red-800';
+      }
+      status.innerHTML = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusClass}">${tableStatus}</span>`;
+
+      // 获取字段数据
+      const fields = tableFieldsData[tableName] || [];
+
+      // 渲染字段表格
+      fieldsBody.innerHTML = fields.map(field => {
+        // 主键徽章
+        const primaryKeyBadge = field.isPrimaryKey 
+          ? '<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-yellow-100 text-yellow-800">是</span>'
+          : '<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">否</span>';
+
+        // 非空徽章
+        const notNullBadge = field.isNotNull
+          ? '<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800">是</span>'
+          : '<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">否</span>';
+
+        // 状态徽章
+        let fieldStatusClass = 'bg-gray-100 text-gray-800';
+        let fieldStatusText = field.status;
+        if (field.status === '修改') {
+          fieldStatusClass = 'bg-yellow-100 text-yellow-800';
+        } else if (field.status === '新增') {
+          fieldStatusClass = 'bg-green-100 text-green-800';
+        }
+        const fieldStatusBadge = `<span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium ${fieldStatusClass}">${fieldStatusText}</span>`;
+
+        return `
+          <tr>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${field.name}</td>
+            <td class="px-6 py-4 text-sm text-gray-500">${field.description}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${field.type}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${field.length || '-'}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${field.order}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">${primaryKeyBadge}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">${notNullBadge}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">${fieldStatusBadge}</td>
+          </tr>
+        `;
+      }).join('');
+
+      // 显示弹窗
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    // 关闭表详情弹窗
+    function closeTableDetail() {
+      const modal = document.getElementById('tableDetailModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // 点击弹窗外部关闭
+    document.addEventListener('click', function(event) {
+      const modal = document.getElementById('tableDetailModal');
+      if (event.target === modal) {
+        closeTableDetail();
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      renderProcessTimeline('approval-progress', approvalProgress);
+      updateAssetFields();
+      
+      // 监听资产类型变化（如果后续需要动态更新）
+      const assetTypeInput = document.getElementById('assetType');
+      if (assetTypeInput) {
+        assetTypeInput.addEventListener('change', updateAssetFields);
+      }
+    });
+  </script>
+</body>
+</html>
+

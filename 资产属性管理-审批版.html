@@ -14,6 +14,13 @@
     .btn-secondary { background: #6b7280; color: #fff; border-radius: 0.5rem; padding: 0.5rem 1.5rem; font-weight: 600; transition: background 0.2s; }
     .btn-secondary:hover { background: #4b5563; }
     .required::after { content: " *"; color: #dc2626; }
+    .tree-item { cursor: pointer; transition: background-color 0.2s; }
+    .tree-item:hover { background-color: #f3f4f6; }
+    .tree-item.active { background-color: #dbeafe; color: #2563eb; }
+    .tree-arrow { transition: transform 0.2s; }
+    .tree-arrow.rotated { transform: rotate(90deg); }
+    .tree-children { display: none; }
+    .tree-children.expanded { display: block; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -94,32 +101,118 @@
           </div>
         </div>
 
-        <!-- 属性信息 -->
-        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm" id="attributeInfoCard">
-          <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
-            <h4 class="text-sm font-semibold text-gray-800">属性信息</h4>
-            <div class="flex items-center gap-2">
-              <span id="operationTypeBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"></span>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-600">资产属性管理</span>
+        <!-- 属性信息和目录树 -->
+        <div class="flex gap-6">
+          <!-- 左侧属性树 -->
+          <div class="w-80 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col">
+            <div class="p-4 border-b border-gray-200">
+              <h2 class="text-lg font-semibold text-gray-900">资产属性</h2>
+            </div>
+            <div class="flex-1 overflow-y-auto p-4">
+              <div class="space-y-1">
+                <!-- 基础属性 -->
+                <div class="tree-item">
+                  <div class="flex items-center py-2 px-2 rounded" onclick="toggleTreeItem(this)">
+                    <div class="flex items-center gap-2">
+                      <i class="fas fa-chevron-right tree-arrow text-xs text-gray-500 rotated"></i>
+                      <span class="font-medium">基础属性 (Basic Attributes)</span>
+                    </div>
+                  </div>
+                  <div class="tree-children expanded ml-6">
+                    <div class="tree-item active">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>名称属性 (Name Attribute)</span>
+                      </div>
+                    </div>
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>描述属性 (Description Attribute)</span>
+                      </div>
+                    </div>
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>类型属性 (Type Attribute)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 业务属性 -->
+                <div class="tree-item">
+                  <div class="flex items-center py-2 px-2 rounded" onclick="toggleTreeItem(this)">
+                    <div class="flex items-center gap-2">
+                      <i class="fas fa-chevron-right tree-arrow text-xs text-gray-500"></i>
+                      <span class="font-medium">业务属性 (Business Attributes)</span>
+                    </div>
+                  </div>
+                  <div class="tree-children ml-6">
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>部门属性 (Department Attribute)</span>
+                      </div>
+                    </div>
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>负责人属性 (Owner Attribute)</span>
+                      </div>
+                    </div>
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>优先级属性 (Priority Attribute)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 技术属性 -->
+                <div class="tree-item">
+                  <div class="flex items-center py-2 px-2 rounded" onclick="toggleTreeItem(this)">
+                    <div class="flex items-center gap-2">
+                      <i class="fas fa-chevron-right tree-arrow text-xs text-gray-500"></i>
+                      <span class="font-medium">技术属性 (Technical Attributes)</span>
+                    </div>
+                  </div>
+                  <div class="tree-children ml-6">
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>数据格式属性 (Data Format Attribute)</span>
+                      </div>
+                    </div>
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>存储位置属性 (Storage Location Attribute)</span>
+                      </div>
+                    </div>
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>访问权限属性 (Access Permission Attribute)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="p-4 space-y-5">
-            <div>
-              <label class="block text-xs font-medium text-gray-500 mb-1">属性名称</label>
-              <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="客户画像准确率" readonly>
+
+          <!-- 右侧属性信息 -->
+          <div class="flex-1 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm" id="attributeInfoCard">
+            <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
+              <h4 class="text-sm font-semibold text-gray-800">属性信息</h4>
+              <div class="flex items-center gap-2">
+                <span id="operationTypeBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"></span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-600">资产属性</span>
+              </div>
             </div>
-            <div>
-              <label class="block text-xs font-medium text-gray-500 mb-1">属性描述</label>
-              <textarea class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm leading-6" rows="3" readonly>衡量近30天画像模型对目标客户群识别准确程度的指标，用于驱动精准营销与客户洞察分析。</textarea>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-4 space-y-5">
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">属性名称</label>
+                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="客户画像准确率" readonly>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">属性描述</label>
+                <textarea class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm leading-6" rows="3" readonly>衡量近30天画像模型对目标客户群识别准确程度的指标，用于驱动精准营销与客户洞察分析。</textarea>
+              </div>
               <div>
                 <label class="block text-xs font-medium text-gray-500 mb-1">是否启用</label>
                 <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="是" readonly>
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-500 mb-1">父节点</label>
-                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="客户画像指标体系" readonly>
               </div>
             </div>
           </div>
@@ -401,6 +494,16 @@
         inputs.forEach(input => {
           input.classList.add('line-through', 'text-gray-500');
         });
+      }
+    }
+
+    // 目录树展开/收起
+    function toggleTreeItem(element) {
+      const arrow = element.querySelector('.tree-arrow');
+      const children = element.parentElement.querySelector('.tree-children');
+      if (arrow && children) {
+        arrow.classList.toggle('rotated');
+        children.classList.toggle('expanded');
       }
     }
 

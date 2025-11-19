@@ -431,7 +431,8 @@
                                     <option value="disposal">资产处置</option>
                                     <option value="development-form">数据资产开发(形成)</option>
                                     <option value="tag">资产标签变更</option>
-                                    <option value="resource-change">资源变更</option>
+                                    <option value="custom-classification-update">自定义分级分类更新至资产</option>
+                                    <option value="scan-resource-update">扫描资源更新至资产</option>
                                 </select>
                                 <select id="statusFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     <option value="all">全部状态</option>
@@ -1160,7 +1161,7 @@
                             </div>
                         </div>
 
-                            <!-- 16. 资源变更 -->
+                            <!-- 16. 自定义分级分类更新至资产 -->
                             <div class="bg-white border-l-4 border-indigo-500 rounded-lg p-5 hover:shadow-lg transition-all duration-200">
                                 <div class="flex items-center justify-between mb-4">
                                     <div class="flex items-center space-x-4">
@@ -1168,7 +1169,7 @@
                                             <i class="fas fa-exchange-alt text-indigo-600 text-xl"></i>
                                         </div>
                                         <div>
-                                            <h3 class="text-lg font-bold text-gray-900">资源变更</h3>
+                                            <h3 class="text-lg font-bold text-gray-900">自定义分级分类更新至资产</h3>
                                         </div>
                                     </div>
                                     <div class="flex items-center space-x-2">
@@ -1208,6 +1209,60 @@
                                             <i class="fas fa-check-circle mr-1.5"></i>处理任务
                                         </button>
                                         <button onclick="showTaskDetail(16, 'view')" class="px-4 py-2.5 text-sm text-gray-600 hover:text-indigo-600 transition-colors font-medium border-0 bg-transparent hover:underline">
+                                            <i class="fas fa-eye mr-1.5"></i>查看详情
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 17. 扫描资源更新至资产 -->
+                            <div class="bg-white border-l-4 border-purple-500 rounded-lg p-5 hover:shadow-lg transition-all duration-200">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center shadow-sm">
+                                            <i class="fas fa-sync-alt text-purple-600 text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-bold text-gray-900">扫描资源更新至资产</h3>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            待处理
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="mb-4 pl-16">
+                                    <div class="grid grid-cols-3 gap-4 mb-3">
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-user text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">申请人</span>
+                                                <span class="text-sm font-medium text-gray-900">系统自动</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-building text-gray-400 text-sm"></i>
+                                            <div>
+                                                <span class="text-xs text-gray-500 block">部门</span>
+                                                <span class="text-sm font-medium text-gray-900">数据管理部</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2.5">
+                                            <i class="fas fa-file-alt text-gray-400 text-sm"></i>
+                                            <div class="min-w-0 flex-1">
+                                                <span class="text-xs text-gray-500 block">申请内容</span>
+                                                <span class="text-sm font-medium text-gray-900 truncate">扫描报告触发资源更新至资产</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-end pl-16">
+                                    <div class="flex items-center space-x-3">
+                                        <button onclick="showTaskDetail(17, 'process')" class="px-5 py-2.5 text-sm bg-purple-500 text-white rounded-lg hover:bg-purple-600 active:bg-purple-700 transition-all font-medium shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+                                            <i class="fas fa-check-circle mr-1.5"></i>处理任务
+                                        </button>
+                                        <button onclick="showTaskDetail(17, 'view')" class="px-4 py-2.5 text-sm text-gray-600 hover:text-purple-600 transition-colors font-medium border-0 bg-transparent hover:underline">
                                             <i class="fas fa-eye mr-1.5"></i>查看详情
                                         </button>
                                     </div>
@@ -2249,7 +2304,7 @@
             {
                 id: 16,
                 type: 'processing',
-                title: '资源变更',
+                title: '自定义分级分类更新至资产',
                 description: '系统自动：资源详情页字段编辑中修改了字段的自定义分级分类并选择了更新至资产，需要审批确认后同步更新资产信息。',
                 status: 'pending',
                 applicant: '系统自动',
@@ -2265,10 +2320,10 @@
                 ],
                 history: [
                     { action: '任务创建', operator: '系统', time: '2024-01-23 14:30', comment: '资源字段变更触发资产同步流程' },
-                    { action: '申请提交', operator: '系统自动', time: '2024-01-23 14:30', comment: '已提交资源变更申请' }
+                    { action: '申请提交', operator: '系统自动', time: '2024-01-23 14:30', comment: '已提交自定义分级分类更新至资产申请' }
                 ],
                 customData: {
-                    type: 'resource-change',
+                    type: 'custom-classification-update',
                     asset: {
                         code: 'ASSET-2024-002',
                         name: '客户画像数据集',
@@ -2285,6 +2340,52 @@
                     ],
                     source: '资源详情页字段编辑 - 自定义分级分类更新至资产',
                     description: '在资源详情页字段编辑中，修改了字段的自定义分级分类，并选择了更新至资产。系统自动触发资源变更流程，需要审批确认后同步更新资产信息。'
+                },
+                attachments: []
+            },
+            {
+                id: 17,
+                type: 'processing',
+                title: '扫描资源更新至资产',
+                description: '系统自动：数据资源扫描的扫描报告中触发了更新至资产操作，需要审批确认后同步更新资产信息。',
+                status: 'pending',
+                applicant: '系统自动',
+                department: '数据管理部',
+                createTime: '2024-01-24 10:15',
+                deadline: '2024-01-26 18:00',
+                assignee: '数据主管',
+                completeTime: null,
+                processSteps: [
+                    { name: '提交申请', status: 'completed', time: '2024-01-24 10:15', operator: '系统自动' },
+                    { name: '资源审核', status: 'current', time: null, operator: '数据主管' },
+                    { name: '资产同步', status: 'pending', time: null, operator: '技术部' }
+                ],
+                history: [
+                    { action: '任务创建', operator: '系统', time: '2024-01-24 10:15', comment: '扫描报告触发资产同步流程' },
+                    { action: '申请提交', operator: '系统自动', time: '2024-01-24 10:15', comment: '已提交扫描资源更新至资产申请' }
+                ],
+                customData: {
+                    type: 'scan-resource-update',
+                    asset: {
+                        code: 'ASSET-2024-003',
+                        name: '订单数据表',
+                        type: '结构化数据',
+                        size: '2.5GB'
+                    },
+                    resource: {
+                        id: 'RES-2024-002',
+                        name: '订单主表'
+                    },
+                    scanReport: {
+                        id: 'SCAN-2024-001',
+                        name: '数据资源扫描报告-20240124',
+                        scanTime: '2024-01-24 09:30'
+                    },
+                    changes: [
+                        { field: '数据大小', before: '2.0GB', after: '2.5GB', type: '修改' },
+                        { field: '字段数量', before: '25', after: '28', type: '修改' }
+                    ],
+                    description: '在数据资源扫描的扫描报告中，检测到资源信息变更，并选择了更新至资产。系统自动触发资源更新流程，需要审批确认后同步更新资产信息。'
                 },
                 attachments: []
             }
@@ -2963,7 +3064,8 @@
                 'disposal': '资产处置',
                 'development-form': '数据资产开发(形成)',
                 'tag': '资产标签变更',
-                'resource-change': '资源变更'
+                'custom-classification-update': '自定义分级分类更新至资产',
+                'scan-resource-update': '扫描资源更新至资产'
             };
             return texts[type] || '其他';
         }
@@ -3132,10 +3234,18 @@
                 };
             }
             
-            // 资源变更 → 资源变更审批版
-            if (title.includes('资源变更')) {
+            // 自定义分级分类更新至资产 → 资源变更审批版
+            if (title.includes('自定义分级分类更新至资产')) {
                 return {
                     page: '资源变更-审批版.html',
+                    params: { id: task.id }
+                };
+            }
+            
+            // 扫描资源更新至资产 → 扫描资源更新至资产审批版
+            if (title.includes('扫描资源更新至资产')) {
+                return {
+                    page: '扫描资源更新至资产-审批版.html',
                     params: { id: task.id }
                 };
             }
@@ -3556,8 +3666,10 @@
                     return renderDisclosureChangeTemplate(data, task);
                 case 'asset-disposal':
                     return renderAssetDisposalTemplate(data, task);
-                case 'resource-change':
+                case 'custom-classification-update':
                     return renderResourceChangeTemplate(data, task);
+                case 'scan-resource-update':
+                    return renderScanResourceUpdateTemplate(data, task);
                 default:
                     return '';
             }
@@ -4391,7 +4503,7 @@
                     <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
                         <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
                             <h4 class="text-sm font-semibold text-gray-800">资产基本信息</h4>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-600">资源变更</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-600">自定义分级分类更新至资产</span>
                         </div>
                         <div class="p-4 space-y-4">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -4408,8 +4520,8 @@
                                     <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(asset.type)}" readonly>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-medium text-gray-500 mb-1">数据大小</label>
-                                    <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(asset.size)}" readonly>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">${asset.type === '无形资产' ? '持有目的' : '数据大小'}</label>
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${asset.type === '无形资产' ? safeValue(asset.purpose || '用于支撑业务运营和决策分析') : safeValue(asset.size)}" readonly>
                                 </div>
                             </div>
                         </div>
@@ -4419,10 +4531,6 @@
                             <h4 class="text-sm font-semibold text-gray-800">资源变动信息</h4>
                         </div>
                         <div class="p-4 space-y-4">
-                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                <h5 class="text-sm font-semibold text-blue-900 mb-3">变更来源</h5>
-                                <p class="text-sm text-blue-800">${safeValue(data.source)}</p>
-                            </div>
                             <div>
                                 <label class="block text-xs font-semibold text-gray-700 mb-2">字段变更明细</label>
                                 <div class="border border-gray-200 rounded-lg overflow-hidden overflow-x-auto">
@@ -4603,6 +4711,118 @@
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                                     <span class="inline-block bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded">一般</span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                                    <button class="text-xs text-blue-600 hover:text-blue-800 border border-blue-300 rounded px-2 py-1 hover:bg-blue-50">+ 添加分类</button>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                                    <span class="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">自定义分级</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-2">变更说明</label>
+                                <textarea class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm leading-6" rows="3" readonly>${safeValue(data.description)}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderScanResourceUpdateTemplate(data, task) {
+            const asset = data.asset || {};
+            const scanReport = data.scanReport || {};
+            return `
+                <div class="space-y-4">
+                    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                        <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
+                            <h4 class="text-sm font-semibold text-gray-800">资产基本信息</h4>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-600">扫描资源更新至资产</span>
+                        </div>
+                        <div class="p-4 space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">资产编号</label>
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(asset.code)}" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">资产名称</label>
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(asset.name)}" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">资产类型</label>
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(asset.type)}" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">${asset.type === '无形资产' ? '持有目的' : '数据大小'}</label>
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${asset.type === '无形资产' ? safeValue(asset.purpose || '用于支撑业务运营和决策分析') : safeValue(asset.size)}" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                        <div class="px-4 py-3 border-b bg-gray-50">
+                            <h4 class="text-sm font-semibold text-gray-800">扫描报告信息</h4>
+                        </div>
+                        <div class="p-4 space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">扫描报告ID</label>
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(scanReport.id)}" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">扫描报告名称</label>
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(scanReport.name)}" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">扫描时间</label>
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="${safeValue(scanReport.scanTime)}" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                        <div class="px-4 py-3 border-b bg-gray-50">
+                            <h4 class="text-sm font-semibold text-gray-800">资源变动信息</h4>
+                        </div>
+                        <div class="p-4 space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-2">字段变更明细</label>
+                                <div class="border border-gray-200 rounded-lg overflow-hidden overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">字段名</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">字段描述(字段英文名)</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">字段类型</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">字段长度</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">顺序</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">是否是主键</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">是否非空</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">原系统分类</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">原系统分级</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">自定义分类</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">自定义分级</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">order_id</td>
+                                                <td class="px-6 py-4 text-sm text-gray-500">订单编号</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">VARCHAR</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">64</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">是</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">是</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                                    <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">标识符</span>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                                    <span class="inline-block bg-red-100 text-red-800 text-xs px-2 py-1 rounded">核心</span>
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                                     <button class="text-xs text-blue-600 hover:text-blue-800 border border-blue-300 rounded px-2 py-1 hover:bg-blue-50">+ 添加分类</button>

@@ -14,6 +14,13 @@
     .btn-secondary { background: #6b7280; color: #fff; border-radius: 0.5rem; padding: 0.5rem 1.5rem; font-weight: 600; transition: background 0.2s; }
     .btn-secondary:hover { background: #4b5563; }
     .required::after { content: " *"; color: #dc2626; }
+    .tree-item { cursor: pointer; transition: background-color 0.2s; }
+    .tree-item:hover { background-color: #f3f4f6; }
+    .tree-item.active { background-color: #dbeafe; color: #2563eb; }
+    .tree-arrow { transition: transform 0.2s; }
+    .tree-arrow.rotated { transform: rotate(90deg); }
+    .tree-children { display: none; }
+    .tree-children.expanded { display: block; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -94,40 +101,123 @@
           </div>
         </div>
 
-        <!-- 标签信息 -->
-        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm" id="tagInfoCard">
-          <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
-            <h4 class="text-sm font-semibold text-gray-800">标签信息</h4>
-            <div class="flex items-center gap-2">
-              <span id="operationTypeBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"></span>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-50 text-teal-600">资产标签管理</span>
+        <!-- 标签信息和标签树 -->
+        <div class="flex gap-6">
+          <!-- 左侧标签树 -->
+          <div class="w-80 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col">
+            <div class="p-4 border-b border-gray-200">
+              <h2 class="text-lg font-semibold text-gray-900">资产标签</h2>
+            </div>
+            <div class="flex-1 overflow-y-auto p-4">
+              <div class="space-y-1">
+                <!-- 业务标签 -->
+                <div class="tree-item">
+                  <div class="flex items-center py-2 px-2 rounded" onclick="toggleTreeItem(this)">
+                    <div class="flex items-center gap-2">
+                      <i class="fas fa-chevron-right tree-arrow text-xs text-gray-500 rotated"></i>
+                      <span class="font-medium">业务标签 (Business Tags)</span>
+                    </div>
+                  </div>
+                  <div class="tree-children expanded ml-6">
+                    <div class="tree-item active">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>客户标签 (Customer Tags)</span>
+                      </div>
+                    </div>
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>产品标签 (Product Tags)</span>
+                      </div>
+                    </div>
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>订单标签 (Order Tags)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 技术标签 -->
+                <div class="tree-item">
+                  <div class="flex items-center py-2 px-2 rounded" onclick="toggleTreeItem(this)">
+                    <div class="flex items-center gap-2">
+                      <i class="fas fa-chevron-right tree-arrow text-xs text-gray-500"></i>
+                      <span class="font-medium">技术标签 (Technical Tags)</span>
+                    </div>
+                  </div>
+                  <div class="tree-children ml-6">
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>数据库标签 (Database Tags)</span>
+                      </div>
+                    </div>
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>API标签 (API Tags)</span>
+                      </div>
+                    </div>
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>文件标签 (File Tags)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 安全标签 -->
+                <div class="tree-item">
+                  <div class="flex items-center py-2 px-2 rounded" onclick="toggleTreeItem(this)">
+                    <div class="flex items-center gap-2">
+                      <i class="fas fa-chevron-right tree-arrow text-xs text-gray-500"></i>
+                      <span class="font-medium">安全标签 (Security Tags)</span>
+                    </div>
+                  </div>
+                  <div class="tree-children ml-6">
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>敏感数据标签 (Sensitive Data Tags)</span>
+                      </div>
+                    </div>
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>加密标签 (Encryption Tags)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="p-4 space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-medium text-gray-500 mb-1">标签名称</label>
-                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="销售预测模型标签" readonly>
+
+          <!-- 右侧标签信息 -->
+          <div class="flex-1 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm" id="tagInfoCard">
+            <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
+              <h4 class="text-sm font-semibold text-gray-800">标签信息</h4>
+              <div class="flex items-center gap-2">
+                <span id="operationTypeBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"></span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-50 text-teal-600">资产标签</span>
               </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-500 mb-1">父节点</label>
-                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="业务标签" readonly>
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-500 mb-1">标签颜色</label>
-                <div class="flex items-center gap-3">
-                  <span class="w-8 h-8 rounded-full border border-gray-200 shadow-inner" style="background-color: #14B8A6;"></span>
-                  <input type="text" class="flex-1 px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm font-mono uppercase tracking-wide" value="#14B8A6" readonly>
+            </div>
+            <div class="p-4 space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-medium text-gray-500 mb-1">标签名称</label>
+                  <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="销售预测模型标签" readonly>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-500 mb-1">标签颜色</label>
+                  <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-full border border-gray-200 shadow-inner" style="background-color: #14B8A6;"></span>
+                    <input type="text" class="flex-1 px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm font-mono uppercase tracking-wide" value="#14B8A6" readonly>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-500 mb-1">是否启用</label>
+                  <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="是" readonly>
                 </div>
               </div>
               <div>
-                <label class="block text-xs font-medium text-gray-500 mb-1">是否启用</label>
-                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="是" readonly>
+                <label class="block text-xs font-medium text-gray-500 mb-1">标签描述</label>
+                <textarea class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm leading-6" rows="3" readonly>用于标识销售预测相关的数据资产，支持销售趋势分析和预测模型管理。</textarea>
               </div>
-            </div>
-            <div>
-              <label class="block text-xs font-medium text-gray-500 mb-1">标签描述</label>
-              <textarea class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm leading-6" rows="3" readonly>用于标识销售预测相关的数据资产，支持销售趋势分析和预测模型管理。</textarea>
             </div>
           </div>
         </div>
@@ -351,6 +441,16 @@
         inputs.forEach(input => {
           input.classList.add('line-through', 'text-gray-500');
         });
+      }
+    }
+
+    // 目录树展开/收起
+    function toggleTreeItem(element) {
+      const arrow = element.querySelector('.tree-arrow');
+      const children = element.parentElement.querySelector('.tree-children');
+      if (arrow && children) {
+        arrow.classList.toggle('rotated');
+        children.classList.toggle('expanded');
       }
     }
 

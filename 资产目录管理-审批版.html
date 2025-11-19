@@ -14,6 +14,13 @@
     .btn-secondary { background: #6b7280; color: #fff; border-radius: 0.5rem; padding: 0.5rem 1.5rem; font-weight: 600; transition: background 0.2s; }
     .btn-secondary:hover { background: #4b5563; }
     .required::after { content: " *"; color: #dc2626; }
+    .tree-item { cursor: pointer; transition: background-color 0.2s; }
+    .tree-item:hover { background-color: #f3f4f6; }
+    .tree-item.active { background-color: #dbeafe; color: #2563eb; }
+    .tree-arrow { transition: transform 0.2s; }
+    .tree-arrow.rotated { transform: rotate(90deg); }
+    .tree-children { display: none; }
+    .tree-children.expanded { display: block; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -94,37 +101,166 @@
           </div>
         </div>
 
-        <!-- 目录信息 -->
-        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm" id="catalogInfoCard">
-          <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
-            <h4 class="text-sm font-semibold text-gray-800">目录信息</h4>
-            <div class="flex items-center gap-2">
-              <span id="operationTypeBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"></span>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-50 text-cyan-600">资产目录管理</span>
+        <!-- 目录信息和目录树 -->
+        <div class="flex gap-6">
+          <!-- 左侧目录树 -->
+          <div class="w-80 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col">
+            <div class="p-4 border-b border-gray-200">
+              <h2 class="text-lg font-semibold text-gray-900">资产目录</h2>
+            </div>
+            <div class="flex-1 overflow-y-auto p-4">
+              <div class="space-y-1">
+                <!-- 业务发展 -->
+                <div class="tree-item">
+                  <div class="flex items-center py-2 px-2 rounded" onclick="toggleTreeItem(this)">
+                    <div class="flex items-center gap-2">
+                      <i class="fas fa-chevron-right tree-arrow text-xs text-gray-500 rotated"></i>
+                      <span class="font-medium">业务发展</span>
+                    </div>
+                  </div>
+                  <div class="tree-children expanded ml-6">
+                    <!-- 业务管理 -->
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded" onclick="toggleTreeItem(this)">
+                        <div class="flex items-center gap-2">
+                          <i class="fas fa-chevron-right tree-arrow text-xs text-gray-500 rotated"></i>
+                          <span>业务管理</span>
+                        </div>
+                      </div>
+                      <div class="tree-children expanded ml-6">
+                        <div class="tree-item active">
+                          <div class="flex items-center py-2 px-2 rounded">
+                            <span>非招标</span>
+                          </div>
+                        </div>
+                        <div class="tree-item">
+                          <div class="flex items-center py-2 px-2 rounded">
+                            <span>商城</span>
+                          </div>
+                        </div>
+                        <div class="tree-item">
+                          <div class="flex items-center py-2 px-2 rounded">
+                            <span>集采</span>
+                          </div>
+                        </div>
+                        <div class="tree-item">
+                          <div class="flex items-center py-2 px-2 rounded">
+                            <span>国能e拍</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>决策支持</span>
+                      </div>
+                    </div>
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded" onclick="toggleTreeItem(this)">
+                        <div class="flex items-center gap-2">
+                          <i class="fas fa-chevron-right tree-arrow text-xs text-gray-500"></i>
+                          <span>资源管理</span>
+                        </div>
+                      </div>
+                      <div class="tree-children ml-6">
+                        <div class="tree-item">
+                          <div class="flex items-center py-2 px-2 rounded">
+                            <span>供应商</span>
+                          </div>
+                        </div>
+                        <div class="tree-item">
+                          <div class="flex items-center py-2 px-2 rounded">
+                            <span>评审专家</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>费用管理</span>
+                      </div>
+                    </div>
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>主数据</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 绿色发展 -->
+                <div class="tree-item">
+                  <div class="flex items-center py-2 px-2 rounded" onclick="toggleTreeItem(this)">
+                    <div class="flex items-center gap-2">
+                      <i class="fas fa-chevron-right tree-arrow text-xs text-gray-500"></i>
+                      <span class="font-medium">绿色发展</span>
+                    </div>
+                  </div>
+                  <div class="tree-children ml-6">
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>产品碳足迹核算模型与数据</span>
+                      </div>
+                    </div>
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>绿色供应商</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 智能发展 -->
+                <div class="tree-item">
+                  <div class="flex items-center py-2 px-2 rounded" onclick="toggleTreeItem(this)">
+                    <div class="flex items-center gap-2">
+                      <i class="fas fa-chevron-right tree-arrow text-xs text-gray-500"></i>
+                      <span class="font-medium">智能发展</span>
+                    </div>
+                  </div>
+                  <div class="tree-children ml-6">
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>智能评审</span>
+                      </div>
+                    </div>
+                    <div class="tree-item">
+                      <div class="flex items-center py-2 px-2 rounded">
+                        <span>预测分析</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="p-4 space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-medium text-gray-500 mb-1">目录名称</label>
-                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="客户运营模型目录" readonly>
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-500 mb-1">父节点</label>
-                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="内容管理" readonly>
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-500 mb-1">目录路径</label>
-                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="/数据资产/内容管理/客户运营模型" readonly>
-              </div>
-              <div>
-                <label class="block text-xs font-medium text-gray-500 mb-1">是否启用</label>
-                <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="是" readonly>
+
+          <!-- 右侧目录信息 -->
+          <div class="flex-1 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm" id="catalogInfoCard">
+            <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
+              <h4 class="text-sm font-semibold text-gray-800">目录信息</h4>
+              <div class="flex items-center gap-2">
+                <span id="operationTypeBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"></span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-50 text-cyan-600">资产目录</span>
               </div>
             </div>
-            <div>
-              <label class="block text-xs font-medium text-gray-500 mb-1">目录描述</label>
-              <textarea class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm leading-6" rows="3" readonly>集中管理与客户运营相关的数据模型、指标体系与明细资源，支持客户旅程洞察与服务优化。</textarea>
+            <div class="p-4 space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-medium text-gray-500 mb-1">目录名称</label>
+                  <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="客户运营模型目录" readonly>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-500 mb-1">目录路径</label>
+                  <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="/数据资产/内容管理/客户运营模型" readonly>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-500 mb-1">是否启用</label>
+                  <input type="text" class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm" value="是" readonly>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">目录描述</label>
+                <textarea class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-sm leading-6" rows="3" readonly>集中管理与客户运营相关的数据模型、指标体系与明细资源，支持客户旅程洞察与服务优化。</textarea>
+              </div>
             </div>
           </div>
         </div>
@@ -348,6 +484,16 @@
         inputs.forEach(input => {
           input.classList.add('line-through', 'text-gray-500');
         });
+      }
+    }
+
+    // 目录树展开/收起
+    function toggleTreeItem(element) {
+      const arrow = element.querySelector('.tree-arrow');
+      const children = element.parentElement.querySelector('.tree-children');
+      if (arrow && children) {
+        arrow.classList.toggle('rotated');
+        children.classList.toggle('expanded');
       }
     }
 
