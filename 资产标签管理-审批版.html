@@ -95,10 +95,13 @@
         </div>
 
         <!-- 标签信息 -->
-        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm" id="tagInfoCard">
           <div class="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
             <h4 class="text-sm font-semibold text-gray-800">标签信息</h4>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-50 text-teal-600">资产标签管理</span>
+            <div class="flex items-center gap-2">
+              <span id="operationTypeBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"></span>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-50 text-teal-600">资产标签管理</span>
+            </div>
           </div>
           <div class="p-4 space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -173,6 +176,7 @@
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const taskId = urlParams.get('id');
+    const operationType = urlParams.get('type') || 'modify'; // 默认为修改：add(新增), modify(修改), delete(删除)
 
     const defaultApprovalProgress = [
       { name: '提交申请', status: 'completed', owner: '朱十五', time: '2024-01-20 13:00', note: '申请人提交资产标签变更申请' },
@@ -308,8 +312,51 @@
       }
     });
 
+    // 根据操作类型设置页面样式和标识
+    function setupOperationType() {
+      const badge = document.getElementById('operationTypeBadge');
+      const card = document.getElementById('tagInfoCard');
+      
+      if (!badge || !card) return;
+      
+      const typeConfig = {
+        'add': {
+          text: '新增',
+          class: 'bg-green-100 text-green-700 border border-green-300',
+          cardClass: 'border-green-300 bg-green-50/30'
+        },
+        'modify': {
+          text: '修改',
+          class: 'bg-yellow-100 text-yellow-700 border border-yellow-300',
+          cardClass: ''
+        },
+        'delete': {
+          text: '删除',
+          class: 'bg-red-100 text-red-700 border border-red-300',
+          cardClass: 'border-red-300 bg-red-50/30'
+        }
+      };
+      
+      const config = typeConfig[operationType] || typeConfig['modify'];
+      badge.textContent = config.text;
+      badge.className = `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.class}`;
+      
+      if (config.cardClass) {
+        card.classList.add(...config.cardClass.split(' '));
+      }
+      
+      // 如果是删除操作，给所有输入框添加删除线样式
+      if (operationType === 'delete') {
+        const inputs = card.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+          input.classList.add('line-through', 'text-gray-500');
+        });
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       renderProcessTimeline('approval-progress', approvalProgress);
+      setupOperationType();
     });
   </script>
 </body>
